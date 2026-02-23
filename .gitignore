@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Docker / env ###
+.env
+.env.prod
+.env.local

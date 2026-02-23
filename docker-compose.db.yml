@@ -1,0 +1,30 @@
+# DB 전용 (PostgreSQL) - 로컬: 기본값 / 운영: --env-file .env.prod
+# 실행: docker compose -f docker-compose.db.yml up -d
+# 운영: docker compose -f docker-compose.db.yml --env-file .env.prod up -d
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: mini-mes-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mini_mes}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - mini-mes-pgdata:/var/lib/postgresql/data
+    networks:
+      - mini-mes-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mini_mes}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: ${RESTART_POLICY:-no}
+
+volumes:
+  mini-mes-pgdata:
+
+networks:
+  mini-mes-network:
+    name: mini-mes-network

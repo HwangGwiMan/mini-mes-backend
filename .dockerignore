@@ -1,0 +1,23 @@
+# 빌드 결과물
+build/
+!build/libs/
+
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.iml
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+.env
+.env.*
+
+# 기타
+*.md
+.gradle

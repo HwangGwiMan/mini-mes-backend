@@ -9,5 +9,4 @@ class MiniMesBackendApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

@@ -1,0 +1,54 @@
+# 통합: DB + 백엔드 한 번에 - 로컬: 기본값 / 운영: --env-file .env.prod
+# 실행: docker compose up -d (또는 docker compose up --build -d)
+# 구분 실행: docker-compose.db.yml / docker-compose.backend.yml
+services:
+  # ---- DB ----
+  postgres:
+    image: postgres:17-alpine
+    container_name: mini-mes-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mini_mes}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - mini-mes-pgdata:/var/lib/postgresql/data
+    networks:
+      - mini-mes-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mini_mes}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: ${RESTART_POLICY:-no}
+
+  # ---- 백엔드 ----
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mini-mes-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-mini_mes}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-mini_mes}
+      DB_USERNAME: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    networks:
+      - mini-mes-network
+    restart: ${RESTART_POLICY:-no}
+
+volumes:
+  mini-mes-pgdata:
+
+networks:
+  mini-mes-network:
+    name: mini-mes-network

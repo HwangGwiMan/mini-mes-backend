@@ -1,0 +1,26 @@
+# 운영 환경 설정
+# 사용: --spring.profiles.active=prod 또는 SPRING_PROFILES_ACTIVE=prod
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  # DB 설정 (운영 - 환경 변수 또는 시크릿으로 주입 권장)
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/mini_mes}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    root: INFO
+    org.jooq: WARN
