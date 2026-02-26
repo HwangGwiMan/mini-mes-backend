@@ -20,6 +20,11 @@ spring:
         format_sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+# JWT 설정 (환경변수로 주입)
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
 logging:
   level:
     root: INFO

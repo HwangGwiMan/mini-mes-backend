@@ -20,6 +20,12 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+# JWT 설정 (로컬 개발 전용 - 운영에서는 반드시 환경변수로 교체)
+# secret: Base64 인코딩된 256bit(32byte) 이상 문자열
+jwt:
+  secret: bG9jYWwtZGV2LXNlY3JldC1rZXktbXVzdC1iZS0zMmM=
+  expiration-ms: 86400000  # 24시간
+
 # JOOQ (로컬에서 SQL 로깅 등)
 logging:
   level:
