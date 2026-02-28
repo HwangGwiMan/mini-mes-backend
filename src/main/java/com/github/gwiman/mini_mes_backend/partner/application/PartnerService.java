@@ -1,5 +1,7 @@
 package com.github.gwiman.mini_mes_backend.partner.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +19,37 @@ public class PartnerService {
 
 	private final PartnerRepository partnerRepository;
 
+	public List<PartnerResponse> findAll(String code, String name) {
+		return partnerRepository.search(code, name).stream()
+			.map(PartnerResponse::from)
+			.toList();
+	}
+
 	public PartnerResponse findById(Long id) {
 		Partner entity = partnerRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Partner not found: " + id));
+			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id));
 		return PartnerResponse.from(entity);
 	}
 
 	@Transactional
 	public PartnerResponse create(PartnerRequest request) {
 		Partner entity = new Partner(request.getCode(), request.getName());
-		Partner saved = partnerRepository.save(entity);
-		return PartnerResponse.from(saved);
+		return PartnerResponse.from(partnerRepository.save(entity));
+	}
+
+	@Transactional
+	public PartnerResponse update(Long id, PartnerRequest request) {
+		Partner entity = partnerRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id));
+		entity.update(request.getCode(), request.getName());
+		return PartnerResponse.from(entity);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		if (!partnerRepository.existsById(id)) {
+			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id);
+		}
+		partnerRepository.deleteById(id);
 	}
 }
