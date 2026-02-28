@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,12 +43,12 @@ public class ItemController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ItemResponse create(@RequestBody ItemRequest request) {
+	public ItemResponse create(@RequestBody @Valid ItemRequest request) {
 		return itemService.create(request);
 	}
 
 	@PutMapping("/{id}")
-	public ItemResponse update(@PathVariable Long id, @RequestBody ItemRequest request) {
+	public ItemResponse update(@PathVariable Long id, @RequestBody @Valid ItemRequest request) {
 		return itemService.update(id, request);
 	}
 

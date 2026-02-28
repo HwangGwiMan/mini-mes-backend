@@ -1,5 +1,7 @@
 package com.github.gwiman.mini_mes_backend.commoncode.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +25,20 @@ public class CommonCodeService {
 		return CommonCodeResponse.from(entity);
 	}
 
+	public List<CommonCodeResponse> findByGroup(String groupCode) {
+		return commonCodeRepository.findByCodeGroupAndUseYnTrueOrderBySortOrder(groupCode).stream()
+			.map(CommonCodeResponse::from)
+			.toList();
+	}
+
 	@Transactional
 	public CommonCodeResponse create(CommonCodeRequest request) {
 		CommonCode entity = new CommonCode(
 			request.getCodeGroup(),
 			request.getCode(),
-			request.getName()
+			request.getName(),
+			request.getSortOrder()
 		);
-		CommonCode saved = commonCodeRepository.save(entity);
-		return CommonCodeResponse.from(saved);
+		return CommonCodeResponse.from(commonCodeRepository.save(entity));
 	}
 }

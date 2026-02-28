@@ -13,12 +13,14 @@ public class CommonCodeResponse {
 	private String codeGroup;
 	private String code;
 	private String name;
+	private int sortOrder;
 
-	public CommonCodeResponse(Long id, String codeGroup, String code, String name) {
+	public CommonCodeResponse(Long id, String codeGroup, String code, String name, int sortOrder) {
 		this.id = id;
 		this.codeGroup = codeGroup;
 		this.code = code;
 		this.name = name;
+		this.sortOrder = sortOrder;
 	}
 
 	public static CommonCodeResponse from(CommonCode entity) {
@@ -26,7 +28,8 @@ public class CommonCodeResponse {
 			entity.getId(),
 			entity.getCodeGroup(),
 			entity.getCode(),
-			entity.getName()
+			entity.getName(),
+			entity.getSortOrder()
 		);
 	}
 }

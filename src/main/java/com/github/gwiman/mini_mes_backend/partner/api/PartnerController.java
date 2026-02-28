@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,12 +43,12 @@ public class PartnerController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public PartnerResponse create(@RequestBody PartnerRequest request) {
+	public PartnerResponse create(@RequestBody @Valid PartnerRequest request) {
 		return partnerService.create(request);
 	}
 
 	@PutMapping("/{id}")
-	public PartnerResponse update(@PathVariable Long id, @RequestBody PartnerRequest request) {
+	public PartnerResponse update(@PathVariable Long id, @RequestBody @Valid PartnerRequest request) {
 		return partnerService.update(id, request);
 	}
 

@@ -12,4 +12,8 @@ public interface PartnerRepository extends JpaRepository<Partner, Long> {
 		+ "(:code IS NULL OR p.code LIKE %:code% ESCAPE '\\') AND "
 		+ "(:name IS NULL OR p.name LIKE %:name% ESCAPE '\\')")
 	List<Partner> search(@Param("code") String code, @Param("name") String name);
+
+	boolean existsByCode(String code);
+
+	boolean existsByCodeAndIdNot(String code, Long id);
 }

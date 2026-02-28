@@ -25,11 +25,6 @@ public class PartnerService {
 			.toList();
 	}
 
-	private String escapeLike(String value) {
-		if (value == null || value.isBlank()) return null;
-		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
-	}
-
 	public PartnerResponse findById(Long id) {
 		Partner entity = partnerRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id));
@@ -38,7 +33,15 @@ public class PartnerService {
 
 	@Transactional
 	public PartnerResponse create(PartnerRequest request) {
-		Partner entity = new Partner(request.getCode(), request.getName());
+		if (partnerRepository.existsByCode(request.getCode())) {
+			throw new IllegalArgumentException("이미 사용 중인 코드입니다: " + request.getCode());
+		}
+		Partner entity = new Partner(
+			request.getCode(), request.getName(),
+			request.getBusinessNumber(), request.getCeoName(),
+			request.getAddress(), request.getPhone1(), request.getPhone2(),
+			request.getTradeTypeCode()
+		);
 		return PartnerResponse.from(partnerRepository.save(entity));
 	}
 
@@ -46,7 +49,15 @@ public class PartnerService {
 	public PartnerResponse update(Long id, PartnerRequest request) {
 		Partner entity = partnerRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id));
-		entity.update(request.getCode(), request.getName());
+		if (partnerRepository.existsByCodeAndIdNot(request.getCode(), id)) {
+			throw new IllegalArgumentException("이미 사용 중인 코드입니다: " + request.getCode());
+		}
+		entity.update(
+			request.getCode(), request.getName(),
+			request.getBusinessNumber(), request.getCeoName(),
+			request.getAddress(), request.getPhone1(), request.getPhone2(),
+			request.getTradeTypeCode()
+		);
 		return PartnerResponse.from(entity);
 	}
 
@@ -56,5 +67,10 @@ public class PartnerService {
 			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id);
 		}
 		partnerRepository.deleteById(id);
+	}
+
+	private String escapeLike(String value) {
+		if (value == null || value.isBlank()) return null;
+		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
 	}
 }
