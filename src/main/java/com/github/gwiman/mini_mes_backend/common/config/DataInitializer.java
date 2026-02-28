@@ -24,16 +24,16 @@ public class DataInitializer implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) {
-		createAdminIfAbsent();
+		createUserIfAbsent("admin",  "admin1234",  Role.ROLE_ADMIN);
+		createUserIfAbsent("user01", "user1234",   Role.ROLE_USER);
 	}
 
-	private void createAdminIfAbsent() {
-		if (userRepository.existsByUsername("admin")) {
-			log.info("[DataInitializer] admin 계정이 이미 존재합니다.");
+	private void createUserIfAbsent(String username, String rawPassword, Role role) {
+		if (userRepository.existsByUsername(username)) {
+			log.info("[DataInitializer] {} 계정이 이미 존재합니다.", username);
 			return;
 		}
-		User admin = new User("admin", passwordEncoder.encode("admin1234"), Role.ROLE_ADMIN);
-		userRepository.save(admin);
-		log.info("[DataInitializer] admin 계정 생성 완료 (username: admin / password: admin1234)");
+		userRepository.save(new User(username, passwordEncoder.encode(rawPassword), role));
+		log.info("[DataInitializer] {} 계정 생성 완료 (password: {}, role: {})", username, rawPassword, role);
 	}
 }

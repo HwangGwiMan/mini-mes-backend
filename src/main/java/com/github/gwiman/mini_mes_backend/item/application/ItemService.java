@@ -20,9 +20,14 @@ public class ItemService {
 	private final ItemRepository itemRepository;
 
 	public List<ItemResponse> findAll(String code, String name) {
-		return itemRepository.search(code, name).stream()
+		return itemRepository.search(escapeLike(code), escapeLike(name)).stream()
 			.map(ItemResponse::from)
 			.toList();
+	}
+
+	private String escapeLike(String value) {
+		if (value == null || value.isBlank()) return null;
+		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
 	}
 
 	public ItemResponse findById(Long id) {

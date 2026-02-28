@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface PartnerRepository extends JpaRepository<Partner, Long> {
 
 	@Query("SELECT p FROM Partner p WHERE "
-		+ "(:code IS NULL OR p.code LIKE %:code%) AND "
-		+ "(:name IS NULL OR p.name LIKE %:name%)")
+		+ "(:code IS NULL OR p.code LIKE %:code% ESCAPE '\\') AND "
+		+ "(:name IS NULL OR p.name LIKE %:name% ESCAPE '\\')")
 	List<Partner> search(@Param("code") String code, @Param("name") String name);
 }

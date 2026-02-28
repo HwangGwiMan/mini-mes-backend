@@ -20,9 +20,14 @@ public class PartnerService {
 	private final PartnerRepository partnerRepository;
 
 	public List<PartnerResponse> findAll(String code, String name) {
-		return partnerRepository.search(code, name).stream()
+		return partnerRepository.search(escapeLike(code), escapeLike(name)).stream()
 			.map(PartnerResponse::from)
 			.toList();
+	}
+
+	private String escapeLike(String value) {
+		if (value == null || value.isBlank()) return null;
+		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
 	}
 
 	public PartnerResponse findById(Long id) {
