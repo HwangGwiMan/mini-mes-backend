@@ -11,42 +11,33 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "common_code")
+@Table(name = "code_group")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommonCode {
+public class CodeGroup {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, length = 50)
-	private String codeGroup;
-
-	@Column(nullable = false, length = 50)
-	private String code;
+	@Column(unique = true, nullable = false, length = 50)
+	private String groupCode;
 
 	@Column(nullable = false, length = 100)
-	private String name;
+	private String groupName;
 
 	@Column(nullable = false)
 	private int sortOrder;
 
-	@Column(nullable = false)
-	private boolean useYn = true;
-
-	public CommonCode(String codeGroup, String code, String name, int sortOrder) {
-		this.codeGroup = codeGroup;
-		this.code = code;
-		this.name = name;
+	public CodeGroup(String groupCode, String groupName, int sortOrder) {
+		this.groupCode = groupCode;
+		this.groupName = groupName;
 		this.sortOrder = sortOrder;
-		this.useYn = true;
 	}
 
-	public void update(String codeGroup, String code, String name, int sortOrder) {
-		this.codeGroup = codeGroup;
-		this.code = code;
-		this.name = name;
+	public void update(String groupCode, String groupName, int sortOrder) {
+		this.groupCode = groupCode;
+		this.groupName = groupName;
 		this.sortOrder = sortOrder;
 	}
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import com.github.gwiman.mini_mes_backend.auth.domain.Role;
 import com.github.gwiman.mini_mes_backend.auth.domain.User;
 import com.github.gwiman.mini_mes_backend.auth.domain.UserRepository;
+import com.github.gwiman.mini_mes_backend.commoncode.domain.CodeGroup;
+import com.github.gwiman.mini_mes_backend.commoncode.domain.CodeGroupRepository;
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CommonCode;
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CommonCodeRepository;
 
@@ -23,12 +25,15 @@ public class DataInitializer implements ApplicationRunner {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final CodeGroupRepository codeGroupRepository;
 	private final CommonCodeRepository commonCodeRepository;
 
 	@Override
 	public void run(ApplicationArguments args) {
 		createUserIfAbsent("admin",  "admin1234",  Role.ROLE_ADMIN);
 		createUserIfAbsent("user01", "user1234",   Role.ROLE_USER);
+
+		createCodeGroupIfAbsent("TRADE_TYPE", "거래구분", 1);
 
 		createCommonCodeIfAbsent("TRADE_TYPE", "01", "매입처",      1);
 		createCommonCodeIfAbsent("TRADE_TYPE", "02", "매출처",      2);
@@ -42,6 +47,15 @@ public class DataInitializer implements ApplicationRunner {
 		}
 		userRepository.save(new User(username, passwordEncoder.encode(rawPassword), role));
 		log.info("[DataInitializer] {} 계정 생성 완료 (password: {}, role: {})", username, rawPassword, role);
+	}
+
+	private void createCodeGroupIfAbsent(String groupCode, String groupName, int sortOrder) {
+		if (codeGroupRepository.existsByGroupCode(groupCode)) {
+			log.info("[DataInitializer] 그룹코드 [{}] 이미 존재합니다.", groupCode);
+			return;
+		}
+		codeGroupRepository.save(new CodeGroup(groupCode, groupName, sortOrder));
+		log.info("[DataInitializer] 그룹코드 [{}] {} 생성 완료", groupCode, groupName);
 	}
 
 	private void createCommonCodeIfAbsent(String codeGroup, String code, String name, int sortOrder) {

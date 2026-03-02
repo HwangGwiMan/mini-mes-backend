@@ -21,8 +21,15 @@ public class CommonCodeService {
 
 	public CommonCodeResponse findById(Long id) {
 		CommonCode entity = commonCodeRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("CommonCode not found: " + id));
+			.orElseThrow(() -> new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id));
 		return CommonCodeResponse.from(entity);
+	}
+
+	public List<CommonCodeResponse> findAll(String codeGroup, String code, String name) {
+		String groupParam = (codeGroup != null && !codeGroup.isBlank()) ? codeGroup : null;
+		return commonCodeRepository.search(groupParam, toLikeParam(code), toLikeParam(name)).stream()
+			.map(CommonCodeResponse::from)
+			.toList();
 	}
 
 	public List<CommonCodeResponse> findByGroup(String groupCode) {
@@ -40,5 +47,30 @@ public class CommonCodeService {
 			request.getSortOrder()
 		);
 		return CommonCodeResponse.from(commonCodeRepository.save(entity));
+	}
+
+	@Transactional
+	public CommonCodeResponse update(Long id, CommonCodeRequest request) {
+		CommonCode entity = commonCodeRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id));
+		entity.update(
+			request.getCodeGroup(),
+			request.getCode(),
+			request.getName(),
+			request.getSortOrder()
+		);
+		return CommonCodeResponse.from(entity);
+	}
+
+	@Transactional
+	public void delete(Long id) {
+		if (!commonCodeRepository.existsById(id)) {
+			throw new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id);
+		}
+		commonCodeRepository.deleteById(id);
+	}
+
+	private String toLikeParam(String value) {
+		return (value == null || value.isBlank()) ? null : value;
 	}
 }
