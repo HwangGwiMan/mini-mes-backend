@@ -35,9 +35,9 @@ public class DataInitializer implements ApplicationRunner {
 
 		createCodeGroupIfAbsent("TRADE_TYPE", "거래구분", 1);
 
-		createCommonCodeIfAbsent("TRADE_TYPE", "01", "매입처",      1);
-		createCommonCodeIfAbsent("TRADE_TYPE", "02", "매출처",      2);
-		createCommonCodeIfAbsent("TRADE_TYPE", "03", "매입/매출처", 3);
+		createCommonCodeIfAbsent("TRADE_TYPE", "TRADE_TYPE_01", "매입처",      1);
+		createCommonCodeIfAbsent("TRADE_TYPE", "TRADE_TYPE_02", "매출처",      2);
+		createCommonCodeIfAbsent("TRADE_TYPE", "TRADE_TYPE_03", "매입/매출처", 3);
 	}
 
 	private void createUserIfAbsent(String username, String rawPassword, Role role) {

@@ -43,9 +43,7 @@ public class CommonCode {
 		this.useYn = true;
 	}
 
-	public void update(String codeGroup, String code, String name, int sortOrder) {
-		this.codeGroup = codeGroup;
-		this.code = code;
+	public void update(String name, int sortOrder) {
 		this.name = name;
 		this.sortOrder = sortOrder;
 	}

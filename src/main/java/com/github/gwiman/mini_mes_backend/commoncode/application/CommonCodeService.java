@@ -40,9 +40,10 @@ public class CommonCodeService {
 
 	@Transactional
 	public CommonCodeResponse create(CommonCodeRequest request) {
+		String generatedCode = generateCode(request.getCodeGroup());
 		CommonCode entity = new CommonCode(
 			request.getCodeGroup(),
-			request.getCode(),
+			generatedCode,
 			request.getName(),
 			request.getSortOrder()
 		);
@@ -53,12 +54,7 @@ public class CommonCodeService {
 	public CommonCodeResponse update(Long id, CommonCodeRequest request) {
 		CommonCode entity = commonCodeRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id));
-		entity.update(
-			request.getCodeGroup(),
-			request.getCode(),
-			request.getName(),
-			request.getSortOrder()
-		);
+		entity.update(request.getName(), request.getSortOrder());
 		return CommonCodeResponse.from(entity);
 	}
 
@@ -68,6 +64,23 @@ public class CommonCodeService {
 			throw new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id);
 		}
 		commonCodeRepository.deleteById(id);
+	}
+
+	private String generateCode(String codeGroup) {
+		String prefix = codeGroup + "_";
+		int maxSeq = commonCodeRepository.findCodesByCodeGroup(codeGroup)
+			.stream()
+			.filter(code -> code.startsWith(prefix))
+			.mapToInt(code -> {
+				try {
+					return Integer.parseInt(code.substring(prefix.length()));
+				} catch (NumberFormatException e) {
+					return 0;
+				}
+			})
+			.max()
+			.orElse(0);
+		return prefix + String.format("%02d", maxSeq + 1);
 	}
 
 	private String toLikeParam(String value) {

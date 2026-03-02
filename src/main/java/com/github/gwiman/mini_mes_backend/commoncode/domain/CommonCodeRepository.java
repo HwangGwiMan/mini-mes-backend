@@ -12,6 +12,9 @@ public interface CommonCodeRepository extends JpaRepository<CommonCode, Long> {
 
 	boolean existsByCodeGroup(String codeGroup);
 
+	@Query("SELECT c.code FROM CommonCode c WHERE c.codeGroup = :codeGroup")
+	List<String> findCodesByCodeGroup(@Param("codeGroup") String codeGroup);
+
 	@Query("SELECT c FROM CommonCode c WHERE "
 		+ "(:codeGroup IS NULL OR c.codeGroup = :codeGroup) AND "
 		+ "(:code IS NULL OR c.code LIKE %:code%) AND "
