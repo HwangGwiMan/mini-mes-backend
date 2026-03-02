@@ -33,11 +33,16 @@ public class DataInitializer implements ApplicationRunner {
 		createUserIfAbsent("admin",  "admin1234",  Role.ROLE_ADMIN);
 		createUserIfAbsent("user01", "user1234",   Role.ROLE_USER);
 
-		createCodeGroupIfAbsent("TRADE_TYPE", "거래구분", 1);
-
+		createCodeGroupIfAbsent("TRADE_TYPE",   "거래구분", 1);
 		createCommonCodeIfAbsent("TRADE_TYPE", "TRADE_TYPE_01", "매입처",      1);
 		createCommonCodeIfAbsent("TRADE_TYPE", "TRADE_TYPE_02", "매출처",      2);
 		createCommonCodeIfAbsent("TRADE_TYPE", "TRADE_TYPE_03", "매입/매출처", 3);
+
+		createCodeGroupIfAbsent("PROCESS_TYPE", "공정유형", 2);
+		createCommonCodeIfAbsent("PROCESS_TYPE", "PROCESS_TYPE_01", "가공", 1);
+		createCommonCodeIfAbsent("PROCESS_TYPE", "PROCESS_TYPE_02", "조립", 2);
+		createCommonCodeIfAbsent("PROCESS_TYPE", "PROCESS_TYPE_03", "검사", 3);
+		createCommonCodeIfAbsent("PROCESS_TYPE", "PROCESS_TYPE_04", "포장", 4);
 	}
 
 	private void createUserIfAbsent(String username, String rawPassword, Role role) {
