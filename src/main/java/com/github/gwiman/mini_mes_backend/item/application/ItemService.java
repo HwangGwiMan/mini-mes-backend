@@ -38,7 +38,16 @@ public class ItemService {
 
 	@Transactional
 	public ItemResponse create(ItemRequest request) {
-		Item entity = new Item(request.getCode(), request.getName());
+		Item entity = new Item(
+			request.getCode(),
+			request.getName(),
+			request.getItemTypeCode(),
+			request.getUnit(),
+			request.getSpec(),
+			request.getDescription(),
+			request.isUseYn(),
+			request.getSortOrder()
+		);
 		return ItemResponse.from(itemRepository.save(entity));
 	}
 
@@ -46,7 +55,16 @@ public class ItemService {
 	public ItemResponse update(Long id, ItemRequest request) {
 		Item entity = itemRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("품목을 찾을 수 없습니다: " + id));
-		entity.update(request.getCode(), request.getName());
+		entity.update(
+			request.getCode(),
+			request.getName(),
+			request.getItemTypeCode(),
+			request.getUnit(),
+			request.getSpec(),
+			request.getDescription(),
+			request.isUseYn(),
+			request.getSortOrder()
+		);
 		return ItemResponse.from(entity);
 	}
 

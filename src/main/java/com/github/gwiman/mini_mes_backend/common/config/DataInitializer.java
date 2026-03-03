@@ -55,6 +55,21 @@ public class DataInitializer implements ApplicationRunner {
 		createCommonCodeIfAbsent("POSITION", "POSITION_02", "대리", 2);
 		createCommonCodeIfAbsent("POSITION", "POSITION_03", "과장", 3);
 		createCommonCodeIfAbsent("POSITION", "POSITION_04", "부장", 4);
+
+		createCodeGroupIfAbsent("ITEM_TYPE", "품목유형", 5);
+		createCommonCodeIfAbsent("ITEM_TYPE", "ITEM_TYPE_01", "원자재", 1);
+		createCommonCodeIfAbsent("ITEM_TYPE", "ITEM_TYPE_02", "반제품", 2);
+		createCommonCodeIfAbsent("ITEM_TYPE", "ITEM_TYPE_03", "완제품", 3);
+		createCommonCodeIfAbsent("ITEM_TYPE", "ITEM_TYPE_04", "부자재", 4);
+		createCommonCodeIfAbsent("ITEM_TYPE", "ITEM_TYPE_05", "상품", 5);
+
+		createCodeGroupIfAbsent("UNIT", "단위", 6);
+		createCommonCodeIfAbsent("UNIT", "UNIT_01", "EA", 1);
+		createCommonCodeIfAbsent("UNIT", "UNIT_02", "KG", 2);
+		createCommonCodeIfAbsent("UNIT", "UNIT_03", "M", 3);
+		createCommonCodeIfAbsent("UNIT", "UNIT_04", "L", 4);
+		createCommonCodeIfAbsent("UNIT", "UNIT_05", "BOX", 5);
+		createCommonCodeIfAbsent("UNIT", "UNIT_06", "PCS", 6);
 	}
 
 	private void createUserIfAbsent(String username, String rawPassword, Role role) {
