@@ -39,10 +39,22 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private Role role;
 
+	@Column(name = "employee_id", unique = true)
+	private Long employeeId;
+
 	public User(String username, String password, Role role) {
+		this(username, password, role, null);
+	}
+
+	public User(String username, String password, Role role, Long employeeId) {
 		this.username = username;
 		this.password = password;
 		this.role = role;
+		this.employeeId = employeeId;
+	}
+
+	public void updateUsername(String username) {
+		this.username = username;
 	}
 
 	@Override

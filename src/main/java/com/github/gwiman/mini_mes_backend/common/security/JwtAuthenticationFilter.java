@@ -10,6 +10,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import io.jsonwebtoken.ExpiredJwtException;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +43,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		try {
 			username = jwtTokenProvider.extractUsername(token);
+		} catch (ExpiredJwtException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.setContentType("application/json;charset=UTF-8");
+			response.getWriter().write("{\"message\": \"토큰이 만료되었습니다.\"}");
+			return;
 		} catch (Exception e) {
 			filterChain.doFilter(request, response);
 			return;
