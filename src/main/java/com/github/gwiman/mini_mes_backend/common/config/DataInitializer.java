@@ -70,6 +70,13 @@ public class DataInitializer implements ApplicationRunner {
 		createCommonCodeIfAbsent("UNIT", "UNIT_04", "L", 4);
 		createCommonCodeIfAbsent("UNIT", "UNIT_05", "BOX", 5);
 		createCommonCodeIfAbsent("UNIT", "UNIT_06", "PCS", 6);
+
+		createCodeGroupIfAbsent("QUOTE_STATUS", "견적상태", 7);
+		createCommonCodeIfAbsent("QUOTE_STATUS", "QUOTE_STATUS_01", "작성중", 1);
+		createCommonCodeIfAbsent("QUOTE_STATUS", "QUOTE_STATUS_02", "제출", 2);
+		createCommonCodeIfAbsent("QUOTE_STATUS", "QUOTE_STATUS_03", "승인", 3);
+		createCommonCodeIfAbsent("QUOTE_STATUS", "QUOTE_STATUS_04", "거절", 4);
+		createCommonCodeIfAbsent("QUOTE_STATUS", "QUOTE_STATUS_05", "수주전환", 5);
 	}
 
 	private void createUserIfAbsent(String username, String rawPassword, Role role) {
