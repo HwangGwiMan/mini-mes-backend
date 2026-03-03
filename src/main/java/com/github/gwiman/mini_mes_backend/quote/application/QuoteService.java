@@ -21,6 +21,7 @@ import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteResponse;
 import com.github.gwiman.mini_mes_backend.quote.domain.Quote;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteLine;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteRepository;
+import com.github.gwiman.mini_mes_backend.quote.infrastructure.QuoteQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +35,7 @@ public class QuoteService {
 	private static final Pattern SEQUENCE_PATTERN = Pattern.compile(".*_(\\d+)$");
 
 	private final QuoteRepository quoteRepository;
+	private final QuoteQueryRepository quoteQueryRepository;
 	private final PartnerRepository partnerRepository;
 	private final EmployeeRepository employeeRepository;
 	private final ItemRepository itemRepository;
@@ -41,17 +43,14 @@ public class QuoteService {
 	public List<QuoteResponse> findAll(String quoteNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
 		String quoteNumberPattern = buildLikePattern(quoteNumber);
-		return quoteRepository.search(
+		return quoteQueryRepository.search(
 			quoteNumberPattern, partnerId, statusCode, fromDate, toDate
-		).stream()
-			.map(QuoteResponse::from)
-			.toList();
+		);
 	}
 
 	public QuoteResponse findById(Long id) {
-		Quote entity = quoteRepository.findByIdWithLines(id)
+		return quoteQueryRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + id));
-		return QuoteResponse.from(entity);
 	}
 
 	@Transactional
@@ -97,7 +96,7 @@ public class QuoteService {
 		}
 
 		Quote saved = quoteRepository.save(quote);
-		return QuoteResponse.from(quoteRepository.findByIdWithLines(saved.getId()).orElseThrow());
+		return quoteQueryRepository.findByIdWithLines(saved.getId()).orElseThrow();
 	}
 
 	@Transactional
@@ -143,7 +142,7 @@ public class QuoteService {
 			quote.addLine(line);
 		}
 
-		return QuoteResponse.from(quoteRepository.findByIdWithLines(id).orElseThrow());
+		return quoteQueryRepository.findByIdWithLines(id).orElseThrow();
 	}
 
 	@Transactional
@@ -157,7 +156,7 @@ public class QuoteService {
 	private String generateQuoteNumber() {
 		String prefix = QUOTE_NUMBER_PREFIX + LocalDate.now().format(MONTH_FORMAT) + "_";
 		String prefixPattern = prefix + "%";
-		int maxSeq = quoteRepository.findMaxQuoteNumberByPrefix(prefixPattern)
+		int maxSeq = quoteQueryRepository.findMaxQuoteNumberByPrefix(prefixPattern)
 			.stream()
 			.mapToInt(s -> {
 				var m = SEQUENCE_PATTERN.matcher(s);

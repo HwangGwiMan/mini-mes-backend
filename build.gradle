@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.boot' version '4.0.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 	id 'org.asciidoctor.jvm.convert' version '4.0.5'
+	id 'org.jooq.jooq-codegen-gradle' version '3.19.22'
 }
 
 group = 'com.github.gwiman'
@@ -31,6 +32,7 @@ ext {
 }
 
 dependencies {
+	jooqCodegen 'org.postgresql:postgresql'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
@@ -72,4 +74,35 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+jooq {
+	configuration {
+		jdbc {
+			driver = 'org.postgresql.Driver'
+			url = 'jdbc:postgresql://localhost:5432/mini_mes'
+			user = 'postgres'
+			password = 'postgres'
+		}
+		generator {
+			name = 'org.jooq.codegen.JavaGenerator'
+			database {
+				name = 'org.jooq.meta.postgres.PostgresDatabase'
+				inputSchema = 'public'
+			}
+			target {
+				packageName = 'com.github.gwiman.mini_mes_backend.jooq'
+				directory = "${projectDir}/src/main/generated-jooq"
+			}
+		}
+	}
+}
+
+sourceSets.main.java.srcDirs += file("${projectDir}/src/main/generated-jooq")
+
+// Docker 빌드 시 DB가 없으므로 jooqCodegen 스킵 (-PskipJooqCodegen). 이때는 src/main/generated-jooq 커밋본 사용
+if (!project.hasProperty('skipJooqCodegen')) {
+	tasks.named('compileJava') {
+		dependsOn(tasks.named('jooqCodegen'))
+	}
 }

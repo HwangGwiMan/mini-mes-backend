@@ -14,7 +14,7 @@ RUN ./gradlew dependencies --no-daemon || true
 
 # 소스 복사 후 빌드
 COPY src src
-RUN ./gradlew bootJar --no-daemon
+RUN ./gradlew bootJar --no-daemon -PskipJooqCodegen
 
 # 실행 단계
 FROM eclipse-temurin:17-jre-alpine

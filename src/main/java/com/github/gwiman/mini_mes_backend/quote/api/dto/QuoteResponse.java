@@ -3,6 +3,10 @@ package com.github.gwiman.mini_mes_backend.quote.api.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.jooq.Record;
+
+import com.github.gwiman.mini_mes_backend.jooq.tables.Employee;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.quote.domain.Quote;
 
 import lombok.Getter;
@@ -71,6 +75,31 @@ public class QuoteResponse {
 			entity.getStatusCode(),
 			entity.getRemarks(),
 			lineResponses
+		);
+	}
+
+	/**
+	 * jOOQ Record를 QuoteResponse로 매핑 (Quote + Partner + Employee 조인 결과용).
+	 */
+	public static QuoteResponse fromRecord(Record r, List<QuoteLineResponse> lines) {
+		com.github.gwiman.mini_mes_backend.jooq.tables.Quote q = com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QUOTE;
+		Partner p = Partner.PARTNER;
+		Employee e = Employee.EMPLOYEE;
+		return new QuoteResponse(
+			r.get(q.ID),
+			r.get(q.QUOTE_NUMBER),
+			r.get(q.QUOTE_NUMBER),
+			r.get(q.QUOTE_DATE),
+			r.get(q.VALID_UNTIL),
+			r.get(q.PARTNER_ID),
+			r.get(p.CODE),
+			r.get(p.NAME),
+			r.get(q.EMPLOYEE_ID),
+			r.get(e.CODE),
+			r.get(e.NAME),
+			r.get(q.STATUS_CODE),
+			r.get(q.REMARKS),
+			lines != null ? lines : List.of()
 		);
 	}
 }
