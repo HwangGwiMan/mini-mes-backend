@@ -9,6 +9,7 @@ import com.github.gwiman.mini_mes_backend.commoncode.api.dto.CommonCodeRequest;
 import com.github.gwiman.mini_mes_backend.commoncode.api.dto.CommonCodeResponse;
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CommonCode;
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CommonCodeRepository;
+import com.github.gwiman.mini_mes_backend.commoncode.infrastructure.CommonCodeQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 public class CommonCodeService {
 
 	private final CommonCodeRepository commonCodeRepository;
+	private final CommonCodeQueryRepository commonCodeQueryRepository;
 
 	public CommonCodeResponse findById(Long id) {
-		CommonCode entity = commonCodeRepository.findById(id)
+		return commonCodeQueryRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id));
-		return CommonCodeResponse.from(entity);
 	}
 
 	public List<CommonCodeResponse> findAll(String codeGroup, String code, String name) {

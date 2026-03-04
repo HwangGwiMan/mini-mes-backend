@@ -9,6 +9,7 @@ import com.github.gwiman.mini_mes_backend.partner.api.dto.PartnerRequest;
 import com.github.gwiman.mini_mes_backend.partner.api.dto.PartnerResponse;
 import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
 import com.github.gwiman.mini_mes_backend.partner.domain.PartnerRepository;
+import com.github.gwiman.mini_mes_backend.partner.infrastructure.PartnerQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class PartnerService {
 
 	private final PartnerRepository partnerRepository;
+	private final PartnerQueryRepository partnerQueryRepository;
 
 	public List<PartnerResponse> findAll(String code, String name) {
 		return partnerRepository.search(escapeLike(code), escapeLike(name)).stream()
@@ -26,9 +28,8 @@ public class PartnerService {
 	}
 
 	public PartnerResponse findById(Long id) {
-		Partner entity = partnerRepository.findById(id)
+		return partnerQueryRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id));
-		return PartnerResponse.from(entity);
 	}
 
 	@Transactional

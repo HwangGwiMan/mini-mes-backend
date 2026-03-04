@@ -9,6 +9,7 @@ import com.github.gwiman.mini_mes_backend.item.api.dto.ItemRequest;
 import com.github.gwiman.mini_mes_backend.item.api.dto.ItemResponse;
 import com.github.gwiman.mini_mes_backend.item.domain.Item;
 import com.github.gwiman.mini_mes_backend.item.domain.ItemRepository;
+import com.github.gwiman.mini_mes_backend.item.infrastructure.ItemQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class ItemService {
 
 	private final ItemRepository itemRepository;
+	private final ItemQueryRepository itemQueryRepository;
 
 	public List<ItemResponse> findAll(String code, String name) {
 		return itemRepository.search(escapeLike(code), escapeLike(name)).stream()
@@ -31,9 +33,8 @@ public class ItemService {
 	}
 
 	public ItemResponse findById(Long id) {
-		Item entity = itemRepository.findById(id)
+		return itemQueryRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("품목을 찾을 수 없습니다: " + id));
-		return ItemResponse.from(entity);
 	}
 
 	@Transactional

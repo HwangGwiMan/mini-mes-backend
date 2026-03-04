@@ -13,6 +13,7 @@ import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeRequest;
 import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeResponse;
 import com.github.gwiman.mini_mes_backend.employee.domain.Employee;
 import com.github.gwiman.mini_mes_backend.employee.domain.EmployeeRepository;
+import com.github.gwiman.mini_mes_backend.employee.infrastructure.EmployeeQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,7 @@ public class EmployeeService {
 	private static final String DEFAULT_PASSWORD = "pw1234";
 
 	private final EmployeeRepository employeeRepository;
+	private final EmployeeQueryRepository employeeQueryRepository;
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
@@ -35,9 +37,8 @@ public class EmployeeService {
 	}
 
 	public EmployeeResponse findById(Long id) {
-		Employee entity = employeeRepository.findById(id)
+		return employeeQueryRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("사원을 찾을 수 없습니다: " + id));
-		return EmployeeResponse.from(entity);
 	}
 
 	@Transactional

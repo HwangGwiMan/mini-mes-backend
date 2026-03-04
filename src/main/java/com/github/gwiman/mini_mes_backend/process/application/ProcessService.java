@@ -9,6 +9,7 @@ import com.github.gwiman.mini_mes_backend.process.api.dto.ProcessRequest;
 import com.github.gwiman.mini_mes_backend.process.api.dto.ProcessResponse;
 import com.github.gwiman.mini_mes_backend.process.domain.Process;
 import com.github.gwiman.mini_mes_backend.process.domain.ProcessRepository;
+import com.github.gwiman.mini_mes_backend.process.infrastructure.ProcessQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class ProcessService {
 
 	private final ProcessRepository processRepository;
+	private final ProcessQueryRepository processQueryRepository;
 
 	public List<ProcessResponse> findAll(String code, String name) {
 		return processRepository.search(escapeLike(code), escapeLike(name)).stream()
@@ -26,9 +28,8 @@ public class ProcessService {
 	}
 
 	public ProcessResponse findById(Long id) {
-		Process entity = processRepository.findById(id)
+		return processQueryRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("공정을 찾을 수 없습니다: " + id));
-		return ProcessResponse.from(entity);
 	}
 
 	@Transactional

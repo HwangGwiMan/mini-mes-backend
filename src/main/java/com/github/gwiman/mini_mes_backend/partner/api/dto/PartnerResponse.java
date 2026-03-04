@@ -1,5 +1,7 @@
 package com.github.gwiman.mini_mes_backend.partner.api.dto;
 
+import org.jooq.Record;
+
 import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
 
 import lombok.Getter;
@@ -44,6 +46,21 @@ public class PartnerResponse {
 			entity.getPhone1(),
 			entity.getPhone2(),
 			entity.getTradeTypeCode()
+		);
+	}
+
+	public static PartnerResponse fromRecord(Record r) {
+		com.github.gwiman.mini_mes_backend.jooq.tables.Partner p = com.github.gwiman.mini_mes_backend.jooq.tables.Partner.PARTNER;
+		return new PartnerResponse(
+			r.get(p.ID),
+			r.get(p.CODE),
+			r.get(p.NAME),
+			r.get(p.BUSINESS_NUMBER),
+			r.get(p.CEO_NAME),
+			r.get(p.ADDRESS),
+			r.get(p.PHONE1),
+			r.get(p.PHONE2),
+			r.get(p.TRADE_TYPE_CODE)
 		);
 	}
 }

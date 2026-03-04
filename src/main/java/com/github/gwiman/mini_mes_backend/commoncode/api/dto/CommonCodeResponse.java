@@ -1,5 +1,7 @@
 package com.github.gwiman.mini_mes_backend.commoncode.api.dto;
 
+import org.jooq.Record;
+
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CommonCode;
 
 import lombok.Getter;
@@ -30,6 +32,17 @@ public class CommonCodeResponse {
 			entity.getCode(),
 			entity.getName(),
 			entity.getSortOrder()
+		);
+	}
+
+	public static CommonCodeResponse fromRecord(Record r) {
+		com.github.gwiman.mini_mes_backend.jooq.tables.CommonCode c = com.github.gwiman.mini_mes_backend.jooq.tables.CommonCode.COMMON_CODE;
+		return new CommonCodeResponse(
+			r.get(c.ID),
+			r.get(c.CODE_GROUP),
+			r.get(c.CODE),
+			r.get(c.NAME),
+			r.get(c.SORT_ORDER) != null ? r.get(c.SORT_ORDER) : 0
 		);
 	}
 }
