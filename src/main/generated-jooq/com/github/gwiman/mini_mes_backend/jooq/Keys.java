@@ -13,6 +13,8 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Users;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.CodeGroupRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.CommonCodeRecord;
@@ -23,6 +25,8 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.records.PartnerRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.ProcessRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.QuoteLineRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.QuoteRecord;
+import com.github.gwiman.mini_mes_backend.jooq.tables.records.SalesOrderLineRecord;
+import com.github.gwiman.mini_mes_backend.jooq.tables.records.SalesOrderRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.UsersRecord;
 
 import org.jooq.ForeignKey;
@@ -58,6 +62,9 @@ public class Keys {
     public static final UniqueKey<QuoteRecord> QUOTE_PKEY = Internal.createUniqueKey(Quote.QUOTE, DSL.name("quote_pkey"), new TableField[] { Quote.QUOTE.ID }, true);
     public static final UniqueKey<QuoteRecord> UKC6L8KA84HB9DFDG5PKHT3FA79 = Internal.createUniqueKey(Quote.QUOTE, DSL.name("ukc6l8ka84hb9dfdg5pkht3fa79"), new TableField[] { Quote.QUOTE.QUOTE_NUMBER }, true);
     public static final UniqueKey<QuoteLineRecord> QUOTE_LINE_PKEY = Internal.createUniqueKey(QuoteLine.QUOTE_LINE, DSL.name("quote_line_pkey"), new TableField[] { QuoteLine.QUOTE_LINE.ID }, true);
+    public static final UniqueKey<SalesOrderRecord> SALES_ORDER_PKEY = Internal.createUniqueKey(SalesOrder.SALES_ORDER, DSL.name("sales_order_pkey"), new TableField[] { SalesOrder.SALES_ORDER.ID }, true);
+    public static final UniqueKey<SalesOrderRecord> UKITDRI3LNOQU7YV0W5LYUC5TOS = Internal.createUniqueKey(SalesOrder.SALES_ORDER, DSL.name("ukitdri3lnoqu7yv0w5lyuc5tos"), new TableField[] { SalesOrder.SALES_ORDER.ORDER_NUMBER }, true);
+    public static final UniqueKey<SalesOrderLineRecord> SALES_ORDER_LINE_PKEY = Internal.createUniqueKey(SalesOrderLine.SALES_ORDER_LINE, DSL.name("sales_order_line_pkey"), new TableField[] { SalesOrderLine.SALES_ORDER_LINE.ID }, true);
     public static final UniqueKey<UsersRecord> UKD1S31G1A7ILRA77M65XMKA3EI = Internal.createUniqueKey(Users.USERS, DSL.name("ukd1s31g1a7ilra77m65xmka3ei"), new TableField[] { Users.USERS.EMPLOYEE_ID }, true);
     public static final UniqueKey<UsersRecord> UKR43AF9AP4EDM43MMTQ01ODDJ6 = Internal.createUniqueKey(Users.USERS, DSL.name("ukr43af9ap4edm43mmtq01oddj6"), new TableField[] { Users.USERS.USERNAME }, true);
     public static final UniqueKey<UsersRecord> USERS_PKEY = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), new TableField[] { Users.USERS.ID }, true);
@@ -70,4 +77,9 @@ public class Keys {
     public static final ForeignKey<QuoteRecord, EmployeeRecord> QUOTE__FKODPO7A1F6TCCW81W7G8845R8F = Internal.createForeignKey(Quote.QUOTE, DSL.name("fkodpo7a1f6tccw81w7g8845r8f"), new TableField[] { Quote.QUOTE.EMPLOYEE_ID }, Keys.EMPLOYEE_PKEY, new TableField[] { Employee.EMPLOYEE.ID }, true);
     public static final ForeignKey<QuoteLineRecord, ItemRecord> QUOTE_LINE__FKJ26RAJPBGQ93FD2VDRP775T8A = Internal.createForeignKey(QuoteLine.QUOTE_LINE, DSL.name("fkj26rajpbgq93fd2vdrp775t8a"), new TableField[] { QuoteLine.QUOTE_LINE.ITEM_ID }, Keys.ITEM_PKEY, new TableField[] { Item.ITEM.ID }, true);
     public static final ForeignKey<QuoteLineRecord, QuoteRecord> QUOTE_LINE__FKNBXR28WOT0665O7O2FGY4H0XR = Internal.createForeignKey(QuoteLine.QUOTE_LINE, DSL.name("fknbxr28wot0665o7o2fgy4h0xr"), new TableField[] { QuoteLine.QUOTE_LINE.QUOTE_ID }, Keys.QUOTE_PKEY, new TableField[] { Quote.QUOTE.ID }, true);
+    public static final ForeignKey<SalesOrderRecord, QuoteRecord> SALES_ORDER__FK8P31F0RWK0HB56I1K9XOSL2VY = Internal.createForeignKey(SalesOrder.SALES_ORDER, DSL.name("fk8p31f0rwk0hb56i1k9xosl2vy"), new TableField[] { SalesOrder.SALES_ORDER.QUOTE_ID }, Keys.QUOTE_PKEY, new TableField[] { Quote.QUOTE.ID }, true);
+    public static final ForeignKey<SalesOrderRecord, EmployeeRecord> SALES_ORDER__FKLBFR3ECCAMEAMC9LWELBG7U7L = Internal.createForeignKey(SalesOrder.SALES_ORDER, DSL.name("fklbfr3eccameamc9lwelbg7u7l"), new TableField[] { SalesOrder.SALES_ORDER.EMPLOYEE_ID }, Keys.EMPLOYEE_PKEY, new TableField[] { Employee.EMPLOYEE.ID }, true);
+    public static final ForeignKey<SalesOrderRecord, PartnerRecord> SALES_ORDER__FKP3PUH9SDRFN03H5Q818MM5VH0 = Internal.createForeignKey(SalesOrder.SALES_ORDER, DSL.name("fkp3puh9sdrfn03h5q818mm5vh0"), new TableField[] { SalesOrder.SALES_ORDER.PARTNER_ID }, Keys.PARTNER_PKEY, new TableField[] { Partner.PARTNER.ID }, true);
+    public static final ForeignKey<SalesOrderLineRecord, SalesOrderRecord> SALES_ORDER_LINE__FK3HHRMXPWT1CQLNXMTIWPY9WPG = Internal.createForeignKey(SalesOrderLine.SALES_ORDER_LINE, DSL.name("fk3hhrmxpwt1cqlnxmtiwpy9wpg"), new TableField[] { SalesOrderLine.SALES_ORDER_LINE.SALES_ORDER_ID }, Keys.SALES_ORDER_PKEY, new TableField[] { SalesOrder.SALES_ORDER.ID }, true);
+    public static final ForeignKey<SalesOrderLineRecord, ItemRecord> SALES_ORDER_LINE__FKSX78NRSMY3OC216VK4KTMY1L9 = Internal.createForeignKey(SalesOrderLine.SALES_ORDER_LINE, DSL.name("fksx78nrsmy3oc216vk4ktmy1l9"), new TableField[] { SalesOrderLine.SALES_ORDER_LINE.ITEM_ID }, Keys.ITEM_PKEY, new TableField[] { Item.ITEM.ID }, true);
 }

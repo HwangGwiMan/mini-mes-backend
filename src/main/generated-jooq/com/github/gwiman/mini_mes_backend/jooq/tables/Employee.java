@@ -7,6 +7,7 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QuotePath;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder.SalesOrderPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.EmployeeRecord;
 
 import java.time.LocalDate;
@@ -188,6 +189,19 @@ public class Employee extends TableImpl<EmployeeRecord> {
     @Override
     public List<UniqueKey<EmployeeRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.UKNBYIVU8QGMX0R7WTBPLF01GF8);
+    }
+
+    private transient SalesOrderPath _salesOrder;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.sales_order</code>
+     * table
+     */
+    public SalesOrderPath salesOrder() {
+        if (_salesOrder == null)
+            _salesOrder = new SalesOrderPath(this, null, Keys.SALES_ORDER__FKLBFR3ECCAMEAMC9LWELBG7U7L.getInverseKey());
+
+        return _salesOrder;
     }
 
     private transient QuotePath _quote;

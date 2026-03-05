@@ -7,6 +7,7 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QuotePath;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder.SalesOrderPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.PartnerRecord;
 
 import java.util.Arrays;
@@ -194,6 +195,19 @@ public class Partner extends TableImpl<PartnerRecord> {
             _quote = new QuotePath(this, null, Keys.QUOTE__FK9ALFG10RCMMPSCETID6LB5OOT.getInverseKey());
 
         return _quote;
+    }
+
+    private transient SalesOrderPath _salesOrder;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.sales_order</code>
+     * table
+     */
+    public SalesOrderPath salesOrder() {
+        if (_salesOrder == null)
+            _salesOrder = new SalesOrderPath(this, null, Keys.SALES_ORDER__FKP3PUH9SDRFN03H5Q818MM5VH0.getInverseKey());
+
+        return _salesOrder;
     }
 
     @Override

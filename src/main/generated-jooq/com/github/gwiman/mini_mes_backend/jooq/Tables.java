@@ -13,6 +13,8 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Users;
 
 
@@ -66,6 +68,16 @@ public class Tables {
      * The table <code>public.quote_line</code>.
      */
     public static final QuoteLine QUOTE_LINE = QuoteLine.QUOTE_LINE;
+
+    /**
+     * The table <code>public.sales_order</code>.
+     */
+    public static final SalesOrder SALES_ORDER = SalesOrder.SALES_ORDER;
+
+    /**
+     * The table <code>public.sales_order_line</code>.
+     */
+    public static final SalesOrderLine SALES_ORDER_LINE = SalesOrderLine.SALES_ORDER_LINE;
 
     /**
      * The table <code>public.users</code>.

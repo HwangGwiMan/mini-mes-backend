@@ -7,6 +7,7 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine.QuoteLinePath;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine.SalesOrderLinePath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.ItemRecord;
 
 import java.util.Arrays;
@@ -195,6 +196,19 @@ public class Item extends TableImpl<ItemRecord> {
             _quoteLine = new QuoteLinePath(this, null, Keys.QUOTE_LINE__FKJ26RAJPBGQ93FD2VDRP775T8A.getInverseKey());
 
         return _quoteLine;
+    }
+
+    private transient SalesOrderLinePath _salesOrderLine;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.sales_order_line</code> table
+     */
+    public SalesOrderLinePath salesOrderLine() {
+        if (_salesOrderLine == null)
+            _salesOrderLine = new SalesOrderLinePath(this, null, Keys.SALES_ORDER_LINE__FKSX78NRSMY3OC216VK4KTMY1L9.getInverseKey());
+
+        return _salesOrderLine;
     }
 
     @Override

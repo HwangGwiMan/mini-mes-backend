@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.quote.domain;
+package com.github.gwiman.mini_mes_backend.salesorder.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,24 +21,25 @@ import lombok.NoArgsConstructor;
 
 import com.github.gwiman.mini_mes_backend.employee.domain.Employee;
 import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
+import com.github.gwiman.mini_mes_backend.quote.domain.Quote;
 
 @Entity
-@Table(name = "quote")
+@Table(name = "sales_order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Quote {
+public class SalesOrder {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(unique = true, nullable = false, length = 50)
-	private String quoteNumber;
+	private String orderNumber;
 
 	@Column(nullable = false)
-	private LocalDate quoteDate;
+	private LocalDate orderDate;
 
-	private LocalDate validUntil;
+	private LocalDate deliveryDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "partner_id", nullable = false)
@@ -48,45 +49,46 @@ public class Quote {
 	@JoinColumn(name = "employee_id")
 	private Employee employee;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "quote_id")
+	private Quote quote;
+
 	@Column(length = 20)
 	private String statusCode;
 
 	@Column(length = 200)
 	private String remarks;
 
-	@OneToMany(mappedBy = "quote", cascade = CascadeType.ALL, orphanRemoval = true)
-	private final List<QuoteLine> lines = new ArrayList<>();
+	@OneToMany(mappedBy = "salesOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<SalesOrderLine> lines = new ArrayList<>();
 
-	public Quote(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
+	public SalesOrder(String orderNumber, LocalDate orderDate, LocalDate deliveryDate,
+		Partner partner, Employee employee, Quote quote, String statusCode, String remarks) {
+		this.orderNumber = orderNumber;
+		this.orderDate = orderDate;
+		this.deliveryDate = deliveryDate;
+		this.partner = partner;
+		this.employee = employee;
+		this.quote = quote;
+		this.statusCode = statusCode;
+		this.remarks = remarks;
+	}
+
+	public void update(LocalDate orderDate, LocalDate deliveryDate,
 		Partner partner, Employee employee, String statusCode, String remarks) {
-		this.quoteNumber = quoteNumber;
-		this.quoteDate = quoteDate;
-		this.validUntil = validUntil;
+		this.orderDate = orderDate;
+		this.deliveryDate = deliveryDate;
 		this.partner = partner;
 		this.employee = employee;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
 	}
 
-	public void update(LocalDate quoteDate, LocalDate validUntil,
-		Partner partner, Employee employee, String statusCode, String remarks) {
-		this.quoteDate = quoteDate;
-		this.validUntil = validUntil;
-		this.partner = partner;
-		this.employee = employee;
-		this.statusCode = statusCode;
-		this.remarks = remarks;
-	}
-
-	public void addLine(QuoteLine line) {
+	public void addLine(SalesOrderLine line) {
 		lines.add(line);
 	}
 
 	public void clearLines() {
 		lines.clear();
-	}
-
-	public void updateStatus(String statusCode) {
-		this.statusCode = statusCode;
 	}
 }

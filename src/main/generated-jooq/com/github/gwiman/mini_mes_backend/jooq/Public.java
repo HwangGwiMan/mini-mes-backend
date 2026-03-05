@@ -13,6 +13,8 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
+import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Users;
 
 import java.util.Arrays;
@@ -82,6 +84,16 @@ public class Public extends SchemaImpl {
     public final QuoteLine QUOTE_LINE = QuoteLine.QUOTE_LINE;
 
     /**
+     * The table <code>public.sales_order</code>.
+     */
+    public final SalesOrder SALES_ORDER = SalesOrder.SALES_ORDER;
+
+    /**
+     * The table <code>public.sales_order_line</code>.
+     */
+    public final SalesOrderLine SALES_ORDER_LINE = SalesOrderLine.SALES_ORDER_LINE;
+
+    /**
      * The table <code>public.users</code>.
      */
     public final Users USERS = Users.USERS;
@@ -111,6 +123,8 @@ public class Public extends SchemaImpl {
             Process.PROCESS,
             Quote.QUOTE,
             QuoteLine.QUOTE_LINE,
+            SalesOrder.SALES_ORDER,
+            SalesOrderLine.SALES_ORDER_LINE,
             Users.USERS
         );
     }
