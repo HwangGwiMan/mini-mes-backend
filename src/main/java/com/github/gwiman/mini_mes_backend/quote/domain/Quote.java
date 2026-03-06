@@ -7,20 +7,14 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.github.gwiman.mini_mes_backend.employee.domain.Employee;
-import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
 
 @Entity
 @Table(name = "quote")
@@ -40,13 +34,11 @@ public class Quote {
 
 	private LocalDate validUntil;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "partner_id", nullable = false)
-	private Partner partner;
+	@Column(name = "partner_id", nullable = false)
+	private Long partnerId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "employee_id")
-	private Employee employee;
+	@Column(name = "employee_id")
+	private Long employeeId;
 
 	@Column(length = 20)
 	private String statusCode;
@@ -58,22 +50,22 @@ public class Quote {
 	private final List<QuoteLine> lines = new ArrayList<>();
 
 	public Quote(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
-		Partner partner, Employee employee, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, String statusCode, String remarks) {
 		this.quoteNumber = quoteNumber;
 		this.quoteDate = quoteDate;
 		this.validUntil = validUntil;
-		this.partner = partner;
-		this.employee = employee;
+		this.partnerId = partnerId;
+		this.employeeId = employeeId;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
 	}
 
 	public void update(LocalDate quoteDate, LocalDate validUntil,
-		Partner partner, Employee employee, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, String statusCode, String remarks) {
 		this.quoteDate = quoteDate;
 		this.validUntil = validUntil;
-		this.partner = partner;
-		this.employee = employee;
+		this.partnerId = partnerId;
+		this.employeeId = employeeId;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
 	}

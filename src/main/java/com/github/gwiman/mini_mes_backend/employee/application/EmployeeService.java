@@ -13,7 +13,7 @@ import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeRequest;
 import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeResponse;
 import com.github.gwiman.mini_mes_backend.employee.domain.Employee;
 import com.github.gwiman.mini_mes_backend.employee.domain.EmployeeRepository;
-import com.github.gwiman.mini_mes_backend.employee.infrastructure.EmployeeQueryRepository;
+import com.github.gwiman.mini_mes_backend.employee.internal.EmployeeQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -103,6 +103,10 @@ public class EmployeeService {
 			request.getSortOrder()
 		);
 		return EmployeeResponse.from(entity);
+	}
+
+	public boolean exists(Long id) {
+		return employeeRepository.existsById(id);
 	}
 
 	@Transactional

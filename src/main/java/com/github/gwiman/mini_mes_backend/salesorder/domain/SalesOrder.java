@@ -7,21 +7,14 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.github.gwiman.mini_mes_backend.employee.domain.Employee;
-import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
-import com.github.gwiman.mini_mes_backend.quote.domain.Quote;
 
 @Entity
 @Table(name = "sales_order")
@@ -41,17 +34,14 @@ public class SalesOrder {
 
 	private LocalDate deliveryDate;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "partner_id", nullable = false)
-	private Partner partner;
+	@Column(name = "partner_id", nullable = false)
+	private Long partnerId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "employee_id")
-	private Employee employee;
+	@Column(name = "employee_id")
+	private Long employeeId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "quote_id")
-	private Quote quote;
+	@Column(name = "quote_id")
+	private Long quoteId;
 
 	@Column(length = 20)
 	private String statusCode;
@@ -63,23 +53,23 @@ public class SalesOrder {
 	private final List<SalesOrderLine> lines = new ArrayList<>();
 
 	public SalesOrder(String orderNumber, LocalDate orderDate, LocalDate deliveryDate,
-		Partner partner, Employee employee, Quote quote, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, Long quoteId, String statusCode, String remarks) {
 		this.orderNumber = orderNumber;
 		this.orderDate = orderDate;
 		this.deliveryDate = deliveryDate;
-		this.partner = partner;
-		this.employee = employee;
-		this.quote = quote;
+		this.partnerId = partnerId;
+		this.employeeId = employeeId;
+		this.quoteId = quoteId;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
 	}
 
 	public void update(LocalDate orderDate, LocalDate deliveryDate,
-		Partner partner, Employee employee, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, String statusCode, String remarks) {
 		this.orderDate = orderDate;
 		this.deliveryDate = deliveryDate;
-		this.partner = partner;
-		this.employee = employee;
+		this.partnerId = partnerId;
+		this.employeeId = employeeId;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
 	}

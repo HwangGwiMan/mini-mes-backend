@@ -9,7 +9,7 @@ import com.github.gwiman.mini_mes_backend.item.api.dto.ItemRequest;
 import com.github.gwiman.mini_mes_backend.item.api.dto.ItemResponse;
 import com.github.gwiman.mini_mes_backend.item.domain.Item;
 import com.github.gwiman.mini_mes_backend.item.domain.ItemRepository;
-import com.github.gwiman.mini_mes_backend.item.infrastructure.ItemQueryRepository;
+import com.github.gwiman.mini_mes_backend.item.internal.ItemQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,6 +67,10 @@ public class ItemService {
 			request.getSortOrder()
 		);
 		return ItemResponse.from(entity);
+	}
+
+	public boolean exists(Long id) {
+		return itemRepository.existsById(id);
 	}
 
 	@Transactional

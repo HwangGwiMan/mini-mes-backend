@@ -9,7 +9,7 @@ import com.github.gwiman.mini_mes_backend.process.api.dto.ProcessRequest;
 import com.github.gwiman.mini_mes_backend.process.api.dto.ProcessResponse;
 import com.github.gwiman.mini_mes_backend.process.domain.Process;
 import com.github.gwiman.mini_mes_backend.process.domain.ProcessRepository;
-import com.github.gwiman.mini_mes_backend.process.infrastructure.ProcessQueryRepository;
+import com.github.gwiman.mini_mes_backend.process.internal.ProcessQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 

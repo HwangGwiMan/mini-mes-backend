@@ -40,6 +40,18 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
+	@Transactional
+	public void initDefaultUsers() {
+		createUserIfAbsent("admin",  "admin1234",  Role.ROLE_ADMIN);
+		createUserIfAbsent("user01", "user1234",   Role.ROLE_USER);
+	}
+
+	private void createUserIfAbsent(String username, String rawPassword, Role role) {
+		if (!userRepository.existsByUsername(username)) {
+			userRepository.save(new User(username, passwordEncoder.encode(rawPassword), role));
+		}
+	}
+
 	public LoginResponse login(LoginRequest request) {
 		try {
 			authenticationManager.authenticate(

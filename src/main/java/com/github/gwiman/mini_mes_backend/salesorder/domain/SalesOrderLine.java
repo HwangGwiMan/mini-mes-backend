@@ -16,8 +16,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.github.gwiman.mini_mes_backend.item.domain.Item;
-
 @Entity
 @Table(name = "sales_order_line")
 @Getter
@@ -32,9 +30,8 @@ public class SalesOrderLine {
 	@JoinColumn(name = "sales_order_id", nullable = false)
 	private SalesOrder salesOrder;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "item_id", nullable = false)
-	private Item item;
+	@Column(name = "item_id", nullable = false)
+	private Long itemId;
 
 	@Column(nullable = false, precision = 19, scale = 4)
 	private BigDecimal quantity;
@@ -52,11 +49,11 @@ public class SalesOrderLine {
 
 	private int sortOrder;
 
-	public SalesOrderLine(SalesOrder salesOrder, Item item, BigDecimal quantity,
+	public SalesOrderLine(SalesOrder salesOrder, Long itemId, BigDecimal quantity,
 		BigDecimal unitPrice, BigDecimal amount, LocalDate deliveryRequestDate,
 		String remarks, int sortOrder) {
 		this.salesOrder = salesOrder;
-		this.item = item;
+		this.itemId = itemId;
 		this.quantity = quantity;
 		this.unitPrice = unitPrice;
 		this.amount = amount;
@@ -65,9 +62,9 @@ public class SalesOrderLine {
 		this.sortOrder = sortOrder;
 	}
 
-	public void update(Item item, BigDecimal quantity, BigDecimal unitPrice,
+	public void update(Long itemId, BigDecimal quantity, BigDecimal unitPrice,
 		BigDecimal amount, LocalDate deliveryRequestDate, String remarks, int sortOrder) {
-		this.item = item;
+		this.itemId = itemId;
 		this.quantity = quantity;
 		this.unitPrice = unitPrice;
 		this.amount = amount;

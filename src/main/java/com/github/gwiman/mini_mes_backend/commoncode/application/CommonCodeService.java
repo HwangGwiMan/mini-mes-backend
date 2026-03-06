@@ -9,7 +9,7 @@ import com.github.gwiman.mini_mes_backend.commoncode.api.dto.CommonCodeRequest;
 import com.github.gwiman.mini_mes_backend.commoncode.api.dto.CommonCodeResponse;
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CommonCode;
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CommonCodeRepository;
-import com.github.gwiman.mini_mes_backend.commoncode.infrastructure.CommonCodeQueryRepository;
+import com.github.gwiman.mini_mes_backend.commoncode.internal.CommonCodeQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 

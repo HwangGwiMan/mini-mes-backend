@@ -44,9 +44,9 @@ public class QuoteLineResponse {
 	public static QuoteLineResponse from(QuoteLine entity) {
 		return new QuoteLineResponse(
 			entity.getId(),
-			entity.getItem().getId(),
-			entity.getItem().getCode(),
-			entity.getItem().getName(),
+			entity.getItemId(),
+			null,
+			null,
 			entity.getQuantity(),
 			entity.getUnitPrice(),
 			entity.getAmount(),

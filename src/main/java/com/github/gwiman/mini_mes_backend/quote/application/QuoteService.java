@@ -9,19 +9,16 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.gwiman.mini_mes_backend.employee.domain.Employee;
-import com.github.gwiman.mini_mes_backend.employee.domain.EmployeeRepository;
-import com.github.gwiman.mini_mes_backend.item.domain.Item;
-import com.github.gwiman.mini_mes_backend.item.domain.ItemRepository;
-import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
-import com.github.gwiman.mini_mes_backend.partner.domain.PartnerRepository;
+import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
+import com.github.gwiman.mini_mes_backend.item.application.ItemService;
+import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteLineRequest;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteRequest;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteResponse;
 import com.github.gwiman.mini_mes_backend.quote.domain.Quote;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteLine;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteRepository;
-import com.github.gwiman.mini_mes_backend.quote.infrastructure.QuoteQueryRepository;
+import com.github.gwiman.mini_mes_backend.quote.internal.QuoteQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,9 +33,9 @@ public class QuoteService {
 
 	private final QuoteRepository quoteRepository;
 	private final QuoteQueryRepository quoteQueryRepository;
-	private final PartnerRepository partnerRepository;
-	private final EmployeeRepository employeeRepository;
-	private final ItemRepository itemRepository;
+	private final PartnerService partnerService;
+	private final EmployeeService employeeService;
+	private final ItemService itemService;
 
 	public List<QuoteResponse> findAll(String quoteNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
@@ -53,38 +50,52 @@ public class QuoteService {
 			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + id));
 	}
 
+	public List<QuoteLineData> getLines(Long quoteId) {
+		return quoteRepository.findByIdWithLines(quoteId)
+			.map(quote -> quote.getLines().stream()
+				.map(line -> new QuoteLineData(
+					line.getItemId(),
+					line.getQuantity(),
+					line.getUnitPrice(),
+					line.getDeliveryRequestDate(),
+					line.getRemarks(),
+					line.getSortOrder()
+				))
+				.toList())
+			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+	}
+
 	@Transactional
 	public QuoteResponse create(QuoteRequest request) {
 		String quoteNumber = generateQuoteNumber();
 
-		Partner partner = partnerRepository.findById(request.getPartnerId())
-			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + request.getPartnerId()));
-
-		Employee employee = null;
-		if (request.getEmployeeId() != null) {
-			employee = employeeRepository.findById(request.getEmployeeId())
-				.orElseThrow(() -> new IllegalArgumentException("담당자를 찾을 수 없습니다: " + request.getEmployeeId()));
+		if (!partnerService.exists(request.getPartnerId())) {
+			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
+		}
+		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
+			throw new IllegalArgumentException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
 		}
 
 		Quote quote = new Quote(
 			quoteNumber,
 			request.getQuoteDate(),
 			request.getValidUntil(),
-			partner,
-			employee,
+			request.getPartnerId(),
+			request.getEmployeeId(),
 			request.getStatusCode() != null ? request.getStatusCode() : "",
 			request.getRemarks() != null ? request.getRemarks() : ""
 		);
 
 		int sortOrder = 0;
 		for (QuoteLineRequest lineReq : request.getLines()) {
-			Item item = itemRepository.findById(lineReq.getItemId())
-				.orElseThrow(() -> new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId()));
+			if (!itemService.exists(lineReq.getItemId())) {
+				throw new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
+			}
 
 			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
 			QuoteLine line = new QuoteLine(
 				quote,
-				item,
+				lineReq.getItemId(),
 				lineReq.getQuantity(),
 				lineReq.getUnitPrice(),
 				amount,
@@ -104,20 +115,18 @@ public class QuoteService {
 		Quote quote = quoteRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + id));
 
-		Partner partner = partnerRepository.findById(request.getPartnerId())
-			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + request.getPartnerId()));
-
-		Employee employee = null;
-		if (request.getEmployeeId() != null) {
-			employee = employeeRepository.findById(request.getEmployeeId())
-				.orElseThrow(() -> new IllegalArgumentException("담당자를 찾을 수 없습니다: " + request.getEmployeeId()));
+		if (!partnerService.exists(request.getPartnerId())) {
+			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
+		}
+		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
+			throw new IllegalArgumentException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
 		}
 
 		quote.update(
 			request.getQuoteDate(),
 			request.getValidUntil(),
-			partner,
-			employee,
+			request.getPartnerId(),
+			request.getEmployeeId(),
 			request.getStatusCode() != null ? request.getStatusCode() : "",
 			request.getRemarks() != null ? request.getRemarks() : ""
 		);
@@ -125,13 +134,14 @@ public class QuoteService {
 		quote.clearLines();
 		int sortOrder = 0;
 		for (QuoteLineRequest lineReq : request.getLines()) {
-			Item item = itemRepository.findById(lineReq.getItemId())
-				.orElseThrow(() -> new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId()));
+			if (!itemService.exists(lineReq.getItemId())) {
+				throw new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
+			}
 
 			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
 			QuoteLine line = new QuoteLine(
 				quote,
-				item,
+				lineReq.getItemId(),
 				lineReq.getQuantity(),
 				lineReq.getUnitPrice(),
 				amount,

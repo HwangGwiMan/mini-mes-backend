@@ -41,7 +41,7 @@ Each domain lives under `com.github.gwiman.mini_mes_backend.{domain}` and is spl
 | `api` | Controllers + DTOs | HTTP entry point, request/response mapping |
 | `application` | Services | Transactions, use-case orchestration |
 | `domain` | Entities + Repositories | JPA entities and Spring Data repositories |
-| `infrastructure` | QueryRepositories | Complex read queries using jOOQ |
+| `internal` | QueryRepositories | Complex read queries using jOOQ (module-private) |
 
 ### Domains
 
@@ -57,7 +57,8 @@ Each domain lives under `com.github.gwiman.mini_mes_backend.{domain}` and is spl
 
 - **Write path**: JPA (`Repository.save()`) — entities use protected no-arg constructors (Lombok `@NoArgsConstructor(access = PROTECTED)`) and explicit public constructors / update methods.
 - **Read path**: jOOQ (`*QueryRepository`) — complex joins and filters use `DSLContext`. jOOQ-generated classes live in `src/main/generated-jooq` under package `com.github.gwiman.mini_mes_backend.jooq`.
-- **Cross-domain access**: Services may reference other domains' `Repository` interfaces directly (e.g., `SalesOrderService` loads `PartnerRepository`, `QuoteRepository`). Keep direct domain-to-domain calls at the `application` layer only.
+- **Cross-domain access**: Services call other domains' public `Service` APIs only (e.g., `partnerService.exists()`, `quoteService.getLines()`). Direct cross-domain `Repository` injection is prohibited. Domain entities store foreign keys as `Long` IDs, not `@ManyToOne` references.
+- **Module events**: Cross-domain state changes use Spring Modulith `@ApplicationModuleListener` (e.g., `QuoteConvertedToOrderEvent`).
 - **Document numbering**: Auto-generated in service (e.g., `SO_YYYYMM_001`) using jOOQ max-query on the number column.
 - **Status codes**: Stored as `String` columns referencing `commoncode` values (e.g., `QUOTE_STATUS_05`).
 

@@ -10,11 +10,6 @@ public interface QuoteRepository extends JpaRepository<Quote, Long> {
 
 	Optional<Quote> findByQuoteNumber(String quoteNumber);
 
-	@Query("SELECT DISTINCT q FROM Quote q " +
-		"LEFT JOIN FETCH q.partner " +
-		"LEFT JOIN FETCH q.employee " +
-		"LEFT JOIN FETCH q.lines l " +
-		"LEFT JOIN FETCH l.item " +
-		"WHERE q.id = :id")
+	@Query("SELECT DISTINCT q FROM Quote q LEFT JOIN FETCH q.lines WHERE q.id = :id")
 	Optional<Quote> findByIdWithLines(@Param("id") Long id);
 }

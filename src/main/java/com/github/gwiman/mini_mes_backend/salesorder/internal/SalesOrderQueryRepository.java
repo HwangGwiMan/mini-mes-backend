@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.salesorder.infrastructure;
+package com.github.gwiman.mini_mes_backend.salesorder.internal;
 
 import java.time.LocalDate;
 import java.util.Collections;

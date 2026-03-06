@@ -9,7 +9,7 @@ import com.github.gwiman.mini_mes_backend.partner.api.dto.PartnerRequest;
 import com.github.gwiman.mini_mes_backend.partner.api.dto.PartnerResponse;
 import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
 import com.github.gwiman.mini_mes_backend.partner.domain.PartnerRepository;
-import com.github.gwiman.mini_mes_backend.partner.infrastructure.PartnerQueryRepository;
+import com.github.gwiman.mini_mes_backend.partner.internal.PartnerQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +60,10 @@ public class PartnerService {
 			request.getTradeTypeCode()
 		);
 		return PartnerResponse.from(entity);
+	}
+
+	public boolean exists(Long id) {
+		return partnerRepository.existsById(id);
 	}
 
 	@Transactional

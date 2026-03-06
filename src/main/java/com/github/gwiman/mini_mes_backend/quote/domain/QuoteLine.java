@@ -16,8 +16,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.github.gwiman.mini_mes_backend.item.domain.Item;
-
 @Entity
 @Table(name = "quote_line")
 @Getter
@@ -32,9 +30,8 @@ public class QuoteLine {
 	@JoinColumn(name = "quote_id", nullable = false)
 	private Quote quote;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "item_id", nullable = false)
-	private Item item;
+	@Column(name = "item_id", nullable = false)
+	private Long itemId;
 
 	@Column(nullable = false, precision = 19, scale = 4)
 	private BigDecimal quantity;
@@ -52,10 +49,10 @@ public class QuoteLine {
 
 	private int sortOrder;
 
-	public QuoteLine(Quote quote, Item item, BigDecimal quantity, BigDecimal unitPrice,
+	public QuoteLine(Quote quote, Long itemId, BigDecimal quantity, BigDecimal unitPrice,
 		BigDecimal amount, LocalDate deliveryRequestDate, String remarks, int sortOrder) {
 		this.quote = quote;
-		this.item = item;
+		this.itemId = itemId;
 		this.quantity = quantity;
 		this.unitPrice = unitPrice;
 		this.amount = amount;
@@ -64,9 +61,9 @@ public class QuoteLine {
 		this.sortOrder = sortOrder;
 	}
 
-	public void update(Item item, BigDecimal quantity, BigDecimal unitPrice,
+	public void update(Long itemId, BigDecimal quantity, BigDecimal unitPrice,
 		BigDecimal amount, LocalDate deliveryRequestDate, String remarks, int sortOrder) {
-		this.item = item;
+		this.itemId = itemId;
 		this.quantity = quantity;
 		this.unitPrice = unitPrice;
 		this.amount = amount;

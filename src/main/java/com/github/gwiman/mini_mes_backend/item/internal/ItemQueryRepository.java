@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.item.infrastructure;
+package com.github.gwiman.mini_mes_backend.item.internal;
 
 import java.util.Optional;
 

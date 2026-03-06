@@ -44,9 +44,9 @@ public class SalesOrderLineResponse {
 	public static SalesOrderLineResponse from(com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderLine entity) {
 		return new SalesOrderLineResponse(
 			entity.getId(),
-			entity.getItem().getId(),
-			entity.getItem().getCode(),
-			entity.getItem().getName(),
+			entity.getItemId(),
+			null,
+			null,
 			entity.getQuantity(),
 			entity.getUnitPrice(),
 			entity.getAmount(),

@@ -56,22 +56,18 @@ public class QuoteResponse {
 			.map(QuoteLineResponse::from)
 			.toList();
 
-		Long empId = entity.getEmployee() != null ? entity.getEmployee().getId() : null;
-		String empCode = entity.getEmployee() != null ? entity.getEmployee().getCode() : null;
-		String empName = entity.getEmployee() != null ? entity.getEmployee().getName() : null;
-
 		return new QuoteResponse(
 			entity.getId(),
 			entity.getQuoteNumber(),
 			entity.getQuoteNumber(),
 			entity.getQuoteDate(),
 			entity.getValidUntil(),
-			entity.getPartner().getId(),
-			entity.getPartner().getCode(),
-			entity.getPartner().getName(),
-			empId,
-			empCode,
-			empName,
+			entity.getPartnerId(),
+			null,
+			null,
+			entity.getEmployeeId(),
+			null,
+			null,
 			entity.getStatusCode(),
 			entity.getRemarks(),
 			lineResponses

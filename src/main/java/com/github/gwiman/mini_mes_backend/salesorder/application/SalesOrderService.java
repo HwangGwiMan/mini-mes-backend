@@ -6,24 +6,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.gwiman.mini_mes_backend.employee.domain.Employee;
-import com.github.gwiman.mini_mes_backend.employee.domain.EmployeeRepository;
-import com.github.gwiman.mini_mes_backend.item.domain.Item;
-import com.github.gwiman.mini_mes_backend.item.domain.ItemRepository;
-import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
-import com.github.gwiman.mini_mes_backend.partner.domain.PartnerRepository;
-import com.github.gwiman.mini_mes_backend.quote.domain.Quote;
-import com.github.gwiman.mini_mes_backend.quote.domain.QuoteRepository;
+import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
+import com.github.gwiman.mini_mes_backend.item.application.ItemService;
+import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
+import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteResponse;
+import com.github.gwiman.mini_mes_backend.quote.application.QuoteLineData;
+import com.github.gwiman.mini_mes_backend.quote.application.QuoteService;
 import com.github.gwiman.mini_mes_backend.salesorder.api.dto.SalesOrderLineRequest;
 import com.github.gwiman.mini_mes_backend.salesorder.api.dto.SalesOrderRequest;
 import com.github.gwiman.mini_mes_backend.salesorder.api.dto.SalesOrderResponse;
 import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrder;
 import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderLine;
 import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderRepository;
-import com.github.gwiman.mini_mes_backend.salesorder.infrastructure.SalesOrderQueryRepository;
+import com.github.gwiman.mini_mes_backend.salesorder.internal.SalesOrderQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,14 +34,14 @@ public class SalesOrderService {
 	private static final String ORDER_NUMBER_PREFIX = "SO_";
 	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("yyyyMM");
 	private static final Pattern SEQUENCE_PATTERN = Pattern.compile(".*_(\\d+)$");
-	private static final String QUOTE_STATUS_ORDERED = "QUOTE_STATUS_05";
 
 	private final SalesOrderRepository salesOrderRepository;
 	private final SalesOrderQueryRepository salesOrderQueryRepository;
-	private final PartnerRepository partnerRepository;
-	private final EmployeeRepository employeeRepository;
-	private final ItemRepository itemRepository;
-	private final QuoteRepository quoteRepository;
+	private final PartnerService partnerService;
+	private final EmployeeService employeeService;
+	private final ItemService itemService;
+	private final QuoteService quoteService;
+	private final ApplicationEventPublisher eventPublisher;
 
 	public List<SalesOrderResponse> findAll(String orderNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
@@ -58,17 +57,16 @@ public class SalesOrderService {
 	@Transactional
 	public SalesOrderResponse create(SalesOrderRequest request) {
 		String orderNumber = generateOrderNumber();
-		Partner partner = loadPartner(request.getPartnerId());
-		Employee employee = loadEmployee(request.getEmployeeId());
-		Quote quote = loadQuote(request.getQuoteId());
+		validatePartner(request.getPartnerId());
+		validateEmployee(request.getEmployeeId());
 
 		SalesOrder order = new SalesOrder(
 			orderNumber,
 			request.getOrderDate(),
 			request.getDeliveryDate(),
-			partner,
-			employee,
-			quote,
+			request.getPartnerId(),
+			request.getEmployeeId(),
+			request.getQuoteId(),
 			request.getStatusCode() != null ? request.getStatusCode() : "",
 			request.getRemarks() != null ? request.getRemarks() : ""
 		);
@@ -84,14 +82,14 @@ public class SalesOrderService {
 		SalesOrder order = salesOrderRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new IllegalArgumentException("수주를 찾을 수 없습니다: " + id));
 
-		Partner partner = loadPartner(request.getPartnerId());
-		Employee employee = loadEmployee(request.getEmployeeId());
+		validatePartner(request.getPartnerId());
+		validateEmployee(request.getEmployeeId());
 
 		order.update(
 			request.getOrderDate(),
 			request.getDeliveryDate(),
-			partner,
-			employee,
+			request.getPartnerId(),
+			request.getEmployeeId(),
 			request.getStatusCode() != null ? request.getStatusCode() : "",
 			request.getRemarks() != null ? request.getRemarks() : ""
 		);
@@ -112,12 +110,12 @@ public class SalesOrderService {
 
 	@Transactional
 	public SalesOrderResponse convertFromQuote(Long quoteId) {
-		Quote quote = quoteRepository.findByIdWithLines(quoteId)
-			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
-
 		if (salesOrderRepository.existsByQuoteId(quoteId)) {
-			throw new IllegalStateException("이미 수주 전환된 견적입니다: " + quote.getQuoteNumber());
+			throw new IllegalStateException("이미 수주 전환된 견적입니다: " + quoteId);
 		}
+
+		QuoteResponse quoteHeader = quoteService.findById(quoteId);
+		List<QuoteLineData> quoteLines = quoteService.getLines(quoteId);
 
 		String orderNumber = generateOrderNumber();
 
@@ -125,31 +123,31 @@ public class SalesOrderService {
 			orderNumber,
 			LocalDate.now(),
 			null,
-			quote.getPartner(),
-			quote.getEmployee(),
-			quote,
+			quoteHeader.getPartnerId(),
+			quoteHeader.getEmployeeId(),
+			quoteId,
 			"ORDER_STATUS_01",
 			""
 		);
 
 		int sortOrder = 0;
-		for (var quoteLine : quote.getLines()) {
-			BigDecimal amount = quoteLine.getQuantity().multiply(quoteLine.getUnitPrice());
+		for (QuoteLineData quoteLine : quoteLines) {
+			BigDecimal amount = quoteLine.quantity().multiply(quoteLine.unitPrice());
 			SalesOrderLine line = new SalesOrderLine(
 				order,
-				quoteLine.getItem(),
-				quoteLine.getQuantity(),
-				quoteLine.getUnitPrice(),
+				quoteLine.itemId(),
+				quoteLine.quantity(),
+				quoteLine.unitPrice(),
 				amount,
-				quoteLine.getDeliveryRequestDate(),
-				quoteLine.getRemarks() != null ? quoteLine.getRemarks() : "",
+				quoteLine.deliveryRequestDate(),
+				quoteLine.remarks() != null ? quoteLine.remarks() : "",
 				sortOrder++
 			);
 			order.addLine(line);
 		}
 
 		SalesOrder saved = salesOrderRepository.save(order);
-		quote.updateStatus(QUOTE_STATUS_ORDERED);
+		eventPublisher.publishEvent(new QuoteConvertedToOrderEvent(quoteId));
 
 		return salesOrderQueryRepository.findByIdWithLines(saved.getId()).orElseThrow();
 	}
@@ -157,12 +155,13 @@ public class SalesOrderService {
 	private void addLines(SalesOrder order, List<SalesOrderLineRequest> lineRequests) {
 		int sortOrder = 0;
 		for (SalesOrderLineRequest lineReq : lineRequests) {
-			Item item = itemRepository.findById(lineReq.getItemId())
-				.orElseThrow(() -> new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId()));
+			if (!itemService.exists(lineReq.getItemId())) {
+				throw new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
+			}
 			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
 			SalesOrderLine line = new SalesOrderLine(
 				order,
-				item,
+				lineReq.getItemId(),
 				lineReq.getQuantity(),
 				lineReq.getUnitPrice(),
 				amount,
@@ -174,21 +173,16 @@ public class SalesOrderService {
 		}
 	}
 
-	private Partner loadPartner(Long partnerId) {
-		return partnerRepository.findById(partnerId)
-			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + partnerId));
+	private void validatePartner(Long partnerId) {
+		if (!partnerService.exists(partnerId)) {
+			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + partnerId);
+		}
 	}
 
-	private Employee loadEmployee(Long employeeId) {
-		if (employeeId == null) return null;
-		return employeeRepository.findById(employeeId)
-			.orElseThrow(() -> new IllegalArgumentException("담당자를 찾을 수 없습니다: " + employeeId));
-	}
-
-	private Quote loadQuote(Long quoteId) {
-		if (quoteId == null) return null;
-		return quoteRepository.findById(quoteId)
-			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+	private void validateEmployee(Long employeeId) {
+		if (employeeId != null && !employeeService.exists(employeeId)) {
+			throw new IllegalArgumentException("담당자를 찾을 수 없습니다: " + employeeId);
+		}
 	}
 
 	private String generateOrderNumber() {
