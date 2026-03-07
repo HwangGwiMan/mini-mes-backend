@@ -12,6 +12,7 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
+import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteApproval;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
@@ -23,6 +24,7 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.records.EventPublicationRe
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.ItemRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.PartnerRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.ProcessRecord;
+import com.github.gwiman.mini_mes_backend.jooq.tables.records.QuoteApprovalRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.QuoteLineRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.QuoteRecord;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.SalesOrderLineRecord;
@@ -61,6 +63,7 @@ public class Keys {
     public static final UniqueKey<ProcessRecord> UK5HLDOWCQY94Y1GWBPNYTOFX4H = Internal.createUniqueKey(Process.PROCESS, DSL.name("uk5hldowcqy94y1gwbpnytofx4h"), new TableField[] { Process.PROCESS.CODE }, true);
     public static final UniqueKey<QuoteRecord> QUOTE_PKEY = Internal.createUniqueKey(Quote.QUOTE, DSL.name("quote_pkey"), new TableField[] { Quote.QUOTE.ID }, true);
     public static final UniqueKey<QuoteRecord> UKC6L8KA84HB9DFDG5PKHT3FA79 = Internal.createUniqueKey(Quote.QUOTE, DSL.name("ukc6l8ka84hb9dfdg5pkht3fa79"), new TableField[] { Quote.QUOTE.QUOTE_NUMBER }, true);
+    public static final UniqueKey<QuoteApprovalRecord> QUOTE_APPROVAL_PKEY = Internal.createUniqueKey(QuoteApproval.QUOTE_APPROVAL, DSL.name("quote_approval_pkey"), new TableField[] { QuoteApproval.QUOTE_APPROVAL.ID }, true);
     public static final UniqueKey<QuoteLineRecord> QUOTE_LINE_PKEY = Internal.createUniqueKey(QuoteLine.QUOTE_LINE, DSL.name("quote_line_pkey"), new TableField[] { QuoteLine.QUOTE_LINE.ID }, true);
     public static final UniqueKey<SalesOrderRecord> SALES_ORDER_PKEY = Internal.createUniqueKey(SalesOrder.SALES_ORDER, DSL.name("sales_order_pkey"), new TableField[] { SalesOrder.SALES_ORDER.ID }, true);
     public static final UniqueKey<SalesOrderRecord> UKITDRI3LNOQU7YV0W5LYUC5TOS = Internal.createUniqueKey(SalesOrder.SALES_ORDER, DSL.name("ukitdri3lnoqu7yv0w5lyuc5tos"), new TableField[] { SalesOrder.SALES_ORDER.ORDER_NUMBER }, true);

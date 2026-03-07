@@ -7,7 +7,9 @@ import java.util.Optional;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.springframework.stereotype.Component;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.Employee;
@@ -24,6 +26,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuoteQueryRepository {
 
+	private static final Field<Long> APPROVER_ID_FIELD =
+		DSL.field(DSL.name("quote", "approver_id"), SQLDataType.BIGINT);
+
 	private final DSLContext dsl;
 
 	public List<QuoteResponse> search(String quoteNumberPattern, Long partnerId,
@@ -31,6 +36,7 @@ public class QuoteQueryRepository {
 		Quote q = Quote.QUOTE;
 		Partner p = Partner.PARTNER;
 		Employee e = Employee.EMPLOYEE;
+		Employee approver = Employee.EMPLOYEE.as("approver");
 
 		Condition quoteNumberCond = quoteNumberPattern != null
 			? q.QUOTE_NUMBER.like(quoteNumberPattern)
@@ -45,11 +51,15 @@ public class QuoteQueryRepository {
 				q.ID, q.QUOTE_NUMBER, q.QUOTE_DATE, q.VALID_UNTIL, q.STATUS_CODE, q.REMARKS,
 				q.PARTNER_ID, q.EMPLOYEE_ID,
 				p.CODE, p.NAME,
-				e.CODE, e.NAME
+				e.CODE, e.NAME,
+				APPROVER_ID_FIELD.as("approverId"),
+				approver.CODE.as("approverCode"),
+				approver.NAME.as("approverName")
 			)
 			.from(q)
 			.leftJoin(p).on(q.PARTNER_ID.eq(p.ID))
 			.leftJoin(e).on(q.EMPLOYEE_ID.eq(e.ID))
+			.leftJoin(approver).on(APPROVER_ID_FIELD.eq(approver.ID))
 			.where(quoteNumberCond)
 			.and(partnerCond)
 			.and(statusCond)
@@ -64,18 +74,23 @@ public class QuoteQueryRepository {
 		Quote q = Quote.QUOTE;
 		Partner p = Partner.PARTNER;
 		Employee e = Employee.EMPLOYEE;
+		Employee approver = Employee.EMPLOYEE.as("approver");
 
-		// Query 1: Quote + Partner + Employee
+		// Query 1: Quote + Partner + Employee + Approver
 		var quoteRecord = dsl
 			.select(
 				q.ID, q.QUOTE_NUMBER, q.QUOTE_DATE, q.VALID_UNTIL, q.STATUS_CODE, q.REMARKS,
 				q.PARTNER_ID, q.EMPLOYEE_ID,
 				p.CODE, p.NAME,
-				e.CODE, e.NAME
+				e.CODE, e.NAME,
+				APPROVER_ID_FIELD.as("approverId"),
+				approver.CODE.as("approverCode"),
+				approver.NAME.as("approverName")
 			)
 			.from(q)
 			.leftJoin(p).on(q.PARTNER_ID.eq(p.ID))
 			.leftJoin(e).on(q.EMPLOYEE_ID.eq(e.ID))
+			.leftJoin(approver).on(APPROVER_ID_FIELD.eq(approver.ID))
 			.where(q.ID.eq(id))
 			.fetchOne();
 

@@ -101,6 +101,11 @@ public class Quote extends TableImpl<QuoteRecord> {
      */
     public final TableField<QuoteRecord, Long> PARTNER_ID = createField(DSL.name("partner_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
+    /**
+     * The column <code>public.quote.created_by</code>.
+     */
+    public final TableField<QuoteRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(255), this, "");
+
     private Quote(Name alias, Table<QuoteRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

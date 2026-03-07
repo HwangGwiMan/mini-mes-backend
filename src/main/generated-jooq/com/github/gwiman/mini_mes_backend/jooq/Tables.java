@@ -12,6 +12,7 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
+import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteApproval;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
@@ -63,6 +64,11 @@ public class Tables {
      * The table <code>public.quote</code>.
      */
     public static final Quote QUOTE = Quote.QUOTE;
+
+    /**
+     * The table <code>public.quote_approval</code>.
+     */
+    public static final QuoteApproval QUOTE_APPROVAL = QuoteApproval.QUOTE_APPROVAL;
 
     /**
      * The table <code>public.quote_line</code>.

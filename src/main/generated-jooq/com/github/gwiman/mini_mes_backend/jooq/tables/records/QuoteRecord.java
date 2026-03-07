@@ -132,6 +132,20 @@ public class QuoteRecord extends UpdatableRecordImpl<QuoteRecord> {
         return (Long) get(7);
     }
 
+    /**
+     * Setter for <code>public.quote.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(8);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -155,7 +169,7 @@ public class QuoteRecord extends UpdatableRecordImpl<QuoteRecord> {
     /**
      * Create a detached, initialised QuoteRecord
      */
-    public QuoteRecord(Long id, LocalDate quoteDate, String quoteNumber, String remarks, String statusCode, LocalDate validUntil, Long employeeId, Long partnerId) {
+    public QuoteRecord(Long id, LocalDate quoteDate, String quoteNumber, String remarks, String statusCode, LocalDate validUntil, Long employeeId, Long partnerId, String createdBy) {
         super(Quote.QUOTE);
 
         setId(id);
@@ -166,6 +180,7 @@ public class QuoteRecord extends UpdatableRecordImpl<QuoteRecord> {
         setValidUntil(validUntil);
         setEmployeeId(employeeId);
         setPartnerId(partnerId);
+        setCreatedBy(createdBy);
         resetChangedOnNotNull();
     }
 }

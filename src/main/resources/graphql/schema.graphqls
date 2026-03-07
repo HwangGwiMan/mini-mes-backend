@@ -5,4 +5,5 @@ type Query {
 type CurrentUser {
   username: String!
   role: String!
+  employeeId: Int
 }

@@ -52,6 +52,12 @@ public class AuthService {
 		}
 	}
 
+	public Long findEmployeeIdByUsername(String username) {
+		return userRepository.findByUsername(username)
+			.map(User::getEmployeeId)
+			.orElse(null);
+	}
+
 	public LoginResponse login(LoginRequest request) {
 		try {
 			authenticationManager.authenticate(

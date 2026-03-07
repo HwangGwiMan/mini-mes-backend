@@ -26,6 +26,9 @@ public class QuoteRequest {
 
 	private Long employeeId;
 
+	@NotNull(message = "결재자는 필수입니다.")
+	private Long approverId;
+
 	@Size(max = 20, message = "상태 코드는 20자 이하여야 합니다.")
 	private String statusCode;
 

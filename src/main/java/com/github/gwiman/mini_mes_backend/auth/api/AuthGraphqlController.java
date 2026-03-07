@@ -13,6 +13,6 @@ public class AuthGraphqlController {
 	@QueryMapping
 	public CurrentUserDto me() {
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return new CurrentUserDto(user.getUsername(), user.getRole().name());
+		return new CurrentUserDto(user.getUsername(), user.getRole().name(), user.getEmployeeId());
 	}
 }

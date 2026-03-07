@@ -115,6 +115,9 @@ public class SalesOrderService {
 		}
 
 		QuoteResponse quoteHeader = quoteService.findById(quoteId);
+		if (!"QUOTE_STATUS_03".equals(quoteHeader.getStatusCode())) {
+			throw new IllegalStateException("승인된 견적만 수주전환이 가능합니다.");
+		}
 		List<QuoteLineData> quoteLines = quoteService.getLines(quoteId);
 
 		String orderNumber = generateOrderNumber();

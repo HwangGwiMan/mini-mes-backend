@@ -27,6 +27,9 @@ public class QuoteResponse {
 	private Long employeeId;
 	private String employeeCode;
 	private String employeeName;
+	private Long approverId;
+	private String approverCode;
+	private String approverName;
 	private String statusCode;
 	private String remarks;
 	private List<QuoteLineResponse> lines;
@@ -34,6 +37,7 @@ public class QuoteResponse {
 	public QuoteResponse(Long id, String quoteNumber, String name, LocalDate quoteDate, LocalDate validUntil,
 		Long partnerId, String partnerCode, String partnerName,
 		Long employeeId, String employeeCode, String employeeName,
+		Long approverId, String approverCode, String approverName,
 		String statusCode, String remarks, List<QuoteLineResponse> lines) {
 		this.id = id;
 		this.quoteNumber = quoteNumber;
@@ -46,6 +50,9 @@ public class QuoteResponse {
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;
 		this.employeeName = employeeName;
+		this.approverId = approverId;
+		this.approverCode = approverCode;
+		this.approverName = approverName;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
 		this.lines = lines;
@@ -68,6 +75,9 @@ public class QuoteResponse {
 			entity.getEmployeeId(),
 			null,
 			null,
+			entity.getApproverId(),
+			null,
+			null,
 			entity.getStatusCode(),
 			entity.getRemarks(),
 			lineResponses
@@ -75,7 +85,7 @@ public class QuoteResponse {
 	}
 
 	/**
-	 * jOOQ Record를 QuoteResponse로 매핑 (Quote + Partner + Employee 조인 결과용).
+	 * jOOQ Record를 QuoteResponse로 매핑 (Quote + Partner + Employee + Approver 조인 결과용).
 	 */
 	public static QuoteResponse fromRecord(Record r, List<QuoteLineResponse> lines) {
 		com.github.gwiman.mini_mes_backend.jooq.tables.Quote q = com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QUOTE;
@@ -93,6 +103,9 @@ public class QuoteResponse {
 			r.get(q.EMPLOYEE_ID),
 			r.get(e.CODE),
 			r.get(e.NAME),
+			r.get("approverId", Long.class),
+			r.get("approverCode", String.class),
+			r.get("approverName", String.class),
 			r.get(q.STATUS_CODE),
 			r.get(q.REMARKS),
 			lines != null ? lines : List.of()

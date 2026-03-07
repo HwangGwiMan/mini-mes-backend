@@ -40,6 +40,12 @@ public class Quote {
 	@Column(name = "employee_id")
 	private Long employeeId;
 
+	@Column(name = "approver_id", nullable = false)
+	private Long approverId;
+
+	@Column(name = "created_by")
+	private String createdBy;
+
 	@Column(length = 20)
 	private String statusCode;
 
@@ -50,23 +56,29 @@ public class Quote {
 	private final List<QuoteLine> lines = new ArrayList<>();
 
 	public Quote(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
-		Long partnerId, Long employeeId, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, Long approverId, String statusCode, String remarks,
+		String createdBy) {
 		this.quoteNumber = quoteNumber;
 		this.quoteDate = quoteDate;
 		this.validUntil = validUntil;
 		this.partnerId = partnerId;
 		this.employeeId = employeeId;
+		this.approverId = approverId;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
+		this.createdBy = createdBy;
 	}
 
 	public void update(LocalDate quoteDate, LocalDate validUntil,
-		Long partnerId, Long employeeId, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, Long approverId, String remarks) {
+		if ("QUOTE_STATUS_02".equals(this.statusCode)) {
+			throw new IllegalStateException("제출된 견적은 수정할 수 없습니다.");
+		}
 		this.quoteDate = quoteDate;
 		this.validUntil = validUntil;
 		this.partnerId = partnerId;
 		this.employeeId = employeeId;
-		this.statusCode = statusCode;
+		this.approverId = approverId;
 		this.remarks = remarks;
 	}
 

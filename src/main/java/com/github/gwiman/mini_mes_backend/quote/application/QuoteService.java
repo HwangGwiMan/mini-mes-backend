@@ -6,16 +6,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.auth.application.AuthService;
+import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeResponse;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
+import com.github.gwiman.mini_mes_backend.quote.api.dto.ApprovalRequest;
+import com.github.gwiman.mini_mes_backend.quote.api.dto.ApprovalResponse;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteLineRequest;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteRequest;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteResponse;
 import com.github.gwiman.mini_mes_backend.quote.domain.Quote;
+import com.github.gwiman.mini_mes_backend.quote.domain.QuoteApproval;
+import com.github.gwiman.mini_mes_backend.quote.domain.QuoteApprovalRepository;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteLine;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteRepository;
 import com.github.gwiman.mini_mes_backend.quote.internal.QuoteQueryRepository;
@@ -33,9 +40,11 @@ public class QuoteService {
 
 	private final QuoteRepository quoteRepository;
 	private final QuoteQueryRepository quoteQueryRepository;
+	private final QuoteApprovalRepository quoteApprovalRepository;
 	private final PartnerService partnerService;
 	private final EmployeeService employeeService;
 	private final ItemService itemService;
+	private final AuthService authService;
 
 	public List<QuoteResponse> findAll(String quoteNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
@@ -68,12 +77,16 @@ public class QuoteService {
 	@Transactional
 	public QuoteResponse create(QuoteRequest request) {
 		String quoteNumber = generateQuoteNumber();
+		String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		if (!partnerService.exists(request.getPartnerId())) {
 			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
 		}
 		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
 			throw new IllegalArgumentException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
+		}
+		if (!employeeService.exists(request.getApproverId())) {
+			throw new IllegalArgumentException("결재자를 찾을 수 없습니다: " + request.getApproverId());
 		}
 
 		Quote quote = new Quote(
@@ -82,8 +95,10 @@ public class QuoteService {
 			request.getValidUntil(),
 			request.getPartnerId(),
 			request.getEmployeeId(),
-			request.getStatusCode() != null ? request.getStatusCode() : "",
-			request.getRemarks() != null ? request.getRemarks() : ""
+			request.getApproverId(),
+			"QUOTE_STATUS_01",
+			request.getRemarks() != null ? request.getRemarks() : "",
+			currentUsername
 		);
 
 		int sortOrder = 0;
@@ -121,13 +136,17 @@ public class QuoteService {
 		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
 			throw new IllegalArgumentException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
 		}
+		if (!employeeService.exists(request.getApproverId())) {
+			throw new IllegalArgumentException("결재자를 찾을 수 없습니다: " + request.getApproverId());
+		}
 
+		// Quote.update() will throw if status is QUOTE_STATUS_02
 		quote.update(
 			request.getQuoteDate(),
 			request.getValidUntil(),
 			request.getPartnerId(),
 			request.getEmployeeId(),
-			request.getStatusCode() != null ? request.getStatusCode() : "",
+			request.getApproverId(),
 			request.getRemarks() != null ? request.getRemarks() : ""
 		);
 
@@ -161,6 +180,83 @@ public class QuoteService {
 			throw new IllegalArgumentException("견적을 찾을 수 없습니다: " + id);
 		}
 		quoteRepository.deleteById(id);
+	}
+
+	@Transactional
+	public void submit(Long quoteId, String currentUsername) {
+		Quote quote = quoteRepository.findById(quoteId)
+			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+
+		String status = quote.getStatusCode();
+		if (!"QUOTE_STATUS_01".equals(status) && !"QUOTE_STATUS_04".equals(status)) {
+			throw new IllegalStateException("작성중 또는 반려 상태의 견적만 제출할 수 있습니다.");
+		}
+
+		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
+			.getAuthorities().stream()
+			.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+		String createdBy = quote.getCreatedBy();
+		if (!isAdmin && createdBy != null && !createdBy.equals(currentUsername)) {
+			throw new IllegalStateException("견적 등록자 또는 관리자만 제출할 수 있습니다.");
+		}
+
+		quote.updateStatus("QUOTE_STATUS_02");
+	}
+
+	@Transactional
+	public void approve(Long quoteId, String currentUsername, ApprovalRequest request) {
+		Quote quote = quoteRepository.findById(quoteId)
+			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+
+		if (!"QUOTE_STATUS_02".equals(quote.getStatusCode())) {
+			throw new IllegalStateException("제출 상태의 견적만 승인할 수 있습니다.");
+		}
+
+		Long currentEmployeeId = authService.findEmployeeIdByUsername(currentUsername);
+		if (currentEmployeeId == null || !currentEmployeeId.equals(quote.getApproverId())) {
+			throw new IllegalStateException("지정된 결재자만 승인할 수 있습니다.");
+		}
+
+		EmployeeResponse approver = employeeService.findById(currentEmployeeId);
+		quoteApprovalRepository.save(new QuoteApproval(
+			quoteId, currentEmployeeId, currentUsername,
+			approver.getName(), "APPROVED", request.getComment()
+		));
+
+		quote.updateStatus("QUOTE_STATUS_03");
+	}
+
+	@Transactional
+	public void reject(Long quoteId, String currentUsername, ApprovalRequest request) {
+		Quote quote = quoteRepository.findById(quoteId)
+			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+
+		if (!"QUOTE_STATUS_02".equals(quote.getStatusCode())) {
+			throw new IllegalStateException("제출 상태의 견적만 반려할 수 있습니다.");
+		}
+
+		Long currentEmployeeId = authService.findEmployeeIdByUsername(currentUsername);
+		if (currentEmployeeId == null || !currentEmployeeId.equals(quote.getApproverId())) {
+			throw new IllegalStateException("지정된 결재자만 반려할 수 있습니다.");
+		}
+
+		EmployeeResponse approver = employeeService.findById(currentEmployeeId);
+		quoteApprovalRepository.save(new QuoteApproval(
+			quoteId, currentEmployeeId, currentUsername,
+			approver.getName(), "REJECTED", request.getComment()
+		));
+
+		quote.updateStatus("QUOTE_STATUS_04");
+	}
+
+	public List<ApprovalResponse> getApprovalHistory(Long quoteId) {
+		if (!quoteRepository.existsById(quoteId)) {
+			throw new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId);
+		}
+		return quoteApprovalRepository.findByQuoteIdOrderByCreatedAtAsc(quoteId).stream()
+			.map(ApprovalResponse::from)
+			.toList();
 	}
 
 	private String generateQuoteNumber() {

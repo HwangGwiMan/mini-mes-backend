@@ -12,6 +12,7 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
+import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteApproval;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
@@ -79,6 +80,11 @@ public class Public extends SchemaImpl {
     public final Quote QUOTE = Quote.QUOTE;
 
     /**
+     * The table <code>public.quote_approval</code>.
+     */
+    public final QuoteApproval QUOTE_APPROVAL = QuoteApproval.QUOTE_APPROVAL;
+
+    /**
      * The table <code>public.quote_line</code>.
      */
     public final QuoteLine QUOTE_LINE = QuoteLine.QUOTE_LINE;
@@ -122,6 +128,7 @@ public class Public extends SchemaImpl {
             Partner.PARTNER,
             Process.PROCESS,
             Quote.QUOTE,
+            QuoteApproval.QUOTE_APPROVAL,
             QuoteLine.QUOTE_LINE,
             SalesOrder.SALES_ORDER,
             SalesOrderLine.SALES_ORDER_LINE,
