@@ -118,6 +118,29 @@ public class EmployeeService {
 		employeeRepository.deleteById(id);
 	}
 
+	@Transactional
+	public void initDefaultEmployees() {
+		// 사원 등록 시 사번과 동일한 로그인 계정도 함께 생성됨 (초기 비밀번호: pw1234)
+		createEmployeeIfAbsent("E001", "김영업", "DEPT_04", "POSITION_03", "010-1111-2222", "kim@company.com", 1);
+		createEmployeeIfAbsent("E002", "이담당", "DEPT_01", "POSITION_02", "010-2222-3333", "lee@company.com", 2);
+		createEmployeeIfAbsent("E003", "박생산", "DEPT_01", "POSITION_01", "010-3333-4444", "park@company.com", 3);
+		createEmployeeIfAbsent("E004", "최품질", "DEPT_03", "POSITION_02", "010-4444-5555", "choi@company.com", 4);
+		createEmployeeIfAbsent("E005", "정관리", "DEPT_04", "POSITION_04", "010-5555-6666", "jung@company.com", 5);
+	}
+
+	private void createEmployeeIfAbsent(String code, String name, String deptCode,
+		String positionCode, String phone, String email, int sortOrder) {
+		if (employeeRepository.existsByCode(code)) return;
+
+		Employee entity = employeeRepository.save(
+			new Employee(code, name, deptCode, positionCode,
+				java.time.LocalDate.of(2020, 1, 1), phone, email, true, sortOrder)
+		);
+		if (!userRepository.existsByUsername(code)) {
+			userRepository.save(new User(code, passwordEncoder.encode(DEFAULT_PASSWORD), Role.ROLE_USER, entity.getId()));
+		}
+	}
+
 	private String escapeLike(String value) {
 		if (value == null || value.isBlank()) return null;
 		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");

@@ -12,4 +12,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 		+ "(:code IS NULL OR i.code LIKE %:code% ESCAPE '\\') AND "
 		+ "(:name IS NULL OR i.name LIKE %:name% ESCAPE '\\')")
 	List<Item> search(@Param("code") String code, @Param("name") String name);
+
+	boolean existsByCode(String code);
 }
