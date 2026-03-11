@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
@@ -51,7 +53,7 @@ public class SalesOrderService {
 
 	public SalesOrderResponse findById(Long id) {
 		return salesOrderQueryRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new IllegalArgumentException("수주를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("수주를 찾을 수 없습니다: " + id));
 	}
 
 	@Transactional
@@ -74,13 +76,14 @@ public class SalesOrderService {
 		addLines(order, request.getLines());
 
 		SalesOrder saved = salesOrderRepository.save(order);
-		return salesOrderQueryRepository.findByIdWithLines(saved.getId()).orElseThrow();
+		return salesOrderQueryRepository.findByIdWithLines(saved.getId())
+			.orElseThrow(() -> new ResourceNotFoundException("저장된 수주를 조회할 수 없습니다: " + saved.getId()));
 	}
 
 	@Transactional
 	public SalesOrderResponse update(Long id, SalesOrderRequest request) {
 		SalesOrder order = salesOrderRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new IllegalArgumentException("수주를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("수주를 찾을 수 없습니다: " + id));
 
 		validatePartner(request.getPartnerId());
 		validateEmployee(request.getEmployeeId());
@@ -97,13 +100,14 @@ public class SalesOrderService {
 		order.clearLines();
 		addLines(order, request.getLines());
 
-		return salesOrderQueryRepository.findByIdWithLines(id).orElseThrow();
+		return salesOrderQueryRepository.findByIdWithLines(id)
+			.orElseThrow(() -> new ResourceNotFoundException("저장된 수주를 조회할 수 없습니다: " + id));
 	}
 
 	@Transactional
 	public void delete(Long id) {
 		if (!salesOrderRepository.existsById(id)) {
-			throw new IllegalArgumentException("수주를 찾을 수 없습니다: " + id);
+			throw new ResourceNotFoundException("수주를 찾을 수 없습니다: " + id);
 		}
 		salesOrderRepository.deleteById(id);
 	}
@@ -111,12 +115,12 @@ public class SalesOrderService {
 	@Transactional
 	public SalesOrderResponse convertFromQuote(Long quoteId) {
 		if (salesOrderRepository.existsByQuoteId(quoteId)) {
-			throw new IllegalStateException("이미 수주 전환된 견적입니다: " + quoteId);
+			throw new BusinessRuleViolationException("이미 수주 전환된 견적입니다: " + quoteId);
 		}
 
 		QuoteResponse quoteHeader = quoteService.findById(quoteId);
 		if (!"QUOTE_STATUS_03".equals(quoteHeader.getStatusCode())) {
-			throw new IllegalStateException("승인된 견적만 수주전환이 가능합니다.");
+			throw new BusinessRuleViolationException("승인된 견적만 수주전환이 가능합니다.");
 		}
 		List<QuoteLineData> quoteLines = quoteService.getLines(quoteId);
 
@@ -152,14 +156,15 @@ public class SalesOrderService {
 		SalesOrder saved = salesOrderRepository.save(order);
 		eventPublisher.publishEvent(new QuoteConvertedToOrderEvent(quoteId));
 
-		return salesOrderQueryRepository.findByIdWithLines(saved.getId()).orElseThrow();
+		return salesOrderQueryRepository.findByIdWithLines(saved.getId())
+			.orElseThrow(() -> new ResourceNotFoundException("저장된 수주를 조회할 수 없습니다: " + saved.getId()));
 	}
 
 	private void addLines(SalesOrder order, List<SalesOrderLineRequest> lineRequests) {
 		int sortOrder = 0;
 		for (SalesOrderLineRequest lineReq : lineRequests) {
 			if (!itemService.exists(lineReq.getItemId())) {
-				throw new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
+				throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
 			}
 			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
 			SalesOrderLine line = new SalesOrderLine(
@@ -178,13 +183,13 @@ public class SalesOrderService {
 
 	private void validatePartner(Long partnerId) {
 		if (!partnerService.exists(partnerId)) {
-			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + partnerId);
+			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + partnerId);
 		}
 	}
 
 	private void validateEmployee(Long employeeId) {
 		if (employeeId != null && !employeeService.exists(employeeId)) {
-			throw new IllegalArgumentException("담당자를 찾을 수 없습니다: " + employeeId);
+			throw new ResourceNotFoundException("담당자를 찾을 수 없습니다: " + employeeId);
 		}
 	}
 

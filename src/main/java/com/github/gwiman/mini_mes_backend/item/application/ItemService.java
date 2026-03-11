@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.item.api.dto.ItemRequest;
 import com.github.gwiman.mini_mes_backend.item.api.dto.ItemResponse;
 import com.github.gwiman.mini_mes_backend.item.domain.Item;
@@ -34,7 +35,7 @@ public class ItemService {
 
 	public ItemResponse findById(Long id) {
 		return itemQueryRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("품목을 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("품목을 찾을 수 없습니다: " + id));
 	}
 
 	@Transactional
@@ -55,7 +56,7 @@ public class ItemService {
 	@Transactional
 	public ItemResponse update(Long id, ItemRequest request) {
 		Item entity = itemRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("품목을 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("품목을 찾을 수 없습니다: " + id));
 		entity.update(
 			request.getCode(),
 			request.getName(),
@@ -76,7 +77,7 @@ public class ItemService {
 	@Transactional
 	public void delete(Long id) {
 		if (!itemRepository.existsById(id)) {
-			throw new IllegalArgumentException("품목을 찾을 수 없습니다: " + id);
+			throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + id);
 		}
 		itemRepository.deleteById(id);
 	}

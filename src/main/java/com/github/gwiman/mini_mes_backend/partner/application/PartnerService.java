@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.partner.api.dto.PartnerRequest;
 import com.github.gwiman.mini_mes_backend.partner.api.dto.PartnerResponse;
 import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
@@ -29,13 +31,13 @@ public class PartnerService {
 
 	public PartnerResponse findById(Long id) {
 		return partnerQueryRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + id));
 	}
 
 	@Transactional
 	public PartnerResponse create(PartnerRequest request) {
 		if (partnerRepository.existsByCode(request.getCode())) {
-			throw new IllegalArgumentException("이미 사용 중인 코드입니다: " + request.getCode());
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
 		}
 		Partner entity = new Partner(
 			request.getCode(), request.getName(),
@@ -49,9 +51,9 @@ public class PartnerService {
 	@Transactional
 	public PartnerResponse update(Long id, PartnerRequest request) {
 		Partner entity = partnerRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + id));
 		if (partnerRepository.existsByCodeAndIdNot(request.getCode(), id)) {
-			throw new IllegalArgumentException("이미 사용 중인 코드입니다: " + request.getCode());
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
 		}
 		entity.update(
 			request.getCode(), request.getName(),
@@ -69,7 +71,7 @@ public class PartnerService {
 	@Transactional
 	public void delete(Long id) {
 		if (!partnerRepository.existsById(id)) {
-			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + id);
+			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + id);
 		}
 		partnerRepository.deleteById(id);
 	}

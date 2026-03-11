@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.auth.application.AuthService;
+import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeResponse;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
@@ -56,7 +58,7 @@ public class QuoteService {
 
 	public QuoteResponse findById(Long id) {
 		return quoteQueryRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + id));
 	}
 
 	public List<QuoteLineData> getLines(Long quoteId) {
@@ -71,7 +73,7 @@ public class QuoteService {
 					line.getSortOrder()
 				))
 				.toList())
-			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId));
 	}
 
 	@Transactional
@@ -80,13 +82,13 @@ public class QuoteService {
 		String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		if (!partnerService.exists(request.getPartnerId())) {
-			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
+			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
 		}
 		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
-			throw new IllegalArgumentException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
+			throw new ResourceNotFoundException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
 		}
 		if (!employeeService.exists(request.getApproverId())) {
-			throw new IllegalArgumentException("결재자를 찾을 수 없습니다: " + request.getApproverId());
+			throw new ResourceNotFoundException("결재자를 찾을 수 없습니다: " + request.getApproverId());
 		}
 
 		Quote quote = new Quote(
@@ -104,7 +106,7 @@ public class QuoteService {
 		int sortOrder = 0;
 		for (QuoteLineRequest lineReq : request.getLines()) {
 			if (!itemService.exists(lineReq.getItemId())) {
-				throw new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
+				throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
 			}
 
 			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
@@ -122,22 +124,23 @@ public class QuoteService {
 		}
 
 		Quote saved = quoteRepository.save(quote);
-		return quoteQueryRepository.findByIdWithLines(saved.getId()).orElseThrow();
+		return quoteQueryRepository.findByIdWithLines(saved.getId())
+			.orElseThrow(() -> new ResourceNotFoundException("저장된 견적을 조회할 수 없습니다: " + saved.getId()));
 	}
 
 	@Transactional
 	public QuoteResponse update(Long id, QuoteRequest request) {
 		Quote quote = quoteRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + id));
 
 		if (!partnerService.exists(request.getPartnerId())) {
-			throw new IllegalArgumentException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
+			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
 		}
 		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
-			throw new IllegalArgumentException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
+			throw new ResourceNotFoundException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
 		}
 		if (!employeeService.exists(request.getApproverId())) {
-			throw new IllegalArgumentException("결재자를 찾을 수 없습니다: " + request.getApproverId());
+			throw new ResourceNotFoundException("결재자를 찾을 수 없습니다: " + request.getApproverId());
 		}
 
 		// Quote.update() will throw if status is QUOTE_STATUS_02
@@ -154,7 +157,7 @@ public class QuoteService {
 		int sortOrder = 0;
 		for (QuoteLineRequest lineReq : request.getLines()) {
 			if (!itemService.exists(lineReq.getItemId())) {
-				throw new IllegalArgumentException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
+				throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
 			}
 
 			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
@@ -171,13 +174,14 @@ public class QuoteService {
 			quote.addLine(line);
 		}
 
-		return quoteQueryRepository.findByIdWithLines(id).orElseThrow();
+		return quoteQueryRepository.findByIdWithLines(id)
+			.orElseThrow(() -> new ResourceNotFoundException("저장된 견적을 조회할 수 없습니다: " + id));
 	}
 
 	@Transactional
 	public void delete(Long id) {
 		if (!quoteRepository.existsById(id)) {
-			throw new IllegalArgumentException("견적을 찾을 수 없습니다: " + id);
+			throw new ResourceNotFoundException("견적을 찾을 수 없습니다: " + id);
 		}
 		quoteRepository.deleteById(id);
 	}
@@ -185,11 +189,11 @@ public class QuoteService {
 	@Transactional
 	public void submit(Long quoteId, String currentUsername) {
 		Quote quote = quoteRepository.findById(quoteId)
-			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId));
 
 		String status = quote.getStatusCode();
 		if (!"QUOTE_STATUS_01".equals(status) && !"QUOTE_STATUS_04".equals(status)) {
-			throw new IllegalStateException("작성중 또는 반려 상태의 견적만 제출할 수 있습니다.");
+			throw new BusinessRuleViolationException("작성중 또는 반려 상태의 견적만 제출할 수 있습니다.");
 		}
 
 		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
@@ -198,7 +202,7 @@ public class QuoteService {
 
 		String createdBy = quote.getCreatedBy();
 		if (!isAdmin && createdBy != null && !createdBy.equals(currentUsername)) {
-			throw new IllegalStateException("견적 등록자 또는 관리자만 제출할 수 있습니다.");
+			throw new BusinessRuleViolationException("견적 등록자 또는 관리자만 제출할 수 있습니다.");
 		}
 
 		quote.updateStatus("QUOTE_STATUS_02");
@@ -207,15 +211,15 @@ public class QuoteService {
 	@Transactional
 	public void approve(Long quoteId, String currentUsername, ApprovalRequest request) {
 		Quote quote = quoteRepository.findById(quoteId)
-			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId));
 
 		if (!"QUOTE_STATUS_02".equals(quote.getStatusCode())) {
-			throw new IllegalStateException("제출 상태의 견적만 승인할 수 있습니다.");
+			throw new BusinessRuleViolationException("제출 상태의 견적만 승인할 수 있습니다.");
 		}
 
 		Long currentEmployeeId = authService.findEmployeeIdByUsername(currentUsername);
 		if (currentEmployeeId == null || !currentEmployeeId.equals(quote.getApproverId())) {
-			throw new IllegalStateException("지정된 결재자만 승인할 수 있습니다.");
+			throw new BusinessRuleViolationException("지정된 결재자만 승인할 수 있습니다.");
 		}
 
 		EmployeeResponse approver = employeeService.findById(currentEmployeeId);
@@ -230,15 +234,15 @@ public class QuoteService {
 	@Transactional
 	public void reject(Long quoteId, String currentUsername, ApprovalRequest request) {
 		Quote quote = quoteRepository.findById(quoteId)
-			.orElseThrow(() -> new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId));
+			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId));
 
 		if (!"QUOTE_STATUS_02".equals(quote.getStatusCode())) {
-			throw new IllegalStateException("제출 상태의 견적만 반려할 수 있습니다.");
+			throw new BusinessRuleViolationException("제출 상태의 견적만 반려할 수 있습니다.");
 		}
 
 		Long currentEmployeeId = authService.findEmployeeIdByUsername(currentUsername);
 		if (currentEmployeeId == null || !currentEmployeeId.equals(quote.getApproverId())) {
-			throw new IllegalStateException("지정된 결재자만 반려할 수 있습니다.");
+			throw new BusinessRuleViolationException("지정된 결재자만 반려할 수 있습니다.");
 		}
 
 		EmployeeResponse approver = employeeService.findById(currentEmployeeId);
@@ -252,7 +256,7 @@ public class QuoteService {
 
 	public List<ApprovalResponse> getApprovalHistory(Long quoteId) {
 		if (!quoteRepository.existsById(quoteId)) {
-			throw new IllegalArgumentException("견적을 찾을 수 없습니다: " + quoteId);
+			throw new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId);
 		}
 		return quoteApprovalRepository.findByQuoteIdOrderByCreatedAtAsc(quoteId).stream()
 			.map(ApprovalResponse::from)

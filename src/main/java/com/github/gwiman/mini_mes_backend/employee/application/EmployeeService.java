@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.auth.domain.Role;
 import com.github.gwiman.mini_mes_backend.auth.domain.User;
 import com.github.gwiman.mini_mes_backend.auth.domain.UserRepository;
@@ -38,16 +40,16 @@ public class EmployeeService {
 
 	public EmployeeResponse findById(Long id) {
 		return employeeQueryRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("사원을 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("사원을 찾을 수 없습니다: " + id));
 	}
 
 	@Transactional
 	public EmployeeResponse create(EmployeeRequest request) {
 		if (employeeRepository.existsByCode(request.getCode())) {
-			throw new IllegalArgumentException("이미 사용 중인 사번입니다: " + request.getCode());
+			throw new BusinessRuleViolationException("이미 사용 중인 사번입니다: " + request.getCode());
 		}
 		if (userRepository.existsByUsername(request.getCode())) {
-			throw new IllegalArgumentException("해당 사번으로 이미 로그인 계정이 존재합니다: " + request.getCode());
+			throw new BusinessRuleViolationException("해당 사번으로 이미 로그인 계정이 존재합니다: " + request.getCode());
 		}
 		Employee entity = new Employee(
 			request.getCode(),
@@ -76,16 +78,16 @@ public class EmployeeService {
 	@Transactional
 	public EmployeeResponse update(Long id, EmployeeRequest request) {
 		Employee entity = employeeRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("사원을 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("사원을 찾을 수 없습니다: " + id));
 		if (employeeRepository.existsByCodeAndIdNot(request.getCode(), id)) {
-			throw new IllegalArgumentException("이미 사용 중인 사번입니다: " + request.getCode());
+			throw new BusinessRuleViolationException("이미 사용 중인 사번입니다: " + request.getCode());
 		}
 
 		String oldCode = entity.getCode();
 		String newCode = request.getCode();
 		if (!oldCode.equals(newCode)) {
 			if (userRepository.existsByUsername(newCode)) {
-				throw new IllegalArgumentException("해당 사번으로 이미 로그인 계정이 존재합니다: " + newCode);
+				throw new BusinessRuleViolationException("해당 사번으로 이미 로그인 계정이 존재합니다: " + newCode);
 			}
 			Optional<User> userOpt = userRepository.findByEmployeeId(id);
 			userOpt.ifPresent(user -> user.updateUsername(newCode));
@@ -112,7 +114,7 @@ public class EmployeeService {
 	@Transactional
 	public void delete(Long id) {
 		if (!employeeRepository.existsById(id)) {
-			throw new IllegalArgumentException("사원을 찾을 수 없습니다: " + id);
+			throw new ResourceNotFoundException("사원을 찾을 수 없습니다: " + id);
 		}
 		userRepository.findByEmployeeId(id).ifPresent(userRepository::delete);
 		employeeRepository.deleteById(id);

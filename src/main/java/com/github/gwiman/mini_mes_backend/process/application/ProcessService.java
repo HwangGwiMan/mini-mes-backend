@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.process.api.dto.ProcessRequest;
 import com.github.gwiman.mini_mes_backend.process.api.dto.ProcessResponse;
 import com.github.gwiman.mini_mes_backend.process.domain.Process;
@@ -29,13 +31,13 @@ public class ProcessService {
 
 	public ProcessResponse findById(Long id) {
 		return processQueryRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("공정을 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("공정을 찾을 수 없습니다: " + id));
 	}
 
 	@Transactional
 	public ProcessResponse create(ProcessRequest request) {
 		if (processRepository.existsByCode(request.getCode())) {
-			throw new IllegalArgumentException("이미 사용 중인 코드입니다: " + request.getCode());
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
 		}
 		Process entity = new Process(
 			request.getCode(),
@@ -51,9 +53,9 @@ public class ProcessService {
 	@Transactional
 	public ProcessResponse update(Long id, ProcessRequest request) {
 		Process entity = processRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("공정을 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("공정을 찾을 수 없습니다: " + id));
 		if (processRepository.existsByCodeAndIdNot(request.getCode(), id)) {
-			throw new IllegalArgumentException("이미 사용 중인 코드입니다: " + request.getCode());
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
 		}
 		entity.update(
 			request.getCode(),
@@ -69,7 +71,7 @@ public class ProcessService {
 	@Transactional
 	public void delete(Long id) {
 		if (!processRepository.existsById(id)) {
-			throw new IllegalArgumentException("공정을 찾을 수 없습니다: " + id);
+			throw new ResourceNotFoundException("공정을 찾을 수 없습니다: " + id);
 		}
 		processRepository.deleteById(id);
 	}

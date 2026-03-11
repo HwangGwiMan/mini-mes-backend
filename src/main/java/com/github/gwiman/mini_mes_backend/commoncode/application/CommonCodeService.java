@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.commoncode.api.dto.CommonCodeRequest;
 import com.github.gwiman.mini_mes_backend.commoncode.api.dto.CommonCodeResponse;
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CommonCode;
@@ -23,7 +24,7 @@ public class CommonCodeService {
 
 	public CommonCodeResponse findById(Long id) {
 		return commonCodeQueryRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("공통코드를 찾을 수 없습니다: " + id));
 	}
 
 	public List<CommonCodeResponse> findAll(String codeGroup, String code, String name) {
@@ -54,7 +55,7 @@ public class CommonCodeService {
 	@Transactional
 	public CommonCodeResponse update(Long id, CommonCodeRequest request) {
 		CommonCode entity = commonCodeRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("공통코드를 찾을 수 없습니다: " + id));
 		entity.update(request.getName(), request.getSortOrder());
 		return CommonCodeResponse.from(entity);
 	}
@@ -62,7 +63,7 @@ public class CommonCodeService {
 	@Transactional
 	public void delete(Long id) {
 		if (!commonCodeRepository.existsById(id)) {
-			throw new IllegalArgumentException("공통코드를 찾을 수 없습니다: " + id);
+			throw new ResourceNotFoundException("공통코드를 찾을 수 없습니다: " + id);
 		}
 		commonCodeRepository.deleteById(id);
 	}

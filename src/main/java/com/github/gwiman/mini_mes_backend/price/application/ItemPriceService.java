@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceRequest;
 import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceResponse;
@@ -35,38 +37,40 @@ public class ItemPriceService {
 
 	public ItemPriceResponse findById(Long id) {
 		return itemPriceQueryRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("단가를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("단가를 찾을 수 없습니다: " + id));
 	}
 
 	@Transactional
 	public ItemPriceResponse create(ItemPriceRequest request) {
 		if (!itemService.exists(request.getItemId())) {
-			throw new IllegalArgumentException("품목을 찾을 수 없습니다: " + request.getItemId());
+			throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + request.getItemId());
 		}
 		// 품목당 단가 1개 보장
 		if (itemPriceRepository.existsByItemId(request.getItemId())) {
-			throw new IllegalStateException("이미 단가가 등록된 품목입니다.");
+			throw new BusinessRuleViolationException("이미 단가가 등록된 품목입니다.");
 		}
 
 		ItemPrice saved = itemPriceRepository.save(
 			new ItemPrice(request.getItemId(), request.getUnitPrice(), request.getRemarks())
 		);
-		return itemPriceQueryRepository.findById(saved.getId()).orElseThrow();
+		return itemPriceQueryRepository.findById(saved.getId())
+			.orElseThrow(() -> new ResourceNotFoundException("저장된 단가를 조회할 수 없습니다: " + saved.getId()));
 	}
 
 	@Transactional
 	public ItemPriceResponse update(Long id, ItemPriceRequest request) {
 		ItemPrice entity = itemPriceRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("단가를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("단가를 찾을 수 없습니다: " + id));
 
 		entity.update(request.getUnitPrice(), request.getRemarks());
-		return itemPriceQueryRepository.findById(id).orElseThrow();
+		return itemPriceQueryRepository.findById(id)
+			.orElseThrow(() -> new ResourceNotFoundException("저장된 단가를 조회할 수 없습니다: " + id));
 	}
 
 	@Transactional
 	public void delete(Long id) {
 		if (!itemPriceRepository.existsById(id)) {
-			throw new IllegalArgumentException("단가를 찾을 수 없습니다: " + id);
+			throw new ResourceNotFoundException("단가를 찾을 수 없습니다: " + id);
 		}
 		itemPriceRepository.deleteById(id);
 	}

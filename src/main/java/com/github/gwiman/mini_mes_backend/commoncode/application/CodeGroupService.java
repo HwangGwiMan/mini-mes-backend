@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
+import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.commoncode.api.dto.CodeGroupRequest;
 import com.github.gwiman.mini_mes_backend.commoncode.api.dto.CodeGroupResponse;
 import com.github.gwiman.mini_mes_backend.commoncode.domain.CodeGroup;
@@ -31,7 +33,7 @@ public class CodeGroupService {
 	@Transactional
 	public CodeGroupResponse create(CodeGroupRequest request) {
 		if (codeGroupRepository.existsByGroupCode(request.getGroupCode())) {
-			throw new IllegalArgumentException("이미 사용 중인 그룹코드입니다: " + request.getGroupCode());
+			throw new BusinessRuleViolationException("이미 사용 중인 그룹코드입니다: " + request.getGroupCode());
 		}
 		return CodeGroupResponse.from(
 			codeGroupRepository.save(
@@ -43,9 +45,9 @@ public class CodeGroupService {
 	@Transactional
 	public CodeGroupResponse update(Long id, CodeGroupRequest request) {
 		CodeGroup entity = codeGroupRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("그룹코드를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("그룹코드를 찾을 수 없습니다: " + id));
 		if (codeGroupRepository.existsByGroupCodeAndIdNot(request.getGroupCode(), id)) {
-			throw new IllegalArgumentException("이미 사용 중인 그룹코드입니다: " + request.getGroupCode());
+			throw new BusinessRuleViolationException("이미 사용 중인 그룹코드입니다: " + request.getGroupCode());
 		}
 		entity.update(request.getGroupCode(), request.getGroupName(), request.getSortOrder());
 		return CodeGroupResponse.from(entity);
@@ -123,9 +125,9 @@ public class CodeGroupService {
 	@Transactional
 	public void delete(Long id) {
 		CodeGroup entity = codeGroupRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("그룹코드를 찾을 수 없습니다: " + id));
+			.orElseThrow(() -> new ResourceNotFoundException("그룹코드를 찾을 수 없습니다: " + id));
 		if (commonCodeRepository.existsByCodeGroup(entity.getGroupCode())) {
-			throw new IllegalArgumentException("하위 코드가 존재하는 그룹은 삭제할 수 없습니다. 코드를 먼저 삭제해 주세요.");
+			throw new BusinessRuleViolationException("하위 코드가 존재하는 그룹은 삭제할 수 없습니다. 코드를 먼저 삭제해 주세요.");
 		}
 		codeGroupRepository.deleteById(id);
 	}

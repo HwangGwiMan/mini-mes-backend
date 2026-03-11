@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -72,7 +73,7 @@ public class Quote {
 	public void update(LocalDate quoteDate, LocalDate validUntil,
 		Long partnerId, Long employeeId, Long approverId, String remarks) {
 		if ("QUOTE_STATUS_02".equals(this.statusCode)) {
-			throw new IllegalStateException("제출된 견적은 수정할 수 없습니다.");
+			throw new BusinessRuleViolationException("제출된 견적은 수정할 수 없습니다.");
 		}
 		this.quoteDate = quoteDate;
 		this.validUntil = validUntil;

@@ -19,6 +19,18 @@ public class GlobalExceptionHandler {
 		return response;
 	}
 
+	@ExceptionHandler(ResourceNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ErrorResponse handleResourceNotFound(ResourceNotFoundException e) {
+		return new ErrorResponse(e.getMessage());
+	}
+
+	@ExceptionHandler(BusinessRuleViolationException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	public ErrorResponse handleBusinessRuleViolation(BusinessRuleViolationException e) {
+		return new ErrorResponse(e.getMessage());
+	}
+
 	@ExceptionHandler(IllegalArgumentException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ErrorResponse handleIllegalArgument(IllegalArgumentException e) {
