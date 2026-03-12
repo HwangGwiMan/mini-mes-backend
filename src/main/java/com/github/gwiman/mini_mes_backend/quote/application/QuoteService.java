@@ -75,7 +75,7 @@ public class QuoteService {
 	}
 
 	@Transactional
-	public QuoteResponse create(QuoteRequest request, String currentUsername) {
+	public QuoteResponse create(QuoteRequest request) {
 		String quoteNumber = generateQuoteNumber();
 
 		if (!partnerService.exists(request.getPartnerId())) {
@@ -96,8 +96,7 @@ public class QuoteService {
 			request.getEmployeeId(),
 			request.getApproverId(),
 			"QUOTE_STATUS_01",
-			request.getRemarks() != null ? request.getRemarks() : "",
-			currentUsername
+			request.getRemarks() != null ? request.getRemarks() : ""
 		);
 
 		int sortOrder = 0;

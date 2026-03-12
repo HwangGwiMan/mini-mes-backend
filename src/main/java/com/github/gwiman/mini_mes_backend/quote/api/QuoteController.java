@@ -51,8 +51,8 @@ public class QuoteController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public QuoteResponse create(@RequestBody @Valid QuoteRequest request, Authentication authentication) {
-		return quoteService.create(request, authentication.getName());
+	public QuoteResponse create(@RequestBody @Valid QuoteRequest request) {
+		return quoteService.create(request);
 	}
 
 	@PutMapping("/{id}")

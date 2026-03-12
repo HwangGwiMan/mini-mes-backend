@@ -1,16 +1,14 @@
 package com.github.gwiman.mini_mes_backend.price.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import com.github.gwiman.mini_mes_backend.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "item_price")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ItemPrice {
+public class ItemPrice extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,20 +36,6 @@ public class ItemPrice {
 
 	@Column(length = 200)
 	private String remarks;
-
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
-
-	@PrePersist
-	void prePersist() {
-		createdAt = LocalDateTime.now();
-		updatedAt = createdAt;
-	}
-
-	@PreUpdate
-	void preUpdate() {
-		updatedAt = LocalDateTime.now();
-	}
 
 	public ItemPrice(Long itemId, BigDecimal unitPrice, String remarks) {
 		this.itemId = itemId;

@@ -1,14 +1,12 @@
 package com.github.gwiman.mini_mes_backend.quote.domain;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import com.github.gwiman.mini_mes_backend.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "quote_approval")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuoteApproval {
+public class QuoteApproval extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,13 +38,6 @@ public class QuoteApproval {
 
 	@Column(length = 500)
 	private String comment;
-
-	private LocalDateTime createdAt;
-
-	@PrePersist
-	void prePersist() {
-		createdAt = LocalDateTime.now();
-	}
 
 	public QuoteApproval(Long quoteId, Long approverEmployeeId, String approverUsername,
 		String approverName, String action, String comment) {

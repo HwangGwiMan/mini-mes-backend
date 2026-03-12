@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import com.github.gwiman.mini_mes_backend.common.domain.BaseEntity;
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "quote")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Quote {
+public class Quote extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,9 +45,6 @@ public class Quote {
 	@Column(name = "approver_id", nullable = false)
 	private Long approverId;
 
-	@Column(name = "created_by")
-	private String createdBy;
-
 	@Column(length = 20)
 	private String statusCode;
 
@@ -57,8 +55,7 @@ public class Quote {
 	private final List<QuoteLine> lines = new ArrayList<>();
 
 	public Quote(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
-		Long partnerId, Long employeeId, Long approverId, String statusCode, String remarks,
-		String createdBy) {
+		Long partnerId, Long employeeId, Long approverId, String statusCode, String remarks) {
 		this.quoteNumber = quoteNumber;
 		this.quoteDate = quoteDate;
 		this.validUntil = validUntil;
@@ -67,7 +64,6 @@ public class Quote {
 		this.approverId = approverId;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
-		this.createdBy = createdBy;
 	}
 
 	public void update(LocalDate quoteDate, LocalDate validUntil,

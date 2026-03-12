@@ -73,7 +73,7 @@ common/exception/
 
 ---
 
-### 5. `SecurityContextHolder` 직접 접근 (Anti-pattern)
+### 5. ✅ `SecurityContextHolder` 직접 접근 (Anti-pattern) — 완료
 
 **위치:** `QuoteService.java:80, 195-197`
 
@@ -91,14 +91,14 @@ common/exception/
 
 ---
 
-### 7. 문서 번호 생성 로직 중복
+### 7. ✅ 문서 번호 생성 로직 중복 — 완료
 
 **위치:**
 - `QuoteService.java:262-274` (`QT_yyyyMM_###`)
 - `SalesOrderService.java:191-203` (`SO_yyyyMM_###`)
 
 **문제:** 동일한 채번 알고리즘이 두 곳에 중복.
-**해결:** `common` 패키지에 `DocumentNumberGenerator` 서비스 추출. prefix와 테이블/컬럼을 파라미터로 받는 범용 인터페이스 설계.
+**해결:** `common/util/DocumentNumberGenerator` 추출. prefix + jOOQ `TableField<?, String>`을 파라미터로 받아 DSLContext로 직접 MAX 조회.
 
 ---
 
@@ -217,7 +217,10 @@ private static final String DEFAULT_PASSWORD = "pw1234";
 | 3 | ✅ `SalesOrderLineRequest` 검증 추가 | 완료 |
 | 4 | ✅ `orElseThrow()` 메시지 일괄 수정 | 완료 (2번에서 처리) |
 | 5 | ✅ `QueryParamEscaper` 추출 (중복 7곳 제거) | 완료 |
-| 6 | `DocumentNumberGenerator` 추출 | 소규모 |
-| 7 | 페이지네이션 적용 | 대규모 |
+| 6 | ✅ `SecurityContextHolder` 직접 접근 제거 | 완료 |
+| 7 | ✅ `DocumentNumberGenerator` 추출 | 완료 |
 | 8 | `BaseEntity` 추출 (Audit 필드 통일) | 중간 |
-| 9 | 테스트 작성 | 대규모 |
+| 9 | 낙관적 잠금 (`@Version`) 추가 | 소규모 |
+| 10 | 이벤트 발행 타이밍 정리 | 소규모 |
+| 11 | 페이지네이션 적용 | 대규모 |
+| 12 | 테스트 작성 | 대규모 |
