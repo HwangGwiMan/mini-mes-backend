@@ -50,7 +50,7 @@ common/exception/
 
 ---
 
-### 3. `SalesOrderLineRequest` 유효성 검증 누락
+### 3. ✅ `SalesOrderLineRequest` 유효성 검증 누락 — 완료
 
 **위치:** `salesorder/api/dto/SalesOrderLineRequest.java`
 
@@ -149,7 +149,7 @@ public abstract class BaseEntity {
 
 ---
 
-### 11. `QuoteApproval.comment` `@Size` 누락
+### 11. ✅ `QuoteApproval.comment` `@Size` 누락 — 완료 (이미 적용되어 있었음)
 
 **위치:** `quote/domain/QuoteApproval.java:41` (DB `varchar(500)`), `quote/api/dto/ApprovalRequest.java`
 
@@ -214,7 +214,7 @@ private static final String DEFAULT_PASSWORD = "pw1234";
 |---|---|---|
 | 1 | ✅ `QuoteEventHandler` `@Transactional` 추가 | 완료 |
 | 2 | ✅ 커스텀 예외 클래스 + `GlobalExceptionHandler` 보완 | 완료 |
-| 3 | `SalesOrderLineRequest` 검증 추가 | 소규모 |
+| 3 | ✅ `SalesOrderLineRequest` 검증 추가 | 완료 |
 | 4 | ✅ `orElseThrow()` 메시지 일괄 수정 | 완료 (2번에서 처리) |
 | 5 | `QueryParamEscaper` 추출 (중복 7곳 제거) | 중간 |
 | 6 | `DocumentNumberGenerator` 추출 | 소규모 |
