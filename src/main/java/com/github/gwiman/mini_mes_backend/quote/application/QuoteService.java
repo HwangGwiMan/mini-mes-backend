@@ -2,17 +2,15 @@ package com.github.gwiman.mini_mes_backend.quote.application;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.auth.application.AuthService;
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.DocumentNumberGenerator;
 import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeResponse;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
@@ -38,8 +36,6 @@ import lombok.RequiredArgsConstructor;
 public class QuoteService {
 
 	private static final String QUOTE_NUMBER_PREFIX = "QT_";
-	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("yyyyMM");
-	private static final Pattern SEQUENCE_PATTERN = Pattern.compile(".*_(\\d+)$");
 
 	private final QuoteRepository quoteRepository;
 	private final QuoteQueryRepository quoteQueryRepository;
@@ -48,6 +44,7 @@ public class QuoteService {
 	private final EmployeeService employeeService;
 	private final ItemService itemService;
 	private final AuthService authService;
+	private final DocumentNumberGenerator documentNumberGenerator;
 
 	public List<QuoteResponse> findAll(String quoteNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
@@ -78,9 +75,8 @@ public class QuoteService {
 	}
 
 	@Transactional
-	public QuoteResponse create(QuoteRequest request) {
+	public QuoteResponse create(QuoteRequest request, String currentUsername) {
 		String quoteNumber = generateQuoteNumber();
-		String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
 
 		if (!partnerService.exists(request.getPartnerId())) {
 			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
@@ -188,7 +184,7 @@ public class QuoteService {
 	}
 
 	@Transactional
-	public void submit(Long quoteId, String currentUsername) {
+	public void submit(Long quoteId, String currentUsername, boolean isAdmin) {
 		Quote quote = quoteRepository.findById(quoteId)
 			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId));
 
@@ -196,10 +192,6 @@ public class QuoteService {
 		if (!"QUOTE_STATUS_01".equals(status) && !"QUOTE_STATUS_04".equals(status)) {
 			throw new BusinessRuleViolationException("작성중 또는 반려 상태의 견적만 제출할 수 있습니다.");
 		}
-
-		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
-			.getAuthorities().stream()
-			.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
 		String createdBy = quote.getCreatedBy();
 		if (!isAdmin && createdBy != null && !createdBy.equals(currentUsername)) {
@@ -265,17 +257,10 @@ public class QuoteService {
 	}
 
 	private String generateQuoteNumber() {
-		String prefix = QUOTE_NUMBER_PREFIX + LocalDate.now().format(MONTH_FORMAT) + "_";
-		String prefixPattern = prefix + "%";
-		int maxSeq = quoteQueryRepository.findMaxQuoteNumberByPrefix(prefixPattern)
-			.stream()
-			.mapToInt(s -> {
-				var m = SEQUENCE_PATTERN.matcher(s);
-				return m.find() ? Integer.parseInt(m.group(1)) : 0;
-			})
-			.max()
-			.orElse(0);
-		return prefix + String.format("%03d", maxSeq + 1);
+		return documentNumberGenerator.generate(
+			QUOTE_NUMBER_PREFIX,
+			com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QUOTE.QUOTE_NUMBER
+		);
 	}
 
 }

@@ -51,8 +51,8 @@ public class QuoteController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public QuoteResponse create(@RequestBody @Valid QuoteRequest request) {
-		return quoteService.create(request);
+	public QuoteResponse create(@RequestBody @Valid QuoteRequest request, Authentication authentication) {
+		return quoteService.create(request, authentication.getName());
 	}
 
 	@PutMapping("/{id}")
@@ -69,7 +69,9 @@ public class QuoteController {
 	@PatchMapping("/{id}/submit")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void submit(@PathVariable Long id, Authentication authentication) {
-		quoteService.submit(id, authentication.getName());
+		boolean isAdmin = authentication.getAuthorities().stream()
+			.anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+		quoteService.submit(id, authentication.getName(), isAdmin);
 	}
 
 	@PostMapping("/{id}/approve")
