@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
 import lombok.Getter;
 
 /**
@@ -39,4 +40,8 @@ public abstract class BaseEntity {
     @LastModifiedBy
     @Column(length = 50)
     private String updatedBy;
+
+    // 동시 수정 충돌 감지용 — JPA가 UPDATE 시 자동으로 버전을 비교하고 증가시킨다
+    @Version
+    private Long version;
 }
