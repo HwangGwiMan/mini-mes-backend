@@ -70,3 +70,17 @@ JWT-based authentication (`JwtTokenProvider`, `JwtAuthenticationFilter`). Spring
 
 - `local` — default, uses `application-local.yaml`
 - `prod` — uses `application-prod.yaml`, set via `SPRING_PROFILES_ACTIVE=prod`
+
+## Comment Style
+
+- Write in **Korean**.
+- Explain **why**, not what — don't repeat what the code already says.
+- Prioritize business rules: numbering schemes, status transitions, common-code linkage, etc.
+- Keep comments in sync with code when making changes.
+
+| Location | Format | When to write |
+|---|---|---|
+| `public` class | Javadoc `/** */` | Always — state domain role and layer |
+| `public` method | Javadoc | When logic is non-trivial or has constraints; include `@param`/`@return`/`@throws` only when non-obvious |
+| `private` method | Inline or omit | Omit if the name is self-explanatory |
+| Inline | `//` | Business rules, non-intuitive decisions |
