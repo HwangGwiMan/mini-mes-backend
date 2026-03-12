@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceRequest;
 import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceResponse;
@@ -30,8 +31,8 @@ public class ItemPriceService {
 	private final ItemService itemService;
 
 	public List<ItemPriceResponse> findAll(String itemCode, String itemName) {
-		String codePattern = buildLikePattern(itemCode);
-		String namePattern = buildLikePattern(itemName);
+		String codePattern = QueryParamEscaper.containsLike(itemCode);
+		String namePattern = QueryParamEscaper.containsLike(itemName);
 		return itemPriceQueryRepository.search(codePattern, namePattern);
 	}
 
@@ -75,9 +76,4 @@ public class ItemPriceService {
 		itemPriceRepository.deleteById(id);
 	}
 
-	private String buildLikePattern(String value) {
-		if (value == null || value.isBlank()) return null;
-		String escaped = value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
-		return "%" + escaped + "%";
-	}
 }

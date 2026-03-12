@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.item.api.dto.ItemRequest;
 import com.github.gwiman.mini_mes_backend.item.api.dto.ItemResponse;
 import com.github.gwiman.mini_mes_backend.item.domain.Item;
@@ -23,14 +24,9 @@ public class ItemService {
 	private final ItemQueryRepository itemQueryRepository;
 
 	public List<ItemResponse> findAll(String code, String name) {
-		return itemRepository.search(escapeLike(code), escapeLike(name)).stream()
+		return itemRepository.search(QueryParamEscaper.escapeLike(code), QueryParamEscaper.escapeLike(name)).stream()
 			.map(ItemResponse::from)
 			.toList();
-	}
-
-	private String escapeLike(String value) {
-		if (value == null || value.isBlank()) return null;
-		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
 	}
 
 	public ItemResponse findById(Long id) {

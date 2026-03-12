@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
@@ -47,7 +48,7 @@ public class SalesOrderService {
 
 	public List<SalesOrderResponse> findAll(String orderNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
-		String orderNumberPattern = buildLikePattern(orderNumber);
+		String orderNumberPattern = QueryParamEscaper.containsLike(orderNumber);
 		return salesOrderQueryRepository.search(orderNumberPattern, partnerId, statusCode, fromDate, toDate);
 	}
 
@@ -207,9 +208,4 @@ public class SalesOrderService {
 		return prefix + String.format("%03d", maxSeq + 1);
 	}
 
-	private String buildLikePattern(String value) {
-		if (value == null || value.isBlank()) return null;
-		String escaped = value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
-		return "%" + escaped + "%";
-	}
 }

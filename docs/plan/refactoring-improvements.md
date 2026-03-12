@@ -82,7 +82,7 @@ common/exception/
 
 ---
 
-### 6. Like 패턴 이스케이프 중복 (7곳)
+### 6. ✅ Like 패턴 이스케이프 중복 (7곳) — 완료
 
 **위치:** `EmployeeService`, `ItemService`, `PartnerService`, `ItemPriceService`, `ProcessService`, `QuoteService`, `SalesOrderService` 각 서비스의 검색 메서드
 
@@ -216,7 +216,7 @@ private static final String DEFAULT_PASSWORD = "pw1234";
 | 2 | ✅ 커스텀 예외 클래스 + `GlobalExceptionHandler` 보완 | 완료 |
 | 3 | ✅ `SalesOrderLineRequest` 검증 추가 | 완료 |
 | 4 | ✅ `orElseThrow()` 메시지 일괄 수정 | 완료 (2번에서 처리) |
-| 5 | `QueryParamEscaper` 추출 (중복 7곳 제거) | 중간 |
+| 5 | ✅ `QueryParamEscaper` 추출 (중복 7곳 제거) | 완료 |
 | 6 | `DocumentNumberGenerator` 추출 | 소규모 |
 | 7 | 페이지네이션 적용 | 대규모 |
 | 8 | `BaseEntity` 추출 (Audit 필드 통일) | 중간 |

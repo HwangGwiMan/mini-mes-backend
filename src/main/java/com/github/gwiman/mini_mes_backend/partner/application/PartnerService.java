@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.partner.api.dto.PartnerRequest;
 import com.github.gwiman.mini_mes_backend.partner.api.dto.PartnerResponse;
 import com.github.gwiman.mini_mes_backend.partner.domain.Partner;
@@ -24,7 +25,7 @@ public class PartnerService {
 	private final PartnerQueryRepository partnerQueryRepository;
 
 	public List<PartnerResponse> findAll(String code, String name) {
-		return partnerRepository.search(escapeLike(code), escapeLike(name)).stream()
+		return partnerRepository.search(QueryParamEscaper.escapeLike(code), QueryParamEscaper.escapeLike(name)).stream()
 			.map(PartnerResponse::from)
 			.toList();
 	}
@@ -92,8 +93,4 @@ public class PartnerService {
 		}
 	}
 
-	private String escapeLike(String value) {
-		if (value == null || value.isBlank()) return null;
-		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
-	}
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.gwiman.mini_mes_backend.auth.application.AuthService;
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeResponse;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
@@ -50,7 +51,7 @@ public class QuoteService {
 
 	public List<QuoteResponse> findAll(String quoteNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
-		String quoteNumberPattern = buildLikePattern(quoteNumber);
+		String quoteNumberPattern = QueryParamEscaper.containsLike(quoteNumber);
 		return quoteQueryRepository.search(
 			quoteNumberPattern, partnerId, statusCode, fromDate, toDate
 		);
@@ -277,9 +278,4 @@ public class QuoteService {
 		return prefix + String.format("%03d", maxSeq + 1);
 	}
 
-	private String buildLikePattern(String value) {
-		if (value == null || value.isBlank()) return null;
-		String escaped = value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
-		return "%" + escaped + "%";
-	}
 }

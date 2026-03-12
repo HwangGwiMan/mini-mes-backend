@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.auth.domain.Role;
 import com.github.gwiman.mini_mes_backend.auth.domain.User;
 import com.github.gwiman.mini_mes_backend.auth.domain.UserRepository;
@@ -33,7 +34,7 @@ public class EmployeeService {
 	private final PasswordEncoder passwordEncoder;
 
 	public List<EmployeeResponse> findAll(String code, String name, String deptCode) {
-		return employeeRepository.search(escapeLike(code), escapeLike(name), deptCode).stream()
+		return employeeRepository.search(QueryParamEscaper.escapeLike(code), QueryParamEscaper.escapeLike(name), deptCode).stream()
 			.map(EmployeeResponse::from)
 			.toList();
 	}
@@ -143,8 +144,4 @@ public class EmployeeService {
 		}
 	}
 
-	private String escapeLike(String value) {
-		if (value == null || value.isBlank()) return null;
-		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
-	}
 }

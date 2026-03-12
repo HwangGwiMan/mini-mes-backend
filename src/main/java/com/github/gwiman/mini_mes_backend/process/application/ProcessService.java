@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.process.api.dto.ProcessRequest;
 import com.github.gwiman.mini_mes_backend.process.api.dto.ProcessResponse;
 import com.github.gwiman.mini_mes_backend.process.domain.Process;
@@ -24,7 +25,7 @@ public class ProcessService {
 	private final ProcessQueryRepository processQueryRepository;
 
 	public List<ProcessResponse> findAll(String code, String name) {
-		return processRepository.search(escapeLike(code), escapeLike(name)).stream()
+		return processRepository.search(QueryParamEscaper.escapeLike(code), QueryParamEscaper.escapeLike(name)).stream()
 			.map(ProcessResponse::from)
 			.toList();
 	}
@@ -76,8 +77,4 @@ public class ProcessService {
 		processRepository.deleteById(id);
 	}
 
-	private String escapeLike(String value) {
-		if (value == null || value.isBlank()) return null;
-		return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
-	}
 }
