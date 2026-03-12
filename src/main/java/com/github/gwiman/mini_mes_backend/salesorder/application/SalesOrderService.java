@@ -2,9 +2,7 @@ package com.github.gwiman.mini_mes_backend.salesorder.application;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -12,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.DocumentNumberGenerator;
 import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
@@ -35,8 +34,6 @@ import lombok.RequiredArgsConstructor;
 public class SalesOrderService {
 
 	private static final String ORDER_NUMBER_PREFIX = "SO_";
-	private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("yyyyMM");
-	private static final Pattern SEQUENCE_PATTERN = Pattern.compile(".*_(\\d+)$");
 
 	private final SalesOrderRepository salesOrderRepository;
 	private final SalesOrderQueryRepository salesOrderQueryRepository;
@@ -45,6 +42,7 @@ public class SalesOrderService {
 	private final ItemService itemService;
 	private final QuoteService quoteService;
 	private final ApplicationEventPublisher eventPublisher;
+	private final DocumentNumberGenerator documentNumberGenerator;
 
 	public List<SalesOrderResponse> findAll(String orderNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
@@ -195,17 +193,10 @@ public class SalesOrderService {
 	}
 
 	private String generateOrderNumber() {
-		String prefix = ORDER_NUMBER_PREFIX + LocalDate.now().format(MONTH_FORMAT) + "_";
-		String prefixPattern = prefix + "%";
-		int maxSeq = salesOrderQueryRepository.findMaxOrderNumberByPrefix(prefixPattern)
-			.stream()
-			.mapToInt(s -> {
-				var m = SEQUENCE_PATTERN.matcher(s);
-				return m.find() ? Integer.parseInt(m.group(1)) : 0;
-			})
-			.max()
-			.orElse(0);
-		return prefix + String.format("%03d", maxSeq + 1);
+		return documentNumberGenerator.generate(
+			ORDER_NUMBER_PREFIX,
+			com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder.SALES_ORDER.ORDER_NUMBER
+		);
 	}
 
 }

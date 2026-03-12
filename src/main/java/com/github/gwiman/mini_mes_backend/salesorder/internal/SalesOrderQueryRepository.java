@@ -107,13 +107,4 @@ public class SalesOrderQueryRepository {
 		return Optional.of(SalesOrderResponse.fromRecord(orderRecord, lines));
 	}
 
-	public Optional<String> findMaxOrderNumberByPrefix(String prefixPattern) {
-		SalesOrder so = SalesOrder.SALES_ORDER;
-		return dsl
-			.select(DSL.max(so.ORDER_NUMBER))
-			.from(so)
-			.where(so.ORDER_NUMBER.like(prefixPattern))
-			.fetchOptional()
-			.flatMap(r -> Optional.ofNullable(r.value1()));
-	}
 }

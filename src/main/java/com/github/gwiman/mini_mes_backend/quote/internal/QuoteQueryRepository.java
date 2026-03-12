@@ -117,13 +117,4 @@ public class QuoteQueryRepository {
 		return Optional.of(QuoteResponse.fromRecord(quoteRecord, lines));
 	}
 
-	public Optional<String> findMaxQuoteNumberByPrefix(String prefixPattern) {
-		Quote q = Quote.QUOTE;
-		return dsl
-			.select(DSL.max(q.QUOTE_NUMBER))
-			.from(q)
-			.where(q.QUOTE_NUMBER.like(prefixPattern))
-			.fetchOptional()
-			.flatMap(r -> Optional.ofNullable(r.value1()));
-	}
 }
