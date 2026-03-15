@@ -75,6 +75,8 @@ public class SalesOrderService {
 		addLines(order, request.getLines());
 
 		SalesOrder saved = salesOrderRepository.save(order);
+		// 출하 도메인이 수신해 출하 계획을 자동 생성한다
+		eventPublisher.publishEvent(new SalesOrderCreatedEvent(saved.getId()));
 		return salesOrderQueryRepository.findByIdWithLines(saved.getId())
 			.orElseThrow(() -> new ResourceNotFoundException("저장된 수주를 조회할 수 없습니다: " + saved.getId()));
 	}
@@ -154,6 +156,8 @@ public class SalesOrderService {
 
 		SalesOrder saved = salesOrderRepository.save(order);
 		eventPublisher.publishEvent(new QuoteConvertedToOrderEvent(quoteId));
+		// 견적 전환 수주도 출하 계획 자동 생성 대상
+		eventPublisher.publishEvent(new SalesOrderCreatedEvent(saved.getId()));
 
 		return salesOrderQueryRepository.findByIdWithLines(saved.getId())
 			.orElseThrow(() -> new ResourceNotFoundException("저장된 수주를 조회할 수 없습니다: " + saved.getId()));
