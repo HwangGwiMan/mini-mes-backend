@@ -1,6 +1,7 @@
 # Spring Modulith 경계 강화 계획
 
 > 작성일: 2026-03-17
+> 최종 업데이트: 2026-03-17 (전 작업 완료)
 
 ## 현황
 
@@ -106,9 +107,47 @@ class QuoteModuleTest {
 
 ## 작업 우선순위 요약
 
-| 우선순위 | 작업 | 기대 효과 |
-|---|---|---|
-| 높음 | `allowedDependencies` 선언 | 의도치 않은 의존 추가 즉시 감지 |
-| 높음 | `QuoteConvertedToOrderEvent` 이전 | 이벤트 발행 소유권 정상화 |
-| 높음 | `EmployeeResponse` 직접 참조 제거 | api 레이어 DTO 모듈 밖 유출 차단 |
-| 중간 | `@ApplicationModuleTest` 추가 | 모듈 격리 보장, 회귀 방지 |
+| 우선순위 | 작업 | 기대 효과 | 상태 |
+|---|---|---|---|
+| 높음 | `allowedDependencies` 선언 | 의도치 않은 의존 추가 즉시 감지 | ✅ 완료 |
+| 높음 | `QuoteConvertedToOrderEvent` 이전 | 이벤트 발행 소유권 정상화 | ✅ 완료 |
+| 높음 | `EmployeeResponse` 직접 참조 제거 | api 레이어 DTO 모듈 밖 유출 차단 | ✅ 완료 |
+| 중간 | `@ApplicationModuleTest` 추가 | 모듈 격리 보장, 회귀 방지 | ✅ 완료 |
+
+---
+
+## 구현 내역 (2026-03-17)
+
+### ① `allowedDependencies` 선언 — 커밋 `937aefc`
+
+- 10개 도메인 모듈 + `common` 모듈 `package-info.java`에 `allowedDependencies` 명시
+- Spring Modulith sub-package 접근 규칙에 따라 `"module::subpackage"` 형식 사용
+  - 예: `"employee::application"`, `"common::domain"`, `"jooq::tables"`
+- 노출이 필요한 sub-package(application, domain, exception, security, util)에 `@NamedInterface` 추가 (13개 파일)
+- `ApplicationModulesTest.verify()` 통과 확인
+
+### ② `QuoteConvertedToOrderEvent` 이전 — 커밋 `937aefc`
+
+- `salesorder.application.QuoteConvertedToOrderEvent` → `quote.application.QuoteConvertedToOrderEvent`
+- `SalesOrderService`, `QuoteEventHandler` import 경로 수정
+- 이벤트 발행 주체(`quote`)가 이벤트를 소유하고, 구독 주체(`salesorder`)가 참조하는 구조로 정상화
+
+### ③ `EmployeeResponse` 직접 참조 제거 — 커밋 `937aefc`
+
+- `EmployeeService.findNameById(Long id): String` 추가
+- `QuoteService`에서 `EmployeeResponse` 대신 `findNameById()` 호출로 변경
+- `QuoteService.findHeaderById(Long id): QuoteHeaderData` 추가, `QuoteHeaderData` record 신설
+- `SalesOrderService`에서 `QuoteResponse` 대신 `QuoteHeaderData` 사용
+- `ShipmentService`에서 `SalesOrderRepository` 직접 의존 제거 → `SalesOrderService.getOrderWithLines()` + `SalesOrderData` record 사용
+
+#### 부수 수정
+
+- `auth ↔ common` 순환 해소: `CustomUserDetailsService`를 `common.security` → `auth.application`으로 이동, `SecurityConfig`는 `UserDetailsService` 인터페이스로만 주입
+- `DataInitializer`를 루트 패키지로 이동 (common 모듈 외부 Bean 스캔 위반 해소)
+- `jooq/tables/package-info.java`를 `src/main/generated-jooq`로 이동 (Hibernate 엔티티 스캔 오류 해소)
+
+### ④ `@ApplicationModuleTest` 추가 — 커밋 `320a78a`
+
+- 10개 모듈(auth, commoncode, employee, item, partner, price, process, quote, salesorder, shipment)에 `*ModuleTest.java` 추가
+- `STANDALONE` 모드: 해당 모듈 Bean만 로드, 외부 모듈 의존은 자동 Mock 처리
+- PostgreSQL 기동 시 `contextLoads()` 통과로 모듈 경계 위반 조기 감지
