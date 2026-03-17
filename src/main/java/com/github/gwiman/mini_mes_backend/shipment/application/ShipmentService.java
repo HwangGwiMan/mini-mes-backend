@@ -14,9 +14,8 @@ import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolation
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.common.util.DocumentNumberGenerator;
 import com.github.gwiman.mini_mes_backend.salesorder.application.SalesOrderCreatedEvent;
-import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrder;
-import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderLine;
-import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderRepository;
+import com.github.gwiman.mini_mes_backend.salesorder.application.SalesOrderData;
+import com.github.gwiman.mini_mes_backend.salesorder.application.SalesOrderService;
 import com.github.gwiman.mini_mes_backend.shipment.api.dto.ShipmentCompleteRequest;
 import com.github.gwiman.mini_mes_backend.shipment.api.dto.ShipmentResponse;
 import com.github.gwiman.mini_mes_backend.shipment.api.dto.ShipmentUpdateRequest;
@@ -43,7 +42,7 @@ public class ShipmentService {
 
 	private final ShipmentRepository shipmentRepository;
 	private final ShipmentQueryRepository shipmentQueryRepository;
-	private final SalesOrderRepository salesOrderRepository;
+	private final SalesOrderService salesOrderService;
 	private final DocumentNumberGenerator documentNumberGenerator;
 
 	public List<ShipmentResponse> findAll(String statusCode, Long salesOrderId, Long partnerId,
@@ -71,31 +70,30 @@ public class ShipmentService {
 	 */
 	@Transactional
 	public ShipmentResponse createFromOrder(Long salesOrderId) {
-		SalesOrder order = salesOrderRepository.findByIdWithLines(salesOrderId)
-			.orElseThrow(() -> new ResourceNotFoundException("수주를 찾을 수 없습니다: " + salesOrderId));
+		SalesOrderData order = salesOrderService.getOrderWithLines(salesOrderId);
 
 		String shipmentNumber = generateShipmentNumber();
 
 		Shipment shipment = new Shipment(
 			shipmentNumber,
-			order.getId(),
-			order.getPartnerId(),
-			order.getEmployeeId(),
+			order.id(),
+			order.partnerId(),
+			order.employeeId(),
 			STATUS_WAITING,
 			""
 		);
 
 		int sortOrder = 0;
-		for (SalesOrderLine orderLine : order.getLines()) {
-			BigDecimal plannedAmount = orderLine.getQuantity().multiply(orderLine.getUnitPrice());
+		for (SalesOrderData.Line orderLine : order.lines()) {
+			BigDecimal plannedAmount = orderLine.quantity().multiply(orderLine.unitPrice());
 			ShipmentLine line = new ShipmentLine(
 				shipment,
-				orderLine.getId(),
-				orderLine.getItemId(),
-				orderLine.getQuantity(),
-				orderLine.getUnitPrice(),
+				orderLine.id(),
+				orderLine.itemId(),
+				orderLine.quantity(),
+				orderLine.unitPrice(),
 				plannedAmount,
-				orderLine.getRemarks() != null ? orderLine.getRemarks() : "",
+				orderLine.remarks() != null ? orderLine.remarks() : "",
 				sortOrder++
 			);
 			shipment.addLine(line);

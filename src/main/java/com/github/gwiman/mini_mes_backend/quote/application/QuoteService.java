@@ -12,7 +12,6 @@ import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolation
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.common.util.DocumentNumberGenerator;
 import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
-import com.github.gwiman.mini_mes_backend.employee.api.dto.EmployeeResponse;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
@@ -56,6 +55,13 @@ public class QuoteService {
 
 	public QuoteResponse findById(Long id) {
 		return quoteQueryRepository.findByIdWithLines(id)
+			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + id));
+	}
+
+	/** 타 모듈(salesorder)에서 견적 전환 시 필요한 헤더 정보만 반환 — api DTO 직접 노출 방지 */
+	public QuoteHeaderData findHeaderById(Long id) {
+		return quoteRepository.findById(id)
+			.map(q -> new QuoteHeaderData(q.getId(), q.getStatusCode(), q.getPartnerId(), q.getEmployeeId()))
 			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + id));
 	}
 
@@ -214,10 +220,10 @@ public class QuoteService {
 			throw new BusinessRuleViolationException("지정된 결재자만 승인할 수 있습니다.");
 		}
 
-		EmployeeResponse approver = employeeService.findById(currentEmployeeId);
+		String approverName = employeeService.findNameById(currentEmployeeId);
 		quoteApprovalRepository.save(new QuoteApproval(
 			quoteId, currentEmployeeId, currentUsername,
-			approver.getName(), "APPROVED", request.getComment()
+			approverName, "APPROVED", request.getComment()
 		));
 
 		quote.updateStatus("QUOTE_STATUS_03");
@@ -237,10 +243,10 @@ public class QuoteService {
 			throw new BusinessRuleViolationException("지정된 결재자만 반려할 수 있습니다.");
 		}
 
-		EmployeeResponse approver = employeeService.findById(currentEmployeeId);
+		String approverName = employeeService.findNameById(currentEmployeeId);
 		quoteApprovalRepository.save(new QuoteApproval(
 			quoteId, currentEmployeeId, currentUsername,
-			approver.getName(), "REJECTED", request.getComment()
+			approverName, "REJECTED", request.getComment()
 		));
 
 		quote.updateStatus("QUOTE_STATUS_04");

@@ -15,7 +15,8 @@ import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
-import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteResponse;
+import com.github.gwiman.mini_mes_backend.quote.application.QuoteConvertedToOrderEvent;
+import com.github.gwiman.mini_mes_backend.quote.application.QuoteHeaderData;
 import com.github.gwiman.mini_mes_backend.quote.application.QuoteLineData;
 import com.github.gwiman.mini_mes_backend.quote.application.QuoteService;
 import com.github.gwiman.mini_mes_backend.salesorder.api.dto.SalesOrderLineRequest;
@@ -53,6 +54,16 @@ public class SalesOrderService {
 	public SalesOrderResponse findById(Long id) {
 		return salesOrderQueryRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new ResourceNotFoundException("수주를 찾을 수 없습니다: " + id));
+	}
+
+	/** 타 모듈(shipment)에서 출하 계획 생성 시 필요한 수주 데이터 반환 — domain 엔티티 직접 노출 방지 */
+	public SalesOrderData getOrderWithLines(Long id) {
+		SalesOrder order = salesOrderRepository.findByIdWithLines(id)
+			.orElseThrow(() -> new ResourceNotFoundException("수주를 찾을 수 없습니다: " + id));
+		List<SalesOrderData.Line> lines = order.getLines().stream()
+			.map(l -> new SalesOrderData.Line(l.getId(), l.getItemId(), l.getQuantity(), l.getUnitPrice(), l.getRemarks()))
+			.toList();
+		return new SalesOrderData(order.getId(), order.getPartnerId(), order.getEmployeeId(), lines);
 	}
 
 	@Transactional
@@ -119,8 +130,8 @@ public class SalesOrderService {
 			throw new BusinessRuleViolationException("이미 수주 전환된 견적입니다: " + quoteId);
 		}
 
-		QuoteResponse quoteHeader = quoteService.findById(quoteId);
-		if (!"QUOTE_STATUS_03".equals(quoteHeader.getStatusCode())) {
+		QuoteHeaderData quoteHeader = quoteService.findHeaderById(quoteId);
+		if (!"QUOTE_STATUS_03".equals(quoteHeader.statusCode())) {
 			throw new BusinessRuleViolationException("승인된 견적만 수주전환이 가능합니다.");
 		}
 		List<QuoteLineData> quoteLines = quoteService.getLines(quoteId);
@@ -131,8 +142,8 @@ public class SalesOrderService {
 			orderNumber,
 			LocalDate.now(),
 			null,
-			quoteHeader.getPartnerId(),
-			quoteHeader.getEmployeeId(),
+			quoteHeader.partnerId(),
+			quoteHeader.employeeId(),
 			quoteId,
 			"ORDER_STATUS_01",
 			""

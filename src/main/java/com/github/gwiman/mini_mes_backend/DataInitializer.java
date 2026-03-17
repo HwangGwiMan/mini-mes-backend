@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.common.config;
+package com.github.gwiman.mini_mes_backend;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -13,6 +13,11 @@ import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 로컬 개발 환경 초기 데이터 적재.
+ * common 모듈 내에 두면 common ↔ auth 순환 의존이 발생하므로
+ * Spring Modulith 모듈 경계 밖인 애플리케이션 루트 패키지에 위치.
+ */
 @Component
 @Profile("local")
 @RequiredArgsConstructor

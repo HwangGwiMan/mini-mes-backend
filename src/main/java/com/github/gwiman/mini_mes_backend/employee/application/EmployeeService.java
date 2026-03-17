@@ -44,6 +44,13 @@ public class EmployeeService {
 			.orElseThrow(() -> new ResourceNotFoundException("사원을 찾을 수 없습니다: " + id));
 	}
 
+	/** 타 모듈에서 사원 이름만 필요한 경우 — api DTO 직접 노출 없이 스칼라 값 반환 */
+	public String findNameById(Long id) {
+		return employeeQueryRepository.findById(id)
+			.map(EmployeeResponse::getName)
+			.orElseThrow(() -> new ResourceNotFoundException("사원을 찾을 수 없습니다: " + id));
+	}
+
 	@Transactional
 	public EmployeeResponse create(EmployeeRequest request) {
 		if (employeeRepository.existsByCode(request.getCode())) {
