@@ -4,7 +4,7 @@
 
 ## 개요
 
-현재 12개 컨트롤러가 존재하며 도메인이 계속 추가되는 시점이다.
+현재 REST 컨트롤러 11개가 존재하며 도메인이 계속 추가되는 시점이다(`AuthGraphqlController`는 GraphQL 전용으로 문서화 대상 제외).
 JWT 인증이 있어 Postman/curl 설정이 번거롭고, 프론트엔드 협업 시 API 명세가 없다.
 `springdoc-openapi`를 도입하여 코드에서 문서를 자동 생성하고 Swagger UI로 직접 테스트할 수 있게 한다.
 
@@ -17,7 +17,7 @@ JWT 인증이 있어 Postman/curl 설정이 번거롭고, 프론트엔드 협업
 | `springdoc-openapi` | **선택** — Spring Boot 3/4 공식 지원, 활발한 유지보수 |
 | `springfox` | 제외 — Spring Boot 3 미지원, 사실상 deprecated |
 
-Spring Boot 4.0.3 기준 `springdoc-openapi 2.x` 사용.
+Spring Boot 4.0.3 기준 `springdoc-openapi 3.x` 사용.
 
 ---
 
@@ -25,7 +25,7 @@ Spring Boot 4.0.3 기준 `springdoc-openapi 2.x` 사용.
 
 ```gradle
 // build.gradle
-implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
+implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0'
 ```
 
 ---
@@ -193,9 +193,9 @@ public class QuoteController { ... }
 | 컨트롤러 | 엔드포인트 | 전이 규칙 |
 |---|---|---|
 | QuoteController | `PATCH /{id}/submit` | DRAFT → SUBMITTED. 담당자 또는 관리자만 허용 |
-| QuoteController | `PATCH /{id}/approve` | SUBMITTED → APPROVED. 관리자만 허용 |
-| QuoteController | `PATCH /{id}/reject` | SUBMITTED → REJECTED. 관리자만 허용 |
-| QuoteController | `PATCH /{id}/convert` | APPROVED 상태 견적만 수주 전환 가능 |
+| QuoteController | `POST /{id}/approve` | SUBMITTED → APPROVED. 관리자만 허용 |
+| QuoteController | `POST /{id}/reject` | SUBMITTED → REJECTED. 관리자만 허용 |
+| SalesOrderController | `POST /from-quote/{quoteId}` | APPROVED 상태 견적만 수주 전환 가능 |
 | ShipmentController | `POST /{id}/complete` | 출하대기(SHIPMENT_STATUS_01) 상태에서만 출하완료(SHIPMENT_STATUS_03)로 전환 가능 |
 
 - [ ] 위 5개 엔드포인트에 `@Operation(summary = "...", description = "...")` 추가
