@@ -168,6 +168,8 @@ public class QuoteController { ... }
 | SalesOrderController | 수주 (SalesOrder) |
 | ShipmentController | 출하 (Shipment) |
 
+> **제외 대상**: `AuthGraphqlController` — GraphQL 엔드포인트(`/graphql`)는 REST OpenAPI 문서 대상이 아니므로 `@Tag` 적용 제외.
+
 ---
 
 ## 구현 순서
@@ -185,7 +187,21 @@ public class QuoteController { ... }
 - [ ] 전체 컨트롤러(11개)에 `@Tag` 추가
 
 ### Step 4. 선택적 어노테이션 보완
-- [ ] 상태 전이 API(`submit`, `approve`, `reject`, `convert` 등) — `@Operation` 추가
+
+#### 상태 전이 API — `@Operation` 추가 대상
+
+| 컨트롤러 | 엔드포인트 | 전이 규칙 |
+|---|---|---|
+| QuoteController | `PATCH /{id}/submit` | DRAFT → SUBMITTED. 담당자 또는 관리자만 허용 |
+| QuoteController | `PATCH /{id}/approve` | SUBMITTED → APPROVED. 관리자만 허용 |
+| QuoteController | `PATCH /{id}/reject` | SUBMITTED → REJECTED. 관리자만 허용 |
+| QuoteController | `PATCH /{id}/convert` | APPROVED 상태 견적만 수주 전환 가능 |
+| ShipmentController | `POST /{id}/complete` | 출하대기(SHIPMENT_STATUS_01) 상태에서만 출하완료(SHIPMENT_STATUS_03)로 전환 가능 |
+
+- [ ] 위 5개 엔드포인트에 `@Operation(summary = "...", description = "...")` 추가
+
+#### 제한된 DTO 필드 — `@Schema(example = "...")` 추가 대상
+
 - [ ] 상태 코드 필드 등 허용값이 제한된 DTO 필드 — `@Schema(example = "...")` 추가
 
 ---

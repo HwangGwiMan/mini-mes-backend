@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.price.api.dto;
+package com.github.gwiman.mini_mes_backend.itemprice.api.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

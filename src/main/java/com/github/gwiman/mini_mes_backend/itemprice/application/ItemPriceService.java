@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.price.application;
+package com.github.gwiman.mini_mes_backend.itemprice.application;
 
 import java.util.List;
 
@@ -9,11 +9,11 @@ import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolation
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
 import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
-import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceRequest;
-import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceResponse;
-import com.github.gwiman.mini_mes_backend.price.domain.ItemPrice;
-import com.github.gwiman.mini_mes_backend.price.domain.ItemPriceRepository;
-import com.github.gwiman.mini_mes_backend.price.internal.ItemPriceQueryRepository;
+import com.github.gwiman.mini_mes_backend.itemprice.api.dto.ItemPriceRequest;
+import com.github.gwiman.mini_mes_backend.itemprice.api.dto.ItemPriceResponse;
+import com.github.gwiman.mini_mes_backend.itemprice.domain.ItemPrice;
+import com.github.gwiman.mini_mes_backend.itemprice.domain.ItemPriceRepository;
+import com.github.gwiman.mini_mes_backend.itemprice.internal.ItemPriceQueryRepository;
 
 import lombok.RequiredArgsConstructor;
 

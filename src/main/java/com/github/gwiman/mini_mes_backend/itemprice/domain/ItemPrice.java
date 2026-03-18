@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.price.domain;
+package com.github.gwiman.mini_mes_backend.itemprice.domain;
 
 import java.math.BigDecimal;
 

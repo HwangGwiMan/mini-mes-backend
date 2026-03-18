@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.price.api;
+package com.github.gwiman.mini_mes_backend.itemprice.api;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceRequest;
-import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceResponse;
-import com.github.gwiman.mini_mes_backend.price.application.ItemPriceService;
+import com.github.gwiman.mini_mes_backend.itemprice.api.dto.ItemPriceRequest;
+import com.github.gwiman.mini_mes_backend.itemprice.api.dto.ItemPriceResponse;
+import com.github.gwiman.mini_mes_backend.itemprice.application.ItemPriceService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

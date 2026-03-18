@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.price.internal;
+package com.github.gwiman.mini_mes_backend.itemprice.internal;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,7 +15,7 @@ import org.jooq.impl.SQLDataType;
 import org.springframework.stereotype.Component;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
-import com.github.gwiman.mini_mes_backend.price.api.dto.ItemPriceResponse;
+import com.github.gwiman.mini_mes_backend.itemprice.api.dto.ItemPriceResponse;
 
 import lombok.RequiredArgsConstructor;
 
