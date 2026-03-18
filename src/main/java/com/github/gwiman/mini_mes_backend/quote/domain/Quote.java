@@ -54,7 +54,7 @@ public class Quote extends BaseEntity {
 	@OneToMany(mappedBy = "quote", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<QuoteLine> lines = new ArrayList<>();
 
-	public Quote(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
+	private Quote(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
 		Long partnerId, Long employeeId, Long approverId, String statusCode, String remarks) {
 		this.quoteNumber = quoteNumber;
 		this.quoteDate = quoteDate;
@@ -64,6 +64,13 @@ public class Quote extends BaseEntity {
 		this.approverId = approverId;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
+	}
+
+	/** 신규 견적 생성 — 초기 상태는 항상 작성중(QUOTE_STATUS_01) */
+	public static Quote create(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
+		Long partnerId, Long employeeId, Long approverId, String remarks) {
+		return new Quote(quoteNumber, quoteDate, validUntil,
+			partnerId, employeeId, approverId, "QUOTE_STATUS_01", remarks != null ? remarks : "");
 	}
 
 	public void update(LocalDate quoteDate, LocalDate validUntil,

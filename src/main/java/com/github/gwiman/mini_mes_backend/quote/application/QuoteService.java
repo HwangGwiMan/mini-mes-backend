@@ -1,6 +1,5 @@
 package com.github.gwiman.mini_mes_backend.quote.application;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -84,31 +83,16 @@ public class QuoteService {
 
 		String quoteNumber = generateQuoteNumber();
 
-		Quote quote = new Quote(
-			quoteNumber,
-			request.getQuoteDate(),
-			request.getValidUntil(),
-			request.getPartnerId(),
-			request.getEmployeeId(),
-			request.getApproverId(),
-			"QUOTE_STATUS_01",
-			request.getRemarks() != null ? request.getRemarks() : ""
-		);
+		Quote quote = Quote.create(quoteNumber,
+			request.getQuoteDate(), request.getValidUntil(),
+			request.getPartnerId(), request.getEmployeeId(),
+			request.getApproverId(), request.getRemarks());
 
 		int sortOrder = 0;
 		for (QuoteLineRequest lineReq : request.getLines()) {
-			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
-			QuoteLine line = new QuoteLine(
-				quote,
-				lineReq.getItemId(),
-				lineReq.getQuantity(),
-				lineReq.getUnitPrice(),
-				amount,
-				lineReq.getDeliveryRequestDate(),
-				lineReq.getRemarks(),
-				sortOrder++
-			);
-			quote.addLine(line);
+			quote.addLine(QuoteLine.of(quote,
+				lineReq.getItemId(), lineReq.getQuantity(), lineReq.getUnitPrice(),
+				lineReq.getDeliveryRequestDate(), lineReq.getRemarks(), sortOrder++));
 		}
 
 		Quote saved = quoteRepository.save(quote);
@@ -138,18 +122,9 @@ public class QuoteService {
 		quote.clearLines();
 		int sortOrder = 0;
 		for (QuoteLineRequest lineReq : request.getLines()) {
-			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
-			QuoteLine line = new QuoteLine(
-				quote,
-				lineReq.getItemId(),
-				lineReq.getQuantity(),
-				lineReq.getUnitPrice(),
-				amount,
-				lineReq.getDeliveryRequestDate(),
-				lineReq.getRemarks(),
-				sortOrder++
-			);
-			quote.addLine(line);
+			quote.addLine(QuoteLine.of(quote,
+				lineReq.getItemId(), lineReq.getQuantity(), lineReq.getUnitPrice(),
+				lineReq.getDeliveryRequestDate(), lineReq.getRemarks(), sortOrder++));
 		}
 
 		return quoteQueryRepository.findByIdWithLines(id)

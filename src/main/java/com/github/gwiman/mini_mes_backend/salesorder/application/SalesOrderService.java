@@ -1,6 +1,5 @@
 package com.github.gwiman.mini_mes_backend.salesorder.application;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -72,16 +71,10 @@ public class SalesOrderService {
 		validatePartner(request.getPartnerId());
 		validateEmployee(request.getEmployeeId());
 
-		SalesOrder order = new SalesOrder(
-			orderNumber,
-			request.getOrderDate(),
-			request.getDeliveryDate(),
-			request.getPartnerId(),
-			request.getEmployeeId(),
-			request.getQuoteId(),
-			request.getStatusCode() != null ? request.getStatusCode() : "",
-			request.getRemarks() != null ? request.getRemarks() : ""
-		);
+		SalesOrder order = SalesOrder.create(orderNumber,
+			request.getOrderDate(), request.getDeliveryDate(),
+			request.getPartnerId(), request.getEmployeeId(),
+			request.getQuoteId(), request.getStatusCode(), request.getRemarks());
 
 		addLines(order, request.getLines());
 
@@ -138,31 +131,15 @@ public class SalesOrderService {
 
 		String orderNumber = generateOrderNumber();
 
-		SalesOrder order = new SalesOrder(
-			orderNumber,
-			LocalDate.now(),
-			null,
-			quoteHeader.partnerId(),
-			quoteHeader.employeeId(),
-			quoteId,
-			"ORDER_STATUS_01",
-			""
-		);
+		SalesOrder order = SalesOrder.fromQuote(orderNumber, quoteId,
+			quoteHeader.partnerId(), quoteHeader.employeeId());
 
 		int sortOrder = 0;
 		for (QuoteLineData quoteLine : quoteLines) {
-			BigDecimal amount = quoteLine.quantity().multiply(quoteLine.unitPrice());
-			SalesOrderLine line = new SalesOrderLine(
-				order,
-				quoteLine.itemId(),
-				quoteLine.quantity(),
-				quoteLine.unitPrice(),
-				amount,
+			order.addLine(SalesOrderLine.of(order,
+				quoteLine.itemId(), quoteLine.quantity(), quoteLine.unitPrice(),
 				quoteLine.deliveryRequestDate(),
-				quoteLine.remarks() != null ? quoteLine.remarks() : "",
-				sortOrder++
-			);
-			order.addLine(line);
+				quoteLine.remarks() != null ? quoteLine.remarks() : "", sortOrder++));
 		}
 
 		SalesOrder saved = salesOrderRepository.save(order);
@@ -180,18 +157,10 @@ public class SalesOrderService {
 			if (!itemService.exists(lineReq.getItemId())) {
 				throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
 			}
-			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
-			SalesOrderLine line = new SalesOrderLine(
-				order,
-				lineReq.getItemId(),
-				lineReq.getQuantity(),
-				lineReq.getUnitPrice(),
-				amount,
+			order.addLine(SalesOrderLine.of(order,
+				lineReq.getItemId(), lineReq.getQuantity(), lineReq.getUnitPrice(),
 				lineReq.getDeliveryRequestDate(),
-				lineReq.getRemarks() != null ? lineReq.getRemarks() : "",
-				sortOrder++
-			);
-			order.addLine(line);
+				lineReq.getRemarks() != null ? lineReq.getRemarks() : "", sortOrder++));
 		}
 	}
 

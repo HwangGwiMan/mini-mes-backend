@@ -49,7 +49,7 @@ public class QuoteLine {
 
 	private int sortOrder;
 
-	public QuoteLine(Quote quote, Long itemId, BigDecimal quantity, BigDecimal unitPrice,
+	private QuoteLine(Quote quote, Long itemId, BigDecimal quantity, BigDecimal unitPrice,
 		BigDecimal amount, LocalDate deliveryRequestDate, String remarks, int sortOrder) {
 		this.quote = quote;
 		this.itemId = itemId;
@@ -59,6 +59,13 @@ public class QuoteLine {
 		this.deliveryRequestDate = deliveryRequestDate;
 		this.remarks = remarks;
 		this.sortOrder = sortOrder;
+	}
+
+	/** amount = quantity * unitPrice 계산을 내부에서 처리 */
+	public static QuoteLine of(Quote quote, Long itemId, BigDecimal quantity,
+		BigDecimal unitPrice, LocalDate deliveryRequestDate, String remarks, int sortOrder) {
+		return new QuoteLine(quote, itemId, quantity, unitPrice,
+			quantity.multiply(unitPrice), deliveryRequestDate, remarks, sortOrder);
 	}
 
 	public void update(Long itemId, BigDecimal quantity, BigDecimal unitPrice,

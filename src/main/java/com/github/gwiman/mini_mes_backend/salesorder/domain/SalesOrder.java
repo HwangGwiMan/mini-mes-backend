@@ -53,7 +53,7 @@ public class SalesOrder extends BaseEntity {
 	@OneToMany(mappedBy = "salesOrder", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<SalesOrderLine> lines = new ArrayList<>();
 
-	public SalesOrder(String orderNumber, LocalDate orderDate, LocalDate deliveryDate,
+	private SalesOrder(String orderNumber, LocalDate orderDate, LocalDate deliveryDate,
 		Long partnerId, Long employeeId, Long quoteId, String statusCode, String remarks) {
 		this.orderNumber = orderNumber;
 		this.orderDate = orderDate;
@@ -63,6 +63,22 @@ public class SalesOrder extends BaseEntity {
 		this.quoteId = quoteId;
 		this.statusCode = statusCode;
 		this.remarks = remarks;
+	}
+
+	/** 직접 수주 생성 — 상태 코드는 요청값을 그대로 사용 */
+	public static SalesOrder create(String orderNumber, LocalDate orderDate, LocalDate deliveryDate,
+		Long partnerId, Long employeeId, Long quoteId, String statusCode, String remarks) {
+		return new SalesOrder(orderNumber, orderDate, deliveryDate,
+			partnerId, employeeId, quoteId,
+			statusCode != null ? statusCode : "",
+			remarks != null ? remarks : "");
+	}
+
+	/** 견적 전환 수주 생성 — 수주일은 오늘, 초기 상태는 항상 접수(ORDER_STATUS_01) */
+	public static SalesOrder fromQuote(String orderNumber, Long quoteId,
+		Long partnerId, Long employeeId) {
+		return new SalesOrder(orderNumber, LocalDate.now(), null,
+			partnerId, employeeId, quoteId, "ORDER_STATUS_01", "");
 	}
 
 	public void update(LocalDate orderDate, LocalDate deliveryDate,

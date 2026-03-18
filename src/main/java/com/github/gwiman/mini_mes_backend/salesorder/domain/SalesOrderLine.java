@@ -49,7 +49,7 @@ public class SalesOrderLine {
 
 	private int sortOrder;
 
-	public SalesOrderLine(SalesOrder salesOrder, Long itemId, BigDecimal quantity,
+	private SalesOrderLine(SalesOrder salesOrder, Long itemId, BigDecimal quantity,
 		BigDecimal unitPrice, BigDecimal amount, LocalDate deliveryRequestDate,
 		String remarks, int sortOrder) {
 		this.salesOrder = salesOrder;
@@ -60,6 +60,13 @@ public class SalesOrderLine {
 		this.deliveryRequestDate = deliveryRequestDate;
 		this.remarks = remarks;
 		this.sortOrder = sortOrder;
+	}
+
+	/** amount = quantity * unitPrice 계산을 내부에서 처리 */
+	public static SalesOrderLine of(SalesOrder salesOrder, Long itemId, BigDecimal quantity,
+		BigDecimal unitPrice, LocalDate deliveryRequestDate, String remarks, int sortOrder) {
+		return new SalesOrderLine(salesOrder, itemId, quantity, unitPrice,
+			quantity.multiply(unitPrice), deliveryRequestDate, remarks, sortOrder);
 	}
 
 	public void update(Long itemId, BigDecimal quantity, BigDecimal unitPrice,
