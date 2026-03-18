@@ -13,8 +13,6 @@ import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundExcep
 import com.github.gwiman.mini_mes_backend.common.util.DocumentNumberGenerator;
 import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
 import com.github.gwiman.mini_mes_backend.employee.application.EmployeeService;
-import com.github.gwiman.mini_mes_backend.item.application.ItemService;
-import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.ApprovalRequest;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.ApprovalResponse;
 import com.github.gwiman.mini_mes_backend.quote.api.dto.QuoteLineRequest;
@@ -39,9 +37,8 @@ public class QuoteService {
 	private final QuoteRepository quoteRepository;
 	private final QuoteQueryRepository quoteQueryRepository;
 	private final QuoteApprovalRepository quoteApprovalRepository;
-	private final PartnerService partnerService;
+	private final QuoteValidator quoteValidator;
 	private final EmployeeService employeeService;
-	private final ItemService itemService;
 	private final AuthService authService;
 	private final DocumentNumberGenerator documentNumberGenerator;
 
@@ -82,17 +79,10 @@ public class QuoteService {
 
 	@Transactional
 	public QuoteResponse create(QuoteRequest request) {
-		String quoteNumber = generateQuoteNumber();
+		quoteValidator.validateHeader(request);
+		quoteValidator.validateLines(request.getLines());
 
-		if (!partnerService.exists(request.getPartnerId())) {
-			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
-		}
-		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
-			throw new ResourceNotFoundException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
-		}
-		if (!employeeService.exists(request.getApproverId())) {
-			throw new ResourceNotFoundException("결재자를 찾을 수 없습니다: " + request.getApproverId());
-		}
+		String quoteNumber = generateQuoteNumber();
 
 		Quote quote = new Quote(
 			quoteNumber,
@@ -107,10 +97,6 @@ public class QuoteService {
 
 		int sortOrder = 0;
 		for (QuoteLineRequest lineReq : request.getLines()) {
-			if (!itemService.exists(lineReq.getItemId())) {
-				throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
-			}
-
 			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
 			QuoteLine line = new QuoteLine(
 				quote,
@@ -135,15 +121,7 @@ public class QuoteService {
 		Quote quote = quoteRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + id));
 
-		if (!partnerService.exists(request.getPartnerId())) {
-			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
-		}
-		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
-			throw new ResourceNotFoundException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
-		}
-		if (!employeeService.exists(request.getApproverId())) {
-			throw new ResourceNotFoundException("결재자를 찾을 수 없습니다: " + request.getApproverId());
-		}
+		quoteValidator.validateHeader(request);
 
 		// Quote.update() will throw if status is QUOTE_STATUS_02
 		quote.update(
@@ -155,13 +133,11 @@ public class QuoteService {
 			request.getRemarks() != null ? request.getRemarks() : ""
 		);
 
+		quoteValidator.validateLines(request.getLines());
+
 		quote.clearLines();
 		int sortOrder = 0;
 		for (QuoteLineRequest lineReq : request.getLines()) {
-			if (!itemService.exists(lineReq.getItemId())) {
-				throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
-			}
-
 			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
 			QuoteLine line = new QuoteLine(
 				quote,

@@ -1,6 +1,8 @@
 package com.github.gwiman.mini_mes_backend.item.application;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +70,13 @@ public class ItemService {
 
 	public boolean exists(Long id) {
 		return itemRepository.existsById(id);
+	}
+
+	/** 여러 품목 ID의 존재 여부를 IN 쿼리 한 번으로 확인 — N+1 방지용 */
+	public Set<Long> findExistingIds(Set<Long> ids) {
+		return itemRepository.findAllById(ids).stream()
+			.map(Item::getId)
+			.collect(Collectors.toSet());
 	}
 
 	@Transactional
