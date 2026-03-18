@@ -193,8 +193,7 @@ public class QuoteService {
 		Quote quote = quoteRepository.findById(quoteId)
 			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId));
 
-		String status = quote.getStatusCode();
-		if (!"QUOTE_STATUS_01".equals(status) && !"QUOTE_STATUS_04".equals(status)) {
+		if (!quote.canSubmit()) {
 			throw new BusinessRuleViolationException("작성중 또는 반려 상태의 견적만 제출할 수 있습니다.");
 		}
 
@@ -211,7 +210,7 @@ public class QuoteService {
 		Quote quote = quoteRepository.findById(quoteId)
 			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId));
 
-		if (!"QUOTE_STATUS_02".equals(quote.getStatusCode())) {
+		if (!quote.canApprove()) {
 			throw new BusinessRuleViolationException("제출 상태의 견적만 승인할 수 있습니다.");
 		}
 
@@ -234,7 +233,7 @@ public class QuoteService {
 		Quote quote = quoteRepository.findById(quoteId)
 			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + quoteId));
 
-		if (!"QUOTE_STATUS_02".equals(quote.getStatusCode())) {
+		if (!quote.canApprove()) {
 			throw new BusinessRuleViolationException("제출 상태의 견적만 반려할 수 있습니다.");
 		}
 

@@ -90,4 +90,14 @@ public class Quote extends BaseEntity {
 	public void updateStatus(String statusCode) {
 		this.statusCode = statusCode;
 	}
+
+	/** 작성중(01) 또는 반려(04) 상태만 제출 가능 */
+	public boolean canSubmit() {
+		return "QUOTE_STATUS_01".equals(this.statusCode) || "QUOTE_STATUS_04".equals(this.statusCode);
+	}
+
+	/** 제출(02) 상태만 승인/반려 가능 */
+	public boolean canApprove() {
+		return "QUOTE_STATUS_02".equals(this.statusCode);
+	}
 }
