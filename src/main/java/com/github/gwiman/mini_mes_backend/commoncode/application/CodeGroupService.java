@@ -111,6 +111,11 @@ public class CodeGroupService {
 		createCommonCodeIfAbsent("SHIPMENT_STATUS", "SHIPMENT_STATUS_01", "출하대기", 1);
 		createCommonCodeIfAbsent("SHIPMENT_STATUS", "SHIPMENT_STATUS_02", "출하중", 2);
 		createCommonCodeIfAbsent("SHIPMENT_STATUS", "SHIPMENT_STATUS_03", "출하완료", 3);
+
+		createCodeGroupIfAbsent("REVENUE_STATUS", "매출상태", 10);
+		createCommonCodeIfAbsent("REVENUE_STATUS", "REVENUE_STATUS_01", "초안", 1);
+		createCommonCodeIfAbsent("REVENUE_STATUS", "REVENUE_STATUS_02", "마감", 2);
+		createCommonCodeIfAbsent("REVENUE_STATUS", "REVENUE_STATUS_03", "취소", 3);
 	}
 
 	private void createCodeGroupIfAbsent(String groupCode, String groupName, int sortOrder) {
