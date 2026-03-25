@@ -15,8 +15,8 @@ import com.github.gwiman.mini_mes_backend.bom.domain.Bom;
 import com.github.gwiman.mini_mes_backend.bom.domain.BomLine;
 import com.github.gwiman.mini_mes_backend.bom.domain.BomRepository;
 import com.github.gwiman.mini_mes_backend.bom.internal.BomQueryRepository;
-import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
+import com.github.gwiman.mini_mes_backend.common.util.Guard;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 
 import lombok.RequiredArgsConstructor;
@@ -43,8 +43,7 @@ public class BomService {
 	}
 
 	public BomResponse findById(Long id) {
-		return bomQueryRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new ResourceNotFoundException("BOM을 찾을 수 없습니다: " + id));
+		return Guard.requireFound(bomQueryRepository.findByIdWithLines(id), "BOM을 찾을 수 없습니다: " + id);
 	}
 
 	public List<BomResponse> findByItemId(Long itemId) {
@@ -54,15 +53,12 @@ public class BomService {
 	@Transactional
 	public BomResponse create(BomCreateRequest request) {
 		// 완제품 품목 존재 여부 검증
-		if (!itemService.exists(request.getItemId())) {
-			throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + request.getItemId());
-		}
+		Guard.requireExists(itemService.exists(request.getItemId()), "품목을 찾을 수 없습니다: " + request.getItemId());
 
 		// 동일 (itemId, version) 중복 방지
-		if (bomRepository.existsByItemIdAndVersion(request.getItemId(), request.getVersion())) {
-			throw new BusinessRuleViolationException(
-				"동일 품목(" + request.getItemId() + ")의 '" + request.getVersion() + "' 버전 BOM이 이미 존재합니다.");
-		}
+		Guard.requireNotExists(
+			bomRepository.existsByItemIdAndVersion(request.getItemId(), request.getVersion()),
+			"동일 품목(" + request.getItemId() + ")의 '" + request.getVersion() + "' 버전 BOM이 이미 존재합니다.");
 
 		validateLines(request.getItemId(), request.getLines());
 
@@ -70,14 +66,12 @@ public class BomService {
 		addLines(bom, request.getLines());
 
 		Bom saved = bomRepository.save(bom);
-		return bomQueryRepository.findByIdWithLines(saved.getId())
-			.orElseThrow(() -> new ResourceNotFoundException("저장된 BOM을 조회할 수 없습니다: " + saved.getId()));
+		return Guard.requireFound(bomQueryRepository.findByIdWithLines(saved.getId()), "저장된 BOM을 조회할 수 없습니다: " + saved.getId());
 	}
 
 	@Transactional
 	public BomResponse update(Long id, BomUpdateRequest request) {
-		Bom bom = bomRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new ResourceNotFoundException("BOM을 찾을 수 없습니다: " + id));
+		Bom bom = Guard.requireFound(bomRepository.findByIdWithLines(id), "BOM을 찾을 수 없습니다: " + id);
 
 		validateLines(bom.getItemId(), request.getLines());
 
@@ -85,17 +79,14 @@ public class BomService {
 		bom.clearLines();
 		addLines(bom, request.getLines());
 
-		return bomQueryRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new ResourceNotFoundException("저장된 BOM을 조회할 수 없습니다: " + id));
+		return Guard.requireFound(bomQueryRepository.findByIdWithLines(id), "저장된 BOM을 조회할 수 없습니다: " + id);
 	}
 
 	@Transactional
 	public BomResponse deactivate(Long id) {
-		Bom bom = bomRepository.findById(id)
-			.orElseThrow(() -> new ResourceNotFoundException("BOM을 찾을 수 없습니다: " + id));
+		Bom bom = Guard.requireFound(bomRepository.findById(id), "BOM을 찾을 수 없습니다: " + id);
 		bom.deactivate();
-		return bomQueryRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new ResourceNotFoundException("BOM을 찾을 수 없습니다: " + id));
+		return Guard.requireFound(bomQueryRepository.findByIdWithLines(id), "BOM을 찾을 수 없습니다: " + id);
 	}
 
 	/**
@@ -103,13 +94,11 @@ public class BomService {
 	 */
 	@Transactional
 	public BomResponse copy(Long id, String newVersion) {
-		Bom source = bomRepository.findByIdWithLines(id)
-			.orElseThrow(() -> new ResourceNotFoundException("BOM을 찾을 수 없습니다: " + id));
+		Bom source = Guard.requireFound(bomRepository.findByIdWithLines(id), "BOM을 찾을 수 없습니다: " + id);
 
-		if (bomRepository.existsByItemIdAndVersion(source.getItemId(), newVersion)) {
-			throw new BusinessRuleViolationException(
-				"동일 품목의 '" + newVersion + "' 버전 BOM이 이미 존재합니다.");
-		}
+		Guard.requireNotExists(
+			bomRepository.existsByItemIdAndVersion(source.getItemId(), newVersion),
+			"동일 품목의 '" + newVersion + "' 버전 BOM이 이미 존재합니다.");
 
 		Bom copy = new Bom(source.getItemId(), newVersion, source.getValidFrom(), source.getValidTo());
 		int sortOrder = 0;
@@ -119,18 +108,15 @@ public class BomService {
 		}
 
 		Bom saved = bomRepository.save(copy);
-		return bomQueryRepository.findByIdWithLines(saved.getId())
-			.orElseThrow(() -> new ResourceNotFoundException("복사된 BOM을 조회할 수 없습니다: " + saved.getId()));
+		return Guard.requireFound(bomQueryRepository.findByIdWithLines(saved.getId()), "복사된 BOM을 조회할 수 없습니다: " + saved.getId());
 	}
 
 	/** 자재 라인의 순환 참조 및 품목 존재 여부를 검증한다. */
 	private void validateLines(Long headerItemId, List<BomLineRequest> lines) {
 		// 순환 참조: 자재 품목이 완제품과 동일한 경우 방지
-		boolean hasSelfReference = lines.stream()
-			.anyMatch(l -> l.getMaterialItemId().equals(headerItemId));
-		if (hasSelfReference) {
-			throw new BusinessRuleViolationException("자재 품목에 완제품 자신을 포함할 수 없습니다.");
-		}
+		Guard.require(
+			lines.stream().noneMatch(l -> l.getMaterialItemId().equals(headerItemId)),
+			"자재 품목에 완제품 자신을 포함할 수 없습니다.");
 
 		// 자재 품목 존재 여부 일괄 확인 (N+1 방지)
 		Set<Long> materialIds = lines.stream()
