@@ -1,6 +1,8 @@
 package com.github.gwiman.mini_mes_backend.process.application;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +77,17 @@ public class ProcessService {
 			throw new ResourceNotFoundException("공정을 찾을 수 없습니다: " + id);
 		}
 		processRepository.deleteById(id);
+	}
+
+	public boolean exists(Long id) {
+		return processRepository.existsById(id);
+	}
+
+	/** routing 도메인의 공정 일괄 존재 검증용 (N+1 방지) */
+	public Set<Long> findExistingIds(Set<Long> ids) {
+		return processRepository.findAllById(ids).stream()
+			.map(Process::getId)
+			.collect(Collectors.toSet());
 	}
 
 }

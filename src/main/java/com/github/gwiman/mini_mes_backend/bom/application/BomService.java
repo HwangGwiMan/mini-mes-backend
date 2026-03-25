@@ -50,6 +50,10 @@ public class BomService {
 		return bomQueryRepository.findByItemId(itemId);
 	}
 
+	public boolean exists(Long id) {
+		return bomRepository.existsById(id);
+	}
+
 	@Transactional
 	public BomResponse create(BomCreateRequest request) {
 		// 완제품 품목 존재 여부 검증
