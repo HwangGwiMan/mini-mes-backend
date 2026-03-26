@@ -118,23 +118,23 @@ public class ShipmentService {
 		}
 
 		shipment.update(
-			request.getEmployeeId(),
-			request.getStatusCode(),
-			request.getRemarks() != null ? request.getRemarks() : ""
+			request.employeeId(),
+			request.statusCode(),
+			request.remarks() != null ? request.remarks() : ""
 		);
 
 		// 라인별 계획수량 수정
-		Map<Long, ShipmentUpdateRequest.LineItem> lineRequestMap = request.getLines().stream()
-			.collect(Collectors.toMap(ShipmentUpdateRequest.LineItem::getId, l -> l));
+		Map<Long, ShipmentUpdateRequest.LineItem> lineRequestMap = request.lines().stream()
+			.collect(Collectors.toMap(ShipmentUpdateRequest.LineItem::id, l -> l));
 
 		for (ShipmentLine line : shipment.getLines()) {
 			ShipmentUpdateRequest.LineItem lineReq = lineRequestMap.get(line.getId());
 			if (lineReq != null) {
-				BigDecimal plannedAmount = lineReq.getPlannedQuantity().multiply(line.getUnitPrice());
+				BigDecimal plannedAmount = lineReq.plannedQuantity().multiply(line.getUnitPrice());
 				line.updatePlan(
-					lineReq.getPlannedQuantity(),
+					lineReq.plannedQuantity(),
 					plannedAmount,
-					lineReq.getRemarks() != null ? lineReq.getRemarks() : ""
+					lineReq.remarks() != null ? lineReq.remarks() : ""
 				);
 			}
 		}
@@ -156,16 +156,16 @@ public class ShipmentService {
 			throw new BusinessRuleViolationException("이미 출하완료 처리된 출하입니다.");
 		}
 
-		shipment.complete(request.getShipmentDate());
+		shipment.complete(request.shipmentDate());
 
-		Map<Long, ShipmentCompleteRequest.LineItem> lineRequestMap = request.getLines().stream()
-			.collect(Collectors.toMap(ShipmentCompleteRequest.LineItem::getId, l -> l));
+		Map<Long, ShipmentCompleteRequest.LineItem> lineRequestMap = request.lines().stream()
+			.collect(Collectors.toMap(ShipmentCompleteRequest.LineItem::id, l -> l));
 
 		for (ShipmentLine line : shipment.getLines()) {
 			ShipmentCompleteRequest.LineItem lineReq = lineRequestMap.get(line.getId());
 			if (lineReq != null) {
-				BigDecimal actualAmount = lineReq.getActualQuantity().multiply(line.getUnitPrice());
-				line.complete(lineReq.getActualQuantity(), actualAmount);
+				BigDecimal actualAmount = lineReq.actualQuantity().multiply(line.getUnitPrice());
+				line.complete(lineReq.actualQuantity(), actualAmount);
 			}
 		}
 

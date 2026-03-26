@@ -9,55 +9,25 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Employee;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.quote.domain.Quote;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-public class QuoteResponse {
-
-	private Long id;
-	private String quoteNumber;
-	private String name; // useCrudPage 호환용 (quoteNumber와 동일)
-	private LocalDate quoteDate;
-	private LocalDate validUntil;
-	private Long partnerId;
-	private String partnerCode;
-	private String partnerName;
-	private Long employeeId;
-	private String employeeCode;
-	private String employeeName;
-	private Long approverId;
-	private String approverCode;
-	private String approverName;
-	private String statusCode;
-	private String remarks;
-	private List<QuoteLineResponse> lines;
-
-	public QuoteResponse(Long id, String quoteNumber, String name, LocalDate quoteDate, LocalDate validUntil,
-		Long partnerId, String partnerCode, String partnerName,
-		Long employeeId, String employeeCode, String employeeName,
-		Long approverId, String approverCode, String approverName,
-		String statusCode, String remarks, List<QuoteLineResponse> lines) {
-		this.id = id;
-		this.quoteNumber = quoteNumber;
-		this.name = name;
-		this.quoteDate = quoteDate;
-		this.validUntil = validUntil;
-		this.partnerId = partnerId;
-		this.partnerCode = partnerCode;
-		this.partnerName = partnerName;
-		this.employeeId = employeeId;
-		this.employeeCode = employeeCode;
-		this.employeeName = employeeName;
-		this.approverId = approverId;
-		this.approverCode = approverCode;
-		this.approverName = approverName;
-		this.statusCode = statusCode;
-		this.remarks = remarks;
-		this.lines = lines;
-	}
-
+public record QuoteResponse(
+	Long id,
+	String quoteNumber,
+	String name, // useCrudPage 호환용 (quoteNumber와 동일)
+	LocalDate quoteDate,
+	LocalDate validUntil,
+	Long partnerId,
+	String partnerCode,
+	String partnerName,
+	Long employeeId,
+	String employeeCode,
+	String employeeName,
+	Long approverId,
+	String approverCode,
+	String approverName,
+	String statusCode,
+	String remarks,
+	List<QuoteLineResponse> lines
+) {
 	public static QuoteResponse from(Quote entity) {
 		List<QuoteLineResponse> lineResponses = entity.getLines().stream()
 			.map(QuoteLineResponse::from)

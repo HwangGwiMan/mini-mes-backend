@@ -7,24 +7,19 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
-public class BomCreateRequest {
-
+public record BomCreateRequest(
 	@NotNull(message = "완제품 품목 ID는 필수입니다.")
-	private Long itemId;
+	Long itemId,
 
 	@NotBlank(message = "버전은 필수입니다.")
-	private String version;
+	String version,
 
-	private LocalDate validFrom;
+	LocalDate validFrom,
 
-	private LocalDate validTo;
+	LocalDate validTo,
 
 	@NotEmpty(message = "자재 라인은 최소 1개 이상이어야 합니다.")
 	@Valid
-	private List<BomLineRequest> lines;
-}
+	List<BomLineRequest> lines
+) {}

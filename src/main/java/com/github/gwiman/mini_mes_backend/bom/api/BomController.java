@@ -68,6 +68,6 @@ public class BomController {
 	@PostMapping("/{id}/copy")
 	@ResponseStatus(HttpStatus.CREATED)
 	public BomResponse copy(@PathVariable Long id, @RequestBody @Valid BomCopyRequest request) {
-		return bomService.copy(id, request.getNewVersion());
+		return bomService.copy(id, request.newVersion());
 	}
 }

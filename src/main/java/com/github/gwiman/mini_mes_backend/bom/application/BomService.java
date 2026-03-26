@@ -57,17 +57,17 @@ public class BomService {
 	@Transactional
 	public BomResponse create(BomCreateRequest request) {
 		// 완제품 품목 존재 여부 검증
-		Guard.requireExists(itemService.exists(request.getItemId()), "품목을 찾을 수 없습니다: " + request.getItemId());
+		Guard.requireExists(itemService.exists(request.itemId()), "품목을 찾을 수 없습니다: " + request.itemId());
 
 		// 동일 (itemId, version) 중복 방지
 		Guard.requireNotExists(
-			bomRepository.existsByItemIdAndVersion(request.getItemId(), request.getVersion()),
-			"동일 품목(" + request.getItemId() + ")의 '" + request.getVersion() + "' 버전 BOM이 이미 존재합니다.");
+			bomRepository.existsByItemIdAndVersion(request.itemId(), request.version()),
+			"동일 품목(" + request.itemId() + ")의 '" + request.version() + "' 버전 BOM이 이미 존재합니다.");
 
-		validateLines(request.getItemId(), request.getLines());
+		validateLines(request.itemId(), request.lines());
 
-		Bom bom = new Bom(request.getItemId(), request.getVersion(), request.getValidFrom(), request.getValidTo());
-		addLines(bom, request.getLines());
+		Bom bom = new Bom(request.itemId(), request.version(), request.validFrom(), request.validTo());
+		addLines(bom, request.lines());
 
 		Bom saved = bomRepository.save(bom);
 		return Guard.requireFound(bomQueryRepository.findByIdWithLines(saved.getId()), "저장된 BOM을 조회할 수 없습니다: " + saved.getId());
@@ -77,11 +77,11 @@ public class BomService {
 	public BomResponse update(Long id, BomUpdateRequest request) {
 		Bom bom = Guard.requireFound(bomRepository.findByIdWithLines(id), "BOM을 찾을 수 없습니다: " + id);
 
-		validateLines(bom.getItemId(), request.getLines());
+		validateLines(bom.getItemId(), request.lines());
 
-		bom.update(request.getValidFrom(), request.getValidTo());
+		bom.update(request.validFrom(), request.validTo());
 		bom.clearLines();
-		addLines(bom, request.getLines());
+		addLines(bom, request.lines());
 
 		return Guard.requireFound(bomQueryRepository.findByIdWithLines(id), "저장된 BOM을 조회할 수 없습니다: " + id);
 	}
@@ -119,12 +119,12 @@ public class BomService {
 	private void validateLines(Long headerItemId, List<BomLineRequest> lines) {
 		// 순환 참조: 자재 품목이 완제품과 동일한 경우 방지
 		Guard.require(
-			lines.stream().noneMatch(l -> l.getMaterialItemId().equals(headerItemId)),
+			lines.stream().noneMatch(l -> l.materialItemId().equals(headerItemId)),
 			"자재 품목에 완제품 자신을 포함할 수 없습니다.");
 
 		// 자재 품목 존재 여부 일괄 확인 (N+1 방지)
 		Set<Long> materialIds = lines.stream()
-			.map(BomLineRequest::getMaterialItemId)
+			.map(BomLineRequest::materialItemId)
 			.collect(Collectors.toSet());
 		Set<Long> existingIds = itemService.findExistingIds(materialIds);
 		Set<Long> missingIds = materialIds.stream()
@@ -138,8 +138,8 @@ public class BomService {
 	private void addLines(Bom bom, List<BomLineRequest> lineRequests) {
 		int sortOrder = 0;
 		for (BomLineRequest req : lineRequests) {
-			bom.addLine(new BomLine(bom, req.getMaterialItemId(),
-				req.getQuantity(), req.getUnit(), req.getRemarks(), sortOrder++));
+			bom.addLine(new BomLine(bom, req.materialItemId(),
+				req.quantity(), req.unit(), req.remarks(), sortOrder++));
 		}
 	}
 }

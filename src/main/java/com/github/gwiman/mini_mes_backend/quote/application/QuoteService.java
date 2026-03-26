@@ -79,20 +79,20 @@ public class QuoteService {
 	@Transactional
 	public QuoteResponse create(QuoteRequest request) {
 		quoteValidator.validateHeader(request);
-		quoteValidator.validateLines(request.getLines());
+		quoteValidator.validateLines(request.lines());
 
 		String quoteNumber = generateQuoteNumber();
 
 		Quote quote = Quote.create(quoteNumber,
-			request.getQuoteDate(), request.getValidUntil(),
-			request.getPartnerId(), request.getEmployeeId(),
-			request.getApproverId(), request.getRemarks());
+			request.quoteDate(), request.validUntil(),
+			request.partnerId(), request.employeeId(),
+			request.approverId(), request.remarks());
 
 		int sortOrder = 0;
-		for (QuoteLineRequest lineReq : request.getLines()) {
+		for (QuoteLineRequest lineReq : request.lines()) {
 			quote.addLine(QuoteLine.of(quote,
-				lineReq.getItemId(), lineReq.getQuantity(), lineReq.getUnitPrice(),
-				lineReq.getDeliveryRequestDate(), lineReq.getRemarks(), sortOrder++));
+				lineReq.itemId(), lineReq.quantity(), lineReq.unitPrice(),
+				lineReq.deliveryRequestDate(), lineReq.remarks(), sortOrder++));
 		}
 
 		Quote saved = quoteRepository.save(quote);
@@ -109,22 +109,22 @@ public class QuoteService {
 
 		// Quote.update() will throw if status is QUOTE_STATUS_02
 		quote.update(
-			request.getQuoteDate(),
-			request.getValidUntil(),
-			request.getPartnerId(),
-			request.getEmployeeId(),
-			request.getApproverId(),
-			request.getRemarks() != null ? request.getRemarks() : ""
+			request.quoteDate(),
+			request.validUntil(),
+			request.partnerId(),
+			request.employeeId(),
+			request.approverId(),
+			request.remarks() != null ? request.remarks() : ""
 		);
 
-		quoteValidator.validateLines(request.getLines());
+		quoteValidator.validateLines(request.lines());
 
 		quote.clearLines();
 		int sortOrder = 0;
-		for (QuoteLineRequest lineReq : request.getLines()) {
+		for (QuoteLineRequest lineReq : request.lines()) {
 			quote.addLine(QuoteLine.of(quote,
-				lineReq.getItemId(), lineReq.getQuantity(), lineReq.getUnitPrice(),
-				lineReq.getDeliveryRequestDate(), lineReq.getRemarks(), sortOrder++));
+				lineReq.itemId(), lineReq.quantity(), lineReq.unitPrice(),
+				lineReq.deliveryRequestDate(), lineReq.remarks(), sortOrder++));
 		}
 
 		return quoteQueryRepository.findByIdWithLines(id)
@@ -173,7 +173,7 @@ public class QuoteService {
 		String approverName = employeeService.findNameById(currentEmployeeId);
 		quoteApprovalRepository.save(new QuoteApproval(
 			quoteId, currentEmployeeId, currentUsername,
-			approverName, "APPROVED", request.getComment()
+			approverName, "APPROVED", request.comment()
 		));
 
 		quote.updateStatus("QUOTE_STATUS_03");
@@ -196,7 +196,7 @@ public class QuoteService {
 		String approverName = employeeService.findNameById(currentEmployeeId);
 		quoteApprovalRepository.save(new QuoteApproval(
 			quoteId, currentEmployeeId, currentUsername,
-			approverName, "REJECTED", request.getComment()
+			approverName, "REJECTED", request.comment()
 		));
 
 		quote.updateStatus("QUOTE_STATUS_04");

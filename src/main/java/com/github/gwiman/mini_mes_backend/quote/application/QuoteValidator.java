@@ -32,21 +32,21 @@ class QuoteValidator {
 	 * 담당자는 선택값이므로 null인 경우 건너뜀.
 	 */
 	void validateHeader(QuoteRequest request) {
-		if (!partnerService.exists(request.getPartnerId())) {
-			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + request.getPartnerId());
+		if (!partnerService.exists(request.partnerId())) {
+			throw new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + request.partnerId());
 		}
-		if (request.getEmployeeId() != null && !employeeService.exists(request.getEmployeeId())) {
-			throw new ResourceNotFoundException("담당자를 찾을 수 없습니다: " + request.getEmployeeId());
+		if (request.employeeId() != null && !employeeService.exists(request.employeeId())) {
+			throw new ResourceNotFoundException("담당자를 찾을 수 없습니다: " + request.employeeId());
 		}
-		if (!employeeService.exists(request.getApproverId())) {
-			throw new ResourceNotFoundException("결재자를 찾을 수 없습니다: " + request.getApproverId());
+		if (!employeeService.exists(request.approverId())) {
+			throw new ResourceNotFoundException("결재자를 찾을 수 없습니다: " + request.approverId());
 		}
 	}
 
 	/** 견적 라인의 품목 존재 여부를 IN 쿼리 한 번으로 일괄 검증 — 라인 수만큼 쿼리가 발생하는 N+1 방지 */
 	void validateLines(List<QuoteLineRequest> lines) {
 		Set<Long> requestedIds = lines.stream()
-			.map(QuoteLineRequest::getItemId)
+			.map(QuoteLineRequest::itemId)
 			.collect(Collectors.toSet());
 
 		Set<Long> existingIds = itemService.findExistingIds(requestedIds);

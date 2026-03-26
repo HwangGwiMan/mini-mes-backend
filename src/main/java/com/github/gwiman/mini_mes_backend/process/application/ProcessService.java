@@ -39,16 +39,16 @@ public class ProcessService {
 
 	@Transactional
 	public ProcessResponse create(ProcessRequest request) {
-		if (processRepository.existsByCode(request.getCode())) {
-			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
+		if (processRepository.existsByCode(request.code())) {
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.code());
 		}
 		Process entity = new Process(
-			request.getCode(),
-			request.getName(),
-			request.getProcessTypeCode(),
-			request.getStandardTime(),
-			request.getDescription(),
-			request.getSortOrder()
+			request.code(),
+			request.name(),
+			request.processTypeCode(),
+			request.standardTime(),
+			request.description(),
+			request.sortOrder()
 		);
 		return ProcessResponse.from(processRepository.save(entity));
 	}
@@ -57,16 +57,16 @@ public class ProcessService {
 	public ProcessResponse update(Long id, ProcessRequest request) {
 		Process entity = processRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("공정을 찾을 수 없습니다: " + id));
-		if (processRepository.existsByCodeAndIdNot(request.getCode(), id)) {
-			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
+		if (processRepository.existsByCodeAndIdNot(request.code(), id)) {
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.code());
 		}
 		entity.update(
-			request.getCode(),
-			request.getName(),
-			request.getProcessTypeCode(),
-			request.getStandardTime(),
-			request.getDescription(),
-			request.getSortOrder()
+			request.code(),
+			request.name(),
+			request.processTypeCode(),
+			request.standardTime(),
+			request.description(),
+			request.sortOrder()
 		);
 		return ProcessResponse.from(entity);
 	}

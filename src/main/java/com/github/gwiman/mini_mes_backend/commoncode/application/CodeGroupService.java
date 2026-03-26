@@ -32,12 +32,12 @@ public class CodeGroupService {
 
 	@Transactional
 	public CodeGroupResponse create(CodeGroupRequest request) {
-		if (codeGroupRepository.existsByGroupCode(request.getGroupCode())) {
-			throw new BusinessRuleViolationException("이미 사용 중인 그룹코드입니다: " + request.getGroupCode());
+		if (codeGroupRepository.existsByGroupCode(request.groupCode())) {
+			throw new BusinessRuleViolationException("이미 사용 중인 그룹코드입니다: " + request.groupCode());
 		}
 		return CodeGroupResponse.from(
 			codeGroupRepository.save(
-				new CodeGroup(request.getGroupCode(), request.getGroupName(), request.getSortOrder())
+				new CodeGroup(request.groupCode(), request.groupName(), request.sortOrder())
 			)
 		);
 	}
@@ -46,10 +46,10 @@ public class CodeGroupService {
 	public CodeGroupResponse update(Long id, CodeGroupRequest request) {
 		CodeGroup entity = codeGroupRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("그룹코드를 찾을 수 없습니다: " + id));
-		if (codeGroupRepository.existsByGroupCodeAndIdNot(request.getGroupCode(), id)) {
-			throw new BusinessRuleViolationException("이미 사용 중인 그룹코드입니다: " + request.getGroupCode());
+		if (codeGroupRepository.existsByGroupCodeAndIdNot(request.groupCode(), id)) {
+			throw new BusinessRuleViolationException("이미 사용 중인 그룹코드입니다: " + request.groupCode());
 		}
-		entity.update(request.getGroupCode(), request.getGroupName(), request.getSortOrder());
+		entity.update(request.groupCode(), request.groupName(), request.sortOrder());
 		return CodeGroupResponse.from(entity);
 	}
 

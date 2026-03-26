@@ -4,27 +4,19 @@ import java.util.List;
 
 import org.jooq.Record;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RoutingResponse {
-
-	private Long id;
-	private Long bomId;
-	private Long itemId;
-	private String itemCode;
-	private String itemName;
+public record RoutingResponse(
+	Long id,
+	Long bomId,
+	Long itemId,
+	String itemCode,
+	String itemName,
 	/** useCrudPage 호환용 — itemName과 동일 */
-	private String name;
-	private String bomVersion;
-	private Boolean activeYn;
-	private int stepCount;
-	private List<RoutingStepResponse> steps;
-
+	String name,
+	String bomVersion,
+	Boolean activeYn,
+	int stepCount,
+	List<RoutingStepResponse> steps
+) {
 	/** 목록 조회 결과 매핑 (steps 없음) */
 	public static RoutingResponse fromRecord(Record r) {
 		return new RoutingResponse(
@@ -45,8 +37,8 @@ public class RoutingResponse {
 	public static RoutingResponse fromRecord(Record r, List<RoutingStepResponse> steps) {
 		RoutingResponse base = fromRecord(r);
 		return new RoutingResponse(
-			base.id, base.bomId, base.itemId, base.itemCode, base.itemName, base.name,
-			base.bomVersion, base.activeYn, steps.size(), steps
+			base.id(), base.bomId(), base.itemId(), base.itemCode(), base.itemName(), base.name(),
+			base.bomVersion(), base.activeYn(), steps.size(), steps
 		);
 	}
 }

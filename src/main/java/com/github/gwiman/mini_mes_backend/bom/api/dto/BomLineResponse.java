@@ -4,26 +4,18 @@ import java.math.BigDecimal;
 
 import org.jooq.Record;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class BomLineResponse {
-
-	private Long id;
-	private Long materialItemId;
-	private String materialItemCode;
-	private String materialItemName;
+public record BomLineResponse(
+	Long id,
+	Long materialItemId,
+	String materialItemCode,
+	String materialItemName,
 	/** 해당 자재 품목이 별도 BOM을 가지고 있으면 true — 프론트의 [상세▶] 버튼 노출 기준 */
-	private boolean hasBom;
-	private BigDecimal quantity;
-	private String unit;
-	private String remarks;
-	private int sortOrder;
-
+	boolean hasBom,
+	BigDecimal quantity,
+	String unit,
+	String remarks,
+	int sortOrder
+) {
 	/** jOOQ 조회 결과를 BomLineResponse로 변환. hasBom은 별도 존재 여부 조회 결과를 전달받는다. */
 	public static BomLineResponse fromRecord(Record r, boolean hasBom) {
 		return new BomLineResponse(

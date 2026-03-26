@@ -37,14 +37,14 @@ public class PartnerService {
 
 	@Transactional
 	public PartnerResponse create(PartnerRequest request) {
-		if (partnerRepository.existsByCode(request.getCode())) {
-			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
+		if (partnerRepository.existsByCode(request.code())) {
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.code());
 		}
 		Partner entity = new Partner(
-			request.getCode(), request.getName(),
-			request.getBusinessNumber(), request.getCeoName(),
-			request.getAddress(), request.getPhone1(), request.getPhone2(),
-			request.getTradeTypeCode()
+			request.code(), request.name(),
+			request.businessNumber(), request.ceoName(),
+			request.address(), request.phone1(), request.phone2(),
+			request.tradeTypeCode()
 		);
 		return PartnerResponse.from(partnerRepository.save(entity));
 	}
@@ -53,14 +53,14 @@ public class PartnerService {
 	public PartnerResponse update(Long id, PartnerRequest request) {
 		Partner entity = partnerRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("거래처를 찾을 수 없습니다: " + id));
-		if (partnerRepository.existsByCodeAndIdNot(request.getCode(), id)) {
-			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
+		if (partnerRepository.existsByCodeAndIdNot(request.code(), id)) {
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.code());
 		}
 		entity.update(
-			request.getCode(), request.getName(),
-			request.getBusinessNumber(), request.getCeoName(),
-			request.getAddress(), request.getPhone1(), request.getPhone2(),
-			request.getTradeTypeCode()
+			request.code(), request.name(),
+			request.businessNumber(), request.ceoName(),
+			request.address(), request.phone1(), request.phone2(),
+			request.tradeTypeCode()
 		);
 		return PartnerResponse.from(entity);
 	}

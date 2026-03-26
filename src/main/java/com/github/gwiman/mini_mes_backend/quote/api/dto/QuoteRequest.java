@@ -7,35 +7,28 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class QuoteRequest {
-
+public record QuoteRequest(
 	@NotNull(message = "견적일자는 필수입니다.")
-	private LocalDate quoteDate;
+	LocalDate quoteDate,
 
-	private LocalDate validUntil;
+	LocalDate validUntil,
 
 	@NotNull(message = "거래처는 필수입니다.")
-	private Long partnerId;
+	Long partnerId,
 
-	private Long employeeId;
+	Long employeeId,
 
 	@NotNull(message = "결재자는 필수입니다.")
-	private Long approverId;
+	Long approverId,
 
 	@Size(max = 20, message = "상태 코드는 20자 이하여야 합니다.")
-	private String statusCode;
+	String statusCode,
 
 	@Size(max = 200, message = "비고는 200자 이하여야 합니다.")
-	private String remarks;
+	String remarks,
 
 	@NotEmpty(message = "견적 상세는 최소 1건 이상이어야 합니다.")
 	@Valid
-	private List<QuoteLineRequest> lines;
-}
+	List<QuoteLineRequest> lines
+) {}

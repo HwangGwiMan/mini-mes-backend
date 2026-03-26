@@ -1,20 +1,15 @@
 package com.github.gwiman.mini_mes_backend.routing.api.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
-public class RoutingStepRequest {
+public record RoutingStepRequest(
+	@NotNull
+	Long processId,
 
 	@NotNull
-	private Long processId;
+	Integer stepOrder,
 
-	@NotNull
-	private Integer stepOrder;
+	Integer standardTime,
 
-	private Integer standardTime;
-
-	private String remarks;
-}
+	String remarks
+) {}

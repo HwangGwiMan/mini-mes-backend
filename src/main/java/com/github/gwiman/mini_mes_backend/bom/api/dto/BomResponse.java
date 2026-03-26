@@ -5,28 +5,20 @@ import java.util.List;
 
 import org.jooq.Record;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class BomResponse {
-
-	private Long id;
-	private Long itemId;
-	private String itemCode;
-	private String itemName;
+public record BomResponse(
+	Long id,
+	Long itemId,
+	String itemCode,
+	String itemName,
 	/** useCrudPage 호환용 — itemName과 동일 */
-	private String name;
-	private String version;
-	private LocalDate validFrom;
-	private LocalDate validTo;
-	private Boolean activeYn;
-	private int lineCount;
-	private List<BomLineResponse> lines;
-
+	String name,
+	String version,
+	LocalDate validFrom,
+	LocalDate validTo,
+	Boolean activeYn,
+	int lineCount,
+	List<BomLineResponse> lines
+) {
 	/** 목록 조회 결과 매핑 (lines 없음) */
 	public static BomResponse fromRecord(Record r) {
 		return new BomResponse(
@@ -48,8 +40,8 @@ public class BomResponse {
 	public static BomResponse fromRecord(Record r, List<BomLineResponse> lines) {
 		BomResponse base = fromRecord(r);
 		return new BomResponse(
-			base.id, base.itemId, base.itemCode, base.itemName, base.name,
-			base.version, base.validFrom, base.validTo, base.activeYn,
+			base.id(), base.itemId(), base.itemCode(), base.itemName(), base.name(),
+			base.version(), base.validFrom(), base.validTo(), base.activeYn(),
 			lines.size(), lines
 		);
 	}

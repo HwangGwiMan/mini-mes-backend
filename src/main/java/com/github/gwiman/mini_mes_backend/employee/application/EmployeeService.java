@@ -47,28 +47,28 @@ public class EmployeeService {
 	/** 타 모듈에서 사원 이름만 필요한 경우 — api DTO 직접 노출 없이 스칼라 값 반환 */
 	public String findNameById(Long id) {
 		return employeeQueryRepository.findById(id)
-			.map(EmployeeResponse::getName)
+			.map(EmployeeResponse::name)
 			.orElseThrow(() -> new ResourceNotFoundException("사원을 찾을 수 없습니다: " + id));
 	}
 
 	@Transactional
 	public EmployeeResponse create(EmployeeRequest request) {
-		if (employeeRepository.existsByCode(request.getCode())) {
-			throw new BusinessRuleViolationException("이미 사용 중인 사번입니다: " + request.getCode());
+		if (employeeRepository.existsByCode(request.code())) {
+			throw new BusinessRuleViolationException("이미 사용 중인 사번입니다: " + request.code());
 		}
-		if (userRepository.existsByUsername(request.getCode())) {
-			throw new BusinessRuleViolationException("해당 사번으로 이미 로그인 계정이 존재합니다: " + request.getCode());
+		if (userRepository.existsByUsername(request.code())) {
+			throw new BusinessRuleViolationException("해당 사번으로 이미 로그인 계정이 존재합니다: " + request.code());
 		}
 		Employee entity = new Employee(
-			request.getCode(),
-			request.getName(),
-			request.getDeptCode(),
-			request.getPositionCode(),
-			request.getHireDate(),
-			request.getPhone(),
-			request.getEmail(),
-			request.isUseYn(),
-			request.getSortOrder()
+			request.code(),
+			request.name(),
+			request.deptCode(),
+			request.positionCode(),
+			request.hireDate(),
+			request.phone(),
+			request.email(),
+			request.useYn(),
+			request.sortOrder()
 		);
 		entity = employeeRepository.save(entity);
 
@@ -87,12 +87,12 @@ public class EmployeeService {
 	public EmployeeResponse update(Long id, EmployeeRequest request) {
 		Employee entity = employeeRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("사원을 찾을 수 없습니다: " + id));
-		if (employeeRepository.existsByCodeAndIdNot(request.getCode(), id)) {
-			throw new BusinessRuleViolationException("이미 사용 중인 사번입니다: " + request.getCode());
+		if (employeeRepository.existsByCodeAndIdNot(request.code(), id)) {
+			throw new BusinessRuleViolationException("이미 사용 중인 사번입니다: " + request.code());
 		}
 
 		String oldCode = entity.getCode();
-		String newCode = request.getCode();
+		String newCode = request.code();
 		if (!oldCode.equals(newCode)) {
 			if (userRepository.existsByUsername(newCode)) {
 				throw new BusinessRuleViolationException("해당 사번으로 이미 로그인 계정이 존재합니다: " + newCode);
@@ -102,15 +102,15 @@ public class EmployeeService {
 		}
 
 		entity.update(
-			request.getCode(),
-			request.getName(),
-			request.getDeptCode(),
-			request.getPositionCode(),
-			request.getHireDate(),
-			request.getPhone(),
-			request.getEmail(),
-			request.isUseYn(),
-			request.getSortOrder()
+			request.code(),
+			request.name(),
+			request.deptCode(),
+			request.positionCode(),
+			request.hireDate(),
+			request.phone(),
+			request.email(),
+			request.useYn(),
+			request.sortOrder()
 		);
 		return EmployeeResponse.from(entity);
 	}

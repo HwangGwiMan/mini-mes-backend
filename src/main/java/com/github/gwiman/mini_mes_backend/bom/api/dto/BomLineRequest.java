@@ -4,21 +4,16 @@ import java.math.BigDecimal;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
-public class BomLineRequest {
-
+public record BomLineRequest(
 	@NotNull(message = "자재 품목 ID는 필수입니다.")
-	private Long materialItemId;
+	Long materialItemId,
 
 	@NotNull(message = "소요량은 필수입니다.")
 	@Positive(message = "소요량은 0보다 커야 합니다.")
-	private BigDecimal quantity;
+	BigDecimal quantity,
 
-	private String unit;
+	String unit,
 
-	private String remarks;
-}
+	String remarks
+) {}

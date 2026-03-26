@@ -59,17 +59,17 @@ public class RoutingService {
 	@Transactional
 	public RoutingResponse create(RoutingCreateRequest request) {
 		// BOM 존재 여부 검증
-		Guard.requireExists(bomService.exists(request.getBomId()), "BOM을 찾을 수 없습니다: " + request.getBomId());
+		Guard.requireExists(bomService.exists(request.bomId()), "BOM을 찾을 수 없습니다: " + request.bomId());
 
 		// BOM당 라우팅 1개 제한
 		Guard.requireNotExists(
-			routingRepository.existsByBomId(request.getBomId()),
-			"해당 BOM에 이미 라우팅이 존재합니다: " + request.getBomId());
+			routingRepository.existsByBomId(request.bomId()),
+			"해당 BOM에 이미 라우팅이 존재합니다: " + request.bomId());
 
-		validateSteps(request.getSteps());
+		validateSteps(request.steps());
 
-		Routing routing = new Routing(request.getBomId());
-		addSteps(routing, request.getSteps());
+		Routing routing = new Routing(request.bomId());
+		addSteps(routing, request.steps());
 
 		Routing saved = routingRepository.save(routing);
 		return Guard.requireFound(routingQueryRepository.findByIdWithSteps(saved.getId()), "저장된 라우팅을 조회할 수 없습니다: " + saved.getId());
@@ -79,10 +79,10 @@ public class RoutingService {
 	public RoutingResponse update(Long id, RoutingUpdateRequest request) {
 		Routing routing = Guard.requireFound(routingRepository.findByIdWithSteps(id), "라우팅을 찾을 수 없습니다: " + id);
 
-		validateSteps(request.getSteps());
+		validateSteps(request.steps());
 
 		routing.clearSteps();
-		addSteps(routing, request.getSteps());
+		addSteps(routing, request.steps());
 
 		return Guard.requireFound(routingQueryRepository.findByIdWithSteps(id), "저장된 라우팅을 조회할 수 없습니다: " + id);
 	}
@@ -98,7 +98,7 @@ public class RoutingService {
 	private void validateSteps(List<RoutingStepRequest> steps) {
 		// 동일 라우팅 내 공정 중복 방지
 		Set<Long> processIds = steps.stream()
-			.map(RoutingStepRequest::getProcessId)
+			.map(RoutingStepRequest::processId)
 			.collect(Collectors.toSet());
 		Guard.require(
 			processIds.size() == steps.size(),
@@ -117,7 +117,7 @@ public class RoutingService {
 	private void addSteps(Routing routing, List<RoutingStepRequest> stepRequests) {
 		for (RoutingStepRequest req : stepRequests) {
 			routing.addStep(new RoutingStep(
-				routing, req.getProcessId(), req.getStepOrder(), req.getStandardTime(), req.getRemarks()));
+				routing, req.processId(), req.stepOrder(), req.standardTime(), req.remarks()));
 		}
 	}
 }
