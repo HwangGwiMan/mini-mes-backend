@@ -39,9 +39,10 @@ public class RevenueController {
 	public List<RevenueResponse> findAll(
 		@RequestParam(required = false) String statusCode,
 		@RequestParam(required = false) Long partnerId,
+		@RequestParam(required = false) Long salesOrderId,
 		@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
 		@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
-		return revenueService.findAll(statusCode, partnerId, fromDate, toDate);
+		return revenueService.findAll(statusCode, partnerId, salesOrderId, fromDate, toDate);
 	}
 
 	/** 매출 생성 시 거래처 완료 수주 품목 선택 팝업용 — /available-lines 경로가 /{id} 보다 먼저 매핑되어야 한다 */

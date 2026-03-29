@@ -60,7 +60,7 @@ public class RevenueQueryRepository {
 	private static final Field<Integer>     RVL_SORT_ORDER          = DSL.field("revenue_line.sort_order", Integer.class);
 
 	public List<RevenueResponse> search(String statusCode, Long partnerId,
-		LocalDate fromDate, LocalDate toDate) {
+		Long salesOrderId, LocalDate fromDate, LocalDate toDate) {
 		Partner p = Partner.PARTNER;
 		Employee e = Employee.EMPLOYEE;
 
@@ -74,10 +74,16 @@ public class RevenueQueryRepository {
 				.where(DSL.field("rvl.revenue_id", Long.class).eq(RV_ID))
 		).as("total_amount");
 
-		Condition statusCond  = statusCode != null ? RV_STATUS.eq(statusCode)           : DSL.noCondition();
-		Condition partnerCond = partnerId  != null ? RV_PARTNER_ID.eq(partnerId)        : DSL.noCondition();
-		Condition fromCond    = fromDate   != null ? RV_DATE.greaterOrEqual(fromDate)   : DSL.noCondition();
-		Condition toCond      = toDate     != null ? RV_DATE.lessOrEqual(toDate)        : DSL.noCondition();
+		Condition statusCond  = statusCode  != null ? RV_STATUS.eq(statusCode)          : DSL.noCondition();
+		Condition partnerCond = partnerId   != null ? RV_PARTNER_ID.eq(partnerId)       : DSL.noCondition();
+		Condition fromCond    = fromDate    != null ? RV_DATE.greaterOrEqual(fromDate)  : DSL.noCondition();
+		Condition toCond      = toDate      != null ? RV_DATE.lessOrEqual(toDate)       : DSL.noCondition();
+		// 특정 수주에 연결된 매출만 조회 — 수주이행현황 디테일 패널에서 사용
+		Condition salesOrderCond = salesOrderId != null
+			? DSL.exists(DSL.selectOne().from(RVL)
+				.where(RVL_REVENUE_ID.eq(RV_ID))
+				.and(RVL_SALES_ORDER_ID.eq(salesOrderId)))
+			: DSL.noCondition();
 
 		return dsl
 			.select(RV_ID, RV_NUMBER, RV_PARTNER_ID, RV_EMPLOYEE_ID,
@@ -85,7 +91,7 @@ public class RevenueQueryRepository {
 			.from(RV)
 			.leftJoin(p).on(RV_PARTNER_ID.eq(p.ID))
 			.leftJoin(e).on(RV_EMPLOYEE_ID.eq(e.ID))
-			.where(statusCond).and(partnerCond).and(fromCond).and(toCond)
+			.where(statusCond).and(partnerCond).and(salesOrderCond).and(fromCond).and(toCond)
 			.orderBy(RV_ID.desc())
 			.fetch()
 			.map(r -> toResponse(r, Collections.emptyList()));

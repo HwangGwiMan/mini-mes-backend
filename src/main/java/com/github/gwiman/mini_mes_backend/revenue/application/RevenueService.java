@@ -42,8 +42,8 @@ public class RevenueService {
 	private final DocumentNumberGenerator documentNumberGenerator;
 
 	public List<RevenueResponse> findAll(String statusCode, Long partnerId,
-		LocalDate fromDate, LocalDate toDate) {
-		return revenueQueryRepository.search(statusCode, partnerId, fromDate, toDate);
+		Long salesOrderId, LocalDate fromDate, LocalDate toDate) {
+		return revenueQueryRepository.search(statusCode, partnerId, salesOrderId, fromDate, toDate);
 	}
 
 	public RevenueResponse findById(Long id) {
