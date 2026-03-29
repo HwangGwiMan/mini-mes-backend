@@ -42,12 +42,12 @@ public class CommonCodeService {
 
 	@Transactional
 	public CommonCodeResponse create(CommonCodeRequest request) {
-		String generatedCode = generateCode(request.getCodeGroup());
+		String generatedCode = generateCode(request.codeGroup());
 		CommonCode entity = new CommonCode(
-			request.getCodeGroup(),
+			request.codeGroup(),
 			generatedCode,
-			request.getName(),
-			request.getSortOrder()
+			request.name(),
+			request.sortOrder()
 		);
 		return CommonCodeResponse.from(commonCodeRepository.save(entity));
 	}
@@ -56,7 +56,7 @@ public class CommonCodeService {
 	public CommonCodeResponse update(Long id, CommonCodeRequest request) {
 		CommonCode entity = commonCodeRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("공통코드를 찾을 수 없습니다: " + id));
-		entity.update(request.getName(), request.getSortOrder());
+		entity.update(request.name(), request.sortOrder());
 		return CommonCodeResponse.from(entity);
 	}
 

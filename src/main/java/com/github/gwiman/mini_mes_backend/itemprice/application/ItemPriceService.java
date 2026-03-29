@@ -43,16 +43,16 @@ public class ItemPriceService {
 
 	@Transactional
 	public ItemPriceResponse create(ItemPriceRequest request) {
-		if (!itemService.exists(request.getItemId())) {
-			throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + request.getItemId());
+		if (!itemService.exists(request.itemId())) {
+			throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + request.itemId());
 		}
 		// 품목당 단가 1개 보장
-		if (itemPriceRepository.existsByItemId(request.getItemId())) {
+		if (itemPriceRepository.existsByItemId(request.itemId())) {
 			throw new BusinessRuleViolationException("이미 단가가 등록된 품목입니다.");
 		}
 
 		ItemPrice saved = itemPriceRepository.save(
-			new ItemPrice(request.getItemId(), request.getUnitPrice(), request.getRemarks())
+			new ItemPrice(request.itemId(), request.unitPrice(), request.remarks())
 		);
 		return itemPriceQueryRepository.findById(saved.getId())
 			.orElseThrow(() -> new ResourceNotFoundException("저장된 단가를 조회할 수 없습니다: " + saved.getId()));
@@ -63,7 +63,7 @@ public class ItemPriceService {
 		ItemPrice entity = itemPriceRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("단가를 찾을 수 없습니다: " + id));
 
-		entity.update(request.getUnitPrice(), request.getRemarks());
+		entity.update(request.unitPrice(), request.remarks());
 		return itemPriceQueryRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("저장된 단가를 조회할 수 없습니다: " + id));
 	}

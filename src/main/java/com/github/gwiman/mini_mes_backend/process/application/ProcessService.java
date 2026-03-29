@@ -1,6 +1,8 @@
 package com.github.gwiman.mini_mes_backend.process.application;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,16 +39,16 @@ public class ProcessService {
 
 	@Transactional
 	public ProcessResponse create(ProcessRequest request) {
-		if (processRepository.existsByCode(request.getCode())) {
-			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
+		if (processRepository.existsByCode(request.code())) {
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.code());
 		}
 		Process entity = new Process(
-			request.getCode(),
-			request.getName(),
-			request.getProcessTypeCode(),
-			request.getStandardTime(),
-			request.getDescription(),
-			request.getSortOrder()
+			request.code(),
+			request.name(),
+			request.processTypeCode(),
+			request.standardTime(),
+			request.description(),
+			request.sortOrder()
 		);
 		return ProcessResponse.from(processRepository.save(entity));
 	}
@@ -55,16 +57,16 @@ public class ProcessService {
 	public ProcessResponse update(Long id, ProcessRequest request) {
 		Process entity = processRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("공정을 찾을 수 없습니다: " + id));
-		if (processRepository.existsByCodeAndIdNot(request.getCode(), id)) {
-			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.getCode());
+		if (processRepository.existsByCodeAndIdNot(request.code(), id)) {
+			throw new BusinessRuleViolationException("이미 사용 중인 코드입니다: " + request.code());
 		}
 		entity.update(
-			request.getCode(),
-			request.getName(),
-			request.getProcessTypeCode(),
-			request.getStandardTime(),
-			request.getDescription(),
-			request.getSortOrder()
+			request.code(),
+			request.name(),
+			request.processTypeCode(),
+			request.standardTime(),
+			request.description(),
+			request.sortOrder()
 		);
 		return ProcessResponse.from(entity);
 	}
@@ -75,6 +77,17 @@ public class ProcessService {
 			throw new ResourceNotFoundException("공정을 찾을 수 없습니다: " + id);
 		}
 		processRepository.deleteById(id);
+	}
+
+	public boolean exists(Long id) {
+		return processRepository.existsById(id);
+	}
+
+	/** routing 도메인의 공정 일괄 존재 검증용 (N+1 방지) */
+	public Set<Long> findExistingIds(Set<Long> ids) {
+		return processRepository.findAllById(ids).stream()
+			.map(Process::getId)
+			.collect(Collectors.toSet());
 	}
 
 }

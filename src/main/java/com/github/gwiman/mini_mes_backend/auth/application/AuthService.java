@@ -29,12 +29,12 @@ public class AuthService {
 
 	@Transactional
 	public void signup(SignupRequest request) {
-		if (userRepository.existsByUsername(request.getUsername())) {
-			throw new IllegalArgumentException("이미 사용 중인 아이디입니다: " + request.getUsername());
+		if (userRepository.existsByUsername(request.username())) {
+			throw new IllegalArgumentException("이미 사용 중인 아이디입니다: " + request.username());
 		}
 		User user = new User(
-			request.getUsername(),
-			passwordEncoder.encode(request.getPassword()),
+			request.username(),
+			passwordEncoder.encode(request.password()),
 			Role.ROLE_USER
 		);
 		userRepository.save(user);
@@ -61,13 +61,13 @@ public class AuthService {
 	public LoginResponse login(LoginRequest request) {
 		try {
 			authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+				new UsernamePasswordAuthenticationToken(request.username(), request.password())
 			);
 		} catch (AuthenticationException e) {
 			throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
 		}
-		User user = userRepository.findByUsername(request.getUsername())
-			.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + request.getUsername()));
+		User user = userRepository.findByUsername(request.username())
+			.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + request.username()));
 		String token = jwtTokenProvider.generateToken(user);
 		return new LoginResponse(token);
 	}

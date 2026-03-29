@@ -45,7 +45,7 @@ public class CommonCodeController {
 
 	@PostMapping("/search")
 	public List<CommonCodeResponse> search(@RequestBody @Valid CommonCodeSearchRequest request) {
-		return commonCodeService.findByGroup(request.getGroupCode());
+		return commonCodeService.findByGroup(request.groupCode());
 	}
 
 	@PostMapping

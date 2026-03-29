@@ -68,15 +68,15 @@ public class SalesOrderService {
 	@Transactional
 	public SalesOrderResponse create(SalesOrderRequest request) {
 		String orderNumber = generateOrderNumber();
-		validatePartner(request.getPartnerId());
-		validateEmployee(request.getEmployeeId());
+		validatePartner(request.partnerId());
+		validateEmployee(request.employeeId());
 
 		SalesOrder order = SalesOrder.create(orderNumber,
-			request.getOrderDate(), request.getDeliveryDate(),
-			request.getPartnerId(), request.getEmployeeId(),
-			request.getQuoteId(), request.getStatusCode(), request.getRemarks());
+			request.orderDate(), request.deliveryDate(),
+			request.partnerId(), request.employeeId(),
+			request.quoteId(), request.statusCode(), request.remarks());
 
-		addLines(order, request.getLines());
+		addLines(order, request.lines());
 
 		SalesOrder saved = salesOrderRepository.save(order);
 		// 출하 도메인이 수신해 출하 계획을 자동 생성한다
@@ -90,20 +90,20 @@ public class SalesOrderService {
 		SalesOrder order = salesOrderRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new ResourceNotFoundException("수주를 찾을 수 없습니다: " + id));
 
-		validatePartner(request.getPartnerId());
-		validateEmployee(request.getEmployeeId());
+		validatePartner(request.partnerId());
+		validateEmployee(request.employeeId());
 
 		order.update(
-			request.getOrderDate(),
-			request.getDeliveryDate(),
-			request.getPartnerId(),
-			request.getEmployeeId(),
-			request.getStatusCode() != null ? request.getStatusCode() : "",
-			request.getRemarks() != null ? request.getRemarks() : ""
+			request.orderDate(),
+			request.deliveryDate(),
+			request.partnerId(),
+			request.employeeId(),
+			request.statusCode() != null ? request.statusCode() : "",
+			request.remarks() != null ? request.remarks() : ""
 		);
 
 		order.clearLines();
-		addLines(order, request.getLines());
+		addLines(order, request.lines());
 
 		return salesOrderQueryRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new ResourceNotFoundException("저장된 수주를 조회할 수 없습니다: " + id));
@@ -154,13 +154,13 @@ public class SalesOrderService {
 	private void addLines(SalesOrder order, List<SalesOrderLineRequest> lineRequests) {
 		int sortOrder = 0;
 		for (SalesOrderLineRequest lineReq : lineRequests) {
-			if (!itemService.exists(lineReq.getItemId())) {
-				throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + lineReq.getItemId());
+			if (!itemService.exists(lineReq.itemId())) {
+				throw new ResourceNotFoundException("품목을 찾을 수 없습니다: " + lineReq.itemId());
 			}
 			order.addLine(SalesOrderLine.of(order,
-				lineReq.getItemId(), lineReq.getQuantity(), lineReq.getUnitPrice(),
-				lineReq.getDeliveryRequestDate(),
-				lineReq.getRemarks() != null ? lineReq.getRemarks() : "", sortOrder++));
+				lineReq.itemId(), lineReq.quantity(), lineReq.unitPrice(),
+				lineReq.deliveryRequestDate(),
+				lineReq.remarks() != null ? lineReq.remarks() : "", sortOrder++));
 		}
 	}
 

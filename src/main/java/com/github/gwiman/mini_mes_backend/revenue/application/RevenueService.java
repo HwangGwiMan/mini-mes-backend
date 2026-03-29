@@ -70,25 +70,25 @@ public class RevenueService {
 
 		Revenue revenue = new Revenue(
 			revenueNumber,
-			request.getPartnerId(),
-			request.getEmployeeId(),
-			request.getRevenueDate(),
+			request.partnerId(),
+			request.employeeId(),
+			request.revenueDate(),
 			STATUS_DRAFT,
-			request.getRemarks() != null ? request.getRemarks() : ""
+			request.remarks() != null ? request.remarks() : ""
 		);
 
 		int sortOrder = 0;
-		for (RevenueCreateRequest.LineItem lineReq : request.getLines()) {
-			BigDecimal amount = lineReq.getQuantity().multiply(lineReq.getUnitPrice());
+		for (RevenueCreateRequest.LineItem lineReq : request.lines()) {
+			BigDecimal amount = lineReq.quantity().multiply(lineReq.unitPrice());
 			RevenueLine line = new RevenueLine(
 				revenue,
-				lineReq.getSalesOrderLineId(),
-				lineReq.getSalesOrderId(),
-				lineReq.getItemId(),
-				lineReq.getQuantity(),
-				lineReq.getUnitPrice(),
+				lineReq.salesOrderLineId(),
+				lineReq.salesOrderId(),
+				lineReq.itemId(),
+				lineReq.quantity(),
+				lineReq.unitPrice(),
 				amount,
-				lineReq.getRemarks() != null ? lineReq.getRemarks() : "",
+				lineReq.remarks() != null ? lineReq.remarks() : "",
 				sortOrder++
 			);
 			revenue.addLine(line);
@@ -113,21 +113,21 @@ public class RevenueService {
 		}
 
 		revenue.update(
-			request.getEmployeeId(),
-			request.getRevenueDate(),
-			request.getRemarks() != null ? request.getRemarks() : ""
+			request.employeeId(),
+			request.revenueDate(),
+			request.remarks() != null ? request.remarks() : ""
 		);
 
-		Map<Long, RevenueUpdateRequest.LineItem> lineMap = request.getLines().stream()
-			.collect(Collectors.toMap(RevenueUpdateRequest.LineItem::getId, l -> l));
+		Map<Long, RevenueUpdateRequest.LineItem> lineMap = request.lines().stream()
+			.collect(Collectors.toMap(RevenueUpdateRequest.LineItem::id, l -> l));
 
 		for (RevenueLine line : revenue.getLines()) {
 			RevenueUpdateRequest.LineItem lineReq = lineMap.get(line.getId());
 			if (lineReq != null) {
 				line.update(
-					lineReq.getQuantity(),
-					lineReq.getUnitPrice(),
-					lineReq.getRemarks() != null ? lineReq.getRemarks() : ""
+					lineReq.quantity(),
+					lineReq.unitPrice(),
+					lineReq.remarks() != null ? lineReq.remarks() : ""
 				);
 			}
 		}

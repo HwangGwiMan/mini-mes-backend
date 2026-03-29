@@ -39,14 +39,14 @@ public class ItemService {
 	@Transactional
 	public ItemResponse create(ItemRequest request) {
 		Item entity = new Item(
-			request.getCode(),
-			request.getName(),
-			request.getItemTypeCode(),
-			request.getUnit(),
-			request.getSpec(),
-			request.getDescription(),
-			request.isUseYn(),
-			request.getSortOrder()
+			request.code(),
+			request.name(),
+			request.itemTypeCode(),
+			request.unit(),
+			request.spec(),
+			request.description(),
+			request.useYn(),
+			request.sortOrder()
 		);
 		return ItemResponse.from(itemRepository.save(entity));
 	}
@@ -56,14 +56,14 @@ public class ItemService {
 		Item entity = itemRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("품목을 찾을 수 없습니다: " + id));
 		entity.update(
-			request.getCode(),
-			request.getName(),
-			request.getItemTypeCode(),
-			request.getUnit(),
-			request.getSpec(),
-			request.getDescription(),
-			request.isUseYn(),
-			request.getSortOrder()
+			request.code(),
+			request.name(),
+			request.itemTypeCode(),
+			request.unit(),
+			request.spec(),
+			request.description(),
+			request.useYn(),
+			request.sortOrder()
 		);
 		return ItemResponse.from(entity);
 	}
