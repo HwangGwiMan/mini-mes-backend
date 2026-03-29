@@ -116,6 +116,13 @@ public class CodeGroupService {
 		createCommonCodeIfAbsent("REVENUE_STATUS", "REVENUE_STATUS_01", "초안", 1);
 		createCommonCodeIfAbsent("REVENUE_STATUS", "REVENUE_STATUS_02", "마감", 2);
 		createCommonCodeIfAbsent("REVENUE_STATUS", "REVENUE_STATUS_03", "취소", 3);
+
+		createCodeGroupIfAbsent("PR_STATUS", "구매요청상태", 11);
+		createCommonCodeIfAbsent("PR_STATUS", "PR_STATUS_01", "초안",   1);
+		createCommonCodeIfAbsent("PR_STATUS", "PR_STATUS_02", "검토중", 2);
+		createCommonCodeIfAbsent("PR_STATUS", "PR_STATUS_03", "승인됨", 3);
+		createCommonCodeIfAbsent("PR_STATUS", "PR_STATUS_04", "반려됨", 4);
+		createCommonCodeIfAbsent("PR_STATUS", "PR_STATUS_05", "발주됨", 5);
 	}
 
 	private void createCodeGroupIfAbsent(String groupCode, String groupName, int sortOrder) {
