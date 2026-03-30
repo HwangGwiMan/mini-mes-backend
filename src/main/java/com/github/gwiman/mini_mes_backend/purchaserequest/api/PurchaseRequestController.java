@@ -89,14 +89,4 @@ public class PurchaseRequestController {
 		purchaseRequestService.reject(id);
 	}
 
-	/**
-	 * 승인됨(03) → 구매 발주 전환.
-	 * 구매 발주(PurchaseOrder) 도메인 구현 후 연결된다.
-	 */
-	@PostMapping("/{id}/convert-to-po")
-	@ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-	public void convertToPo(@PathVariable Long id) {
-		// TODO: PurchaseOrderService 구현 후 위임
-		throw new UnsupportedOperationException("구매 발주 도메인 구현 후 활성화됩니다.");
-	}
 }

@@ -117,6 +117,17 @@ public class PurchaseRequest extends BaseEntity {
 	}
 
 	/**
+	 * 발주됨(05) → 승인됨(03) 복원.
+	 * PurchaseOrderService에서 PO 취소 시 pr_id가 있으면 호출한다.
+	 */
+	public void markUnordered() {
+		if (!"PR_STATUS_05".equals(this.statusCode)) {
+			throw new BusinessRuleViolationException("발주됨 상태의 구매 요청만 복원할 수 있습니다.");
+		}
+		this.statusCode = "PR_STATUS_03";
+	}
+
+	/**
 	 * 승인됨(03) → 발주됨(05).
 	 * 구매 발주 전환 시 PurchaseOrderService에서 내부적으로 호출한다.
 	 */
