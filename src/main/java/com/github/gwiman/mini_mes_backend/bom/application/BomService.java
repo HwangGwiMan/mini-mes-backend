@@ -61,7 +61,7 @@ public class BomService {
 
 		// 동일 (itemId, version) 중복 방지
 		Guard.requireNotExists(
-			bomRepository.existsByItemIdAndVersion(request.itemId(), request.version()),
+			bomRepository.existsByItemIdAndVersionCode(request.itemId(), request.version()),
 			"동일 품목(" + request.itemId() + ")의 '" + request.version() + "' 버전 BOM이 이미 존재합니다.");
 
 		validateLines(request.itemId(), request.lines());
@@ -101,7 +101,7 @@ public class BomService {
 		Bom source = Guard.requireFound(bomRepository.findByIdWithLines(id), "BOM을 찾을 수 없습니다: " + id);
 
 		Guard.requireNotExists(
-			bomRepository.existsByItemIdAndVersion(source.getItemId(), newVersion),
+			bomRepository.existsByItemIdAndVersionCode(source.getItemId(), newVersion),
 			"동일 품목의 '" + newVersion + "' 버전 BOM이 이미 존재합니다.");
 
 		Bom copy = new Bom(source.getItemId(), newVersion, source.getValidFrom(), source.getValidTo());

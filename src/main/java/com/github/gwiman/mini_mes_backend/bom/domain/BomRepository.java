@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface BomRepository extends JpaRepository<Bom, Long> {
 
-	boolean existsByItemIdAndVersion(Long itemId, String version);
+	boolean existsByItemIdAndVersionCode(Long itemId, String versionCode);
 
 	List<Bom> findByItemId(Long itemId);
 

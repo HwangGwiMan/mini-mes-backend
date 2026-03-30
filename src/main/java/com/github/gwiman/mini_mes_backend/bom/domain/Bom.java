@@ -41,8 +41,9 @@ public class Bom extends BaseEntity {
 	@Column(name = "item_id", nullable = false)
 	private Long itemId;
 
-	@Column(nullable = false, length = 20)
-	private String version;
+	// BaseEntity의 @Version(Long) 과 getter 이름 충돌 방지 — DB 컬럼명은 version 유지
+	@Column(name = "version", nullable = false, length = 20)
+	private String versionCode;
 
 	private LocalDate validFrom;
 
@@ -56,7 +57,7 @@ public class Bom extends BaseEntity {
 
 	public Bom(Long itemId, String version, LocalDate validFrom, LocalDate validTo) {
 		this.itemId = itemId;
-		this.version = version;
+		this.versionCode = version;
 		this.validFrom = validFrom;
 		this.validTo = validTo;
 		this.activeYn = true;
