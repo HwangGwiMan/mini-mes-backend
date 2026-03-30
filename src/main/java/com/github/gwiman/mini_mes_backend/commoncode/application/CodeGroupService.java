@@ -123,6 +123,25 @@ public class CodeGroupService {
 		createCommonCodeIfAbsent("PR_STATUS", "PR_STATUS_03", "승인됨", 3);
 		createCommonCodeIfAbsent("PR_STATUS", "PR_STATUS_04", "반려됨", 4);
 		createCommonCodeIfAbsent("PR_STATUS", "PR_STATUS_05", "발주됨", 5);
+
+		createCodeGroupIfAbsent("PO_STATUS", "구매발주상태", 12);
+		createCommonCodeIfAbsent("PO_STATUS", "PO_STATUS_01", "초안",     1);
+		createCommonCodeIfAbsent("PO_STATUS", "PO_STATUS_02", "발주됨",   2);
+		createCommonCodeIfAbsent("PO_STATUS", "PO_STATUS_03", "입고완료", 3);
+		createCommonCodeIfAbsent("PO_STATUS", "PO_STATUS_04", "취소",     4);
+
+		createCodeGroupIfAbsent("WH_STATUS", "창고상태", 13);
+		createCommonCodeIfAbsent("WH_STATUS", "WH_STATUS_01", "사용중",   1);
+		createCommonCodeIfAbsent("WH_STATUS", "WH_STATUS_02", "사용중지", 2);
+
+		createCodeGroupIfAbsent("GR_STATUS", "자재입고상태", 14);
+		createCommonCodeIfAbsent("GR_STATUS", "GR_STATUS_01", "초안",     1);
+		createCommonCodeIfAbsent("GR_STATUS", "GR_STATUS_02", "입고완료", 2);
+		createCommonCodeIfAbsent("GR_STATUS", "GR_STATUS_03", "취소",     3);
+
+		createCodeGroupIfAbsent("GR_LINE_TYPE", "입고유형", 15);
+		createCommonCodeIfAbsent("GR_LINE_TYPE", "GR_LINE_TYPE_01", "직접입고", 1);
+		createCommonCodeIfAbsent("GR_LINE_TYPE", "GR_LINE_TYPE_02", "발주입고", 2);
 	}
 
 	private void createCodeGroupIfAbsent(String groupCode, String groupName, int sortOrder) {
