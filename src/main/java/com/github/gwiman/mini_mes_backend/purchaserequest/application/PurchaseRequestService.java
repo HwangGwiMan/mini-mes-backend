@@ -161,28 +161,6 @@ public class PurchaseRequestService {
 		pr.reject();
 	}
 
-	/**
-	 * 발주됨(05) → 승인됨(03) 복원.
-	 * PurchaseOrderService에서 PO 취소 시 pr_id가 있으면 호출한다.
-	 */
-	@Transactional
-	public void markUnordered(Long id) {
-		PurchaseRequest pr = purchaseRequestRepository.findById(id)
-			.orElseThrow(() -> new ResourceNotFoundException("구매 요청을 찾을 수 없습니다: " + id));
-		pr.markUnordered();
-	}
-
-	/**
-	 * 승인됨(03) → 발주됨(05).
-	 * PurchaseOrderService에서 발주 전환 시 내부적으로 호출한다.
-	 */
-	@Transactional
-	public void markOrdered(Long id) {
-		PurchaseRequest pr = purchaseRequestRepository.findById(id)
-			.orElseThrow(() -> new ResourceNotFoundException("구매 요청을 찾을 수 없습니다: " + id));
-		pr.markOrdered();
-	}
-
 	private void validateHeader(PurchaseRequestRequest request) {
 		if (request.requesterId() != null && !employeeService.exists(request.requesterId())) {
 			throw new ResourceNotFoundException("요청자를 찾을 수 없습니다: " + request.requesterId());

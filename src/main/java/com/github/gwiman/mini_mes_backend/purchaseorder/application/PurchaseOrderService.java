@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +20,9 @@ import com.github.gwiman.mini_mes_backend.purchaseorder.api.dto.PurchaseOrderRes
 import com.github.gwiman.mini_mes_backend.purchaseorder.domain.PurchaseOrder;
 import com.github.gwiman.mini_mes_backend.purchaseorder.domain.PurchaseOrderLine;
 import com.github.gwiman.mini_mes_backend.purchaseorder.domain.PurchaseOrderRepository;
-import com.github.gwiman.mini_mes_backend.purchaseorder.domain.PurchaseOrderStatus;
 import com.github.gwiman.mini_mes_backend.purchaseorder.internal.PurchaseOrderQueryRepository;
+import com.github.gwiman.mini_mes_backend.purchaserequest.application.PurchaseOrderCancelledEvent;
+import com.github.gwiman.mini_mes_backend.purchaserequest.application.PurchaseOrderCreatedFromPREvent;
 import com.github.gwiman.mini_mes_backend.purchaserequest.application.PurchaseRequestService;
 import com.github.gwiman.mini_mes_backend.purchaserequest.domain.PurchaseRequestStatus;
 
@@ -46,6 +48,7 @@ public class PurchaseOrderService {
 	private final PartnerService partnerService;
 	private final ItemService itemService;
 	private final DocumentNumberGenerator documentNumberGenerator;
+	private final ApplicationEventPublisher events;
 
 	public List<PurchaseOrderResponse> findAll(String orderNumber, String partnerName, String statusCode) {
 		String orderNumberPattern = QueryParamEscaper.containsLike(orderNumber);
@@ -58,7 +61,7 @@ public class PurchaseOrderService {
 			.orElseThrow(() -> new ResourceNotFoundException("구매 발주를 찾을 수 없습니다: " + id));
 	}
 
-	/** Phase 3 자재입고(PurchaseReceipt) 도메인에서 참조용 */
+	/** goodsreceipt 모듈에서 입고 생성/수정 시 PO 유효성 검증용 */
 	public PurchaseOrderHeaderData findHeaderById(Long id) {
 		return purchaseOrderRepository.findById(id)
 			.map(po -> new PurchaseOrderHeaderData(
@@ -109,9 +112,8 @@ public class PurchaseOrderService {
 		);
 		addLines(po, request.lines());
 
-		purchaseRequestService.markOrdered(prId);
-
 		PurchaseOrder saved = purchaseOrderRepository.save(po);
+		events.publishEvent(new PurchaseOrderCreatedFromPREvent(saved.getId(), prId));
 		return purchaseOrderQueryRepository.findByIdWithLines(saved.getId())
 			.orElseThrow(() -> new ResourceNotFoundException("저장된 구매 발주를 조회할 수 없습니다: " + saved.getId()));
 	}
@@ -152,27 +154,14 @@ public class PurchaseOrderService {
 
 	/**
 	 * 취소(04).
-	 * 연결된 PR이 있으면 PR 상태를 승인됨(03)으로 복원한다.
+	 * 연결된 PR이 있으면 PurchaseOrderCancelledEvent를 발행해 PR 상태를 승인됨(03)으로 복원한다.
 	 */
 	@Transactional
 	public void cancel(Long id) {
 		PurchaseOrder po = purchaseOrderRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("구매 발주를 찾을 수 없습니다: " + id));
 		po.cancel();
-		if (po.getPrId() != null) {
-			purchaseRequestService.markUnordered(po.getPrId());
-		}
-	}
-
-	/**
-	 * 발주됨(02) → 입고완료(03).
-	 * Phase 3 자재입고(PurchaseReceipt) 도메인 구현 후 PurchaseReceiptService에서 호출한다.
-	 */
-	@Transactional
-	public void markReceived(Long id) {
-		PurchaseOrder po = purchaseOrderRepository.findById(id)
-			.orElseThrow(() -> new ResourceNotFoundException("구매 발주를 찾을 수 없습니다: " + id));
-		po.markReceived();
+		events.publishEvent(new PurchaseOrderCancelledEvent(id, po.getPrId()));
 	}
 
 	private void validatePartner(Long partnerId) {

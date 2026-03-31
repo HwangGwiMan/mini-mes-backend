@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import com.github.gwiman.mini_mes_backend.goodsreceipt.domain.GoodsReceiptReposi
 import com.github.gwiman.mini_mes_backend.goodsreceipt.internal.GoodsReceiptQueryRepository;
 import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
+import com.github.gwiman.mini_mes_backend.purchaseorder.application.GoodsReceiptConfirmedEvent;
 import com.github.gwiman.mini_mes_backend.purchaseorder.application.PurchaseOrderService;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,7 @@ public class GoodsReceiptService {
 	private final PartnerService partnerService;
 	private final ItemService itemService;
 	private final DocumentNumberGenerator documentNumberGenerator;
+	private final ApplicationEventPublisher events;
 
 	public List<GoodsReceiptResponse> findAll(String receiptNumber, String partnerName, String statusCode) {
 		String receiptNumberPattern = QueryParamEscaper.containsLike(receiptNumber);
@@ -100,15 +103,14 @@ public class GoodsReceiptService {
 
 	/**
 	 * 초안(GR_STATUS_01) → 입고완료(GR_STATUS_02).
-	 * 연결된 PO가 있으면 PO를 입고완료(PO_STATUS_03)로 전이한다.
-	 * PO가 발주됨(PO_STATUS_02) 상태가 아니면 PurchaseOrderService에서 예외가 발생한다.
+	 * 연결된 PO가 있으면 GoodsReceiptConfirmedEvent를 발행해 PO를 입고완료(PO_STATUS_03)로 전이한다.
 	 */
 	@Transactional
 	public void confirm(Long id) {
 		GoodsReceipt gr = Guard.requireFound(goodsReceiptRepository.findById(id), "자재 입고를 찾을 수 없습니다: " + id);
 		gr.confirm();
 		if (gr.getPoId() != null) {
-			purchaseOrderService.markReceived(gr.getPoId());
+			events.publishEvent(new GoodsReceiptConfirmedEvent(gr.getId(), gr.getPoId()));
 		}
 	}
 
