@@ -18,6 +18,7 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Employee;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
+import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderStatus;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
 import com.github.gwiman.mini_mes_backend.revenue.api.dto.AvailableOrderLineResponse;
 import com.github.gwiman.mini_mes_backend.revenue.api.dto.RevenueLineResponse;
@@ -174,7 +175,7 @@ public class RevenueQueryRepository {
 			.join(so).on(sol.SALES_ORDER_ID.eq(so.ID))
 			.join(i).on(sol.ITEM_ID.eq(i.ID))
 			.where(so.PARTNER_ID.eq(partnerId))
-			.and(so.STATUS_CODE.eq("ORDER_STATUS_04"))
+			.and(so.STATUS_CODE.eq(SalesOrderStatus.COMPLETED.code()))
 			.orderBy(so.ORDER_DATE.desc(), sol.SORT_ORDER)
 			.fetch()
 			.map(r -> new AvailableOrderLineResponse(

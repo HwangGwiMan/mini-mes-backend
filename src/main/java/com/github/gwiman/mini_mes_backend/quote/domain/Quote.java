@@ -45,8 +45,8 @@ public class Quote extends BaseEntity {
 	@Column(name = "approver_id", nullable = false)
 	private Long approverId;
 
-	@Column(length = 20)
-	private String statusCode;
+	@Column(name = "status_code", length = 20)
+	private QuoteStatus status;
 
 	@Column(length = 200)
 	private String remarks;
@@ -55,27 +55,27 @@ public class Quote extends BaseEntity {
 	private final List<QuoteLine> lines = new ArrayList<>();
 
 	private Quote(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
-		Long partnerId, Long employeeId, Long approverId, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, Long approverId, QuoteStatus status, String remarks) {
 		this.quoteNumber = quoteNumber;
 		this.quoteDate = quoteDate;
 		this.validUntil = validUntil;
 		this.partnerId = partnerId;
 		this.employeeId = employeeId;
 		this.approverId = approverId;
-		this.statusCode = statusCode;
+		this.status = status;
 		this.remarks = remarks;
 	}
 
-	/** 신규 견적 생성 — 초기 상태는 항상 작성중(QUOTE_STATUS_01) */
+	/** 신규 견적 생성 — 초기 상태는 항상 작성중(DRAFT) */
 	public static Quote create(String quoteNumber, LocalDate quoteDate, LocalDate validUntil,
 		Long partnerId, Long employeeId, Long approverId, String remarks) {
 		return new Quote(quoteNumber, quoteDate, validUntil,
-			partnerId, employeeId, approverId, "QUOTE_STATUS_01", remarks != null ? remarks : "");
+			partnerId, employeeId, approverId, QuoteStatus.DRAFT, remarks != null ? remarks : "");
 	}
 
 	public void update(LocalDate quoteDate, LocalDate validUntil,
 		Long partnerId, Long employeeId, Long approverId, String remarks) {
-		if ("QUOTE_STATUS_02".equals(this.statusCode)) {
+		if (this.status == QuoteStatus.SUBMITTED) {
 			throw new BusinessRuleViolationException("제출된 견적은 수정할 수 없습니다.");
 		}
 		this.quoteDate = quoteDate;
@@ -94,17 +94,17 @@ public class Quote extends BaseEntity {
 		lines.clear();
 	}
 
-	public void updateStatus(String statusCode) {
-		this.statusCode = statusCode;
+	public void updateStatus(QuoteStatus status) {
+		this.status = status;
 	}
 
-	/** 작성중(01) 또는 반려(04) 상태만 제출 가능 */
+	/** 작성중(DRAFT) 또는 반려(REJECTED) 상태만 제출 가능 */
 	public boolean canSubmit() {
-		return "QUOTE_STATUS_01".equals(this.statusCode) || "QUOTE_STATUS_04".equals(this.statusCode);
+		return this.status == QuoteStatus.DRAFT || this.status == QuoteStatus.REJECTED;
 	}
 
-	/** 제출(02) 상태만 승인/반려 가능 */
+	/** 제출(SUBMITTED) 상태만 승인/반려 가능 */
 	public boolean canApprove() {
-		return "QUOTE_STATUS_02".equals(this.statusCode);
+		return this.status == QuoteStatus.SUBMITTED;
 	}
 }

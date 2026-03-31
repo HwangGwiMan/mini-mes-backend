@@ -25,8 +25,8 @@ import lombok.NoArgsConstructor;
  * <p>
  * 구매 발주(PurchaseOrder) 대비 자재가 실제 입고되는 문서.
  * 발주 없이 직접 입고도 허용된다(poId nullable).
- * 상태 흐름: 초안(GR_STATUS_01) → 입고완료(GR_STATUS_02) / 취소(GR_STATUS_03)
- * 입고 확정 시 연결된 PO가 있으면 해당 PO를 입고완료(PO_STATUS_03)로 전이한다.
+ * 상태 흐름: DRAFT → COMPLETED / CANCELLED
+ * 입고 확정 시 연결된 PO가 있으면 해당 PO를 RECEIVED로 전이한다.
  * </p>
  */
 @Entity
@@ -52,9 +52,8 @@ public class GoodsReceipt extends BaseEntity {
 	@Column(nullable = false)
 	private Long partnerId;
 
-	/** GR_STATUS 공통코드 */
-	@Column(length = 20, nullable = false)
-	private String statusCode;
+	@Column(name = "status_code", length = 20, nullable = false)
+	private GoodsReceiptStatus status;
 
 	@Column(length = 200)
 	private String remarks;
@@ -68,17 +67,17 @@ public class GoodsReceipt extends BaseEntity {
 		this.receiptDate = receiptDate;
 		this.poId = poId;
 		this.partnerId = partnerId;
-		this.statusCode = "GR_STATUS_01";
+		this.status = GoodsReceiptStatus.DRAFT;
 		this.remarks = remarks != null ? remarks : "";
 	}
 
-	/** 자재 입고 생성 — 항상 초안(GR_STATUS_01)으로 시작 */
+	/** 자재 입고 생성 — 항상 DRAFT로 시작 */
 	public static GoodsReceipt create(String receiptNumber, LocalDate receiptDate,
 			Long poId, Long partnerId, String remarks) {
 		return new GoodsReceipt(receiptNumber, receiptDate, poId, partnerId, remarks);
 	}
 
-	/** 수정 — 초안(GR_STATUS_01) 상태만 허용 */
+	/** 수정 — DRAFT 상태만 허용 */
 	public void update(LocalDate receiptDate, Long poId, Long partnerId, String remarks) {
 		if (!canEdit()) {
 			throw new BusinessRuleViolationException("초안 상태에서만 입고를 수정할 수 있습니다.");
@@ -89,20 +88,20 @@ public class GoodsReceipt extends BaseEntity {
 		this.remarks = remarks != null ? remarks : "";
 	}
 
-	/** 초안(GR_STATUS_01) → 입고완료(GR_STATUS_02) */
+	/** DRAFT → COMPLETED */
 	public void confirm() {
-		if (!"GR_STATUS_01".equals(this.statusCode)) {
+		if (this.status != GoodsReceiptStatus.DRAFT) {
 			throw new BusinessRuleViolationException("초안 상태에서만 입고 확정할 수 있습니다.");
 		}
-		this.statusCode = "GR_STATUS_02";
+		this.status = GoodsReceiptStatus.COMPLETED;
 	}
 
-	/** 초안(GR_STATUS_01) → 취소(GR_STATUS_03) */
+	/** DRAFT → CANCELLED */
 	public void cancel() {
-		if (!"GR_STATUS_01".equals(this.statusCode)) {
+		if (this.status != GoodsReceiptStatus.DRAFT) {
 			throw new BusinessRuleViolationException("초안 상태에서만 입고를 취소할 수 있습니다.");
 		}
-		this.statusCode = "GR_STATUS_03";
+		this.status = GoodsReceiptStatus.CANCELLED;
 	}
 
 	public void addLine(GoodsReceiptLine line) {
@@ -113,12 +112,12 @@ public class GoodsReceipt extends BaseEntity {
 		lines.clear();
 	}
 
-	/** 초안(GR_STATUS_01) 상태만 수정/삭제 가능 */
+	/** DRAFT 상태만 수정/삭제 가능 */
 	public boolean canEdit() {
-		return "GR_STATUS_01".equals(statusCode);
+		return this.status == GoodsReceiptStatus.DRAFT;
 	}
 
 	public boolean canDelete() {
-		return "GR_STATUS_01".equals(statusCode);
+		return this.status == GoodsReceiptStatus.DRAFT;
 	}
 }

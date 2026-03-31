@@ -21,9 +21,11 @@ import com.github.gwiman.mini_mes_backend.quote.application.QuoteService;
 import com.github.gwiman.mini_mes_backend.salesorder.api.dto.SalesOrderLineRequest;
 import com.github.gwiman.mini_mes_backend.salesorder.api.dto.SalesOrderRequest;
 import com.github.gwiman.mini_mes_backend.salesorder.api.dto.SalesOrderResponse;
+import com.github.gwiman.mini_mes_backend.quote.domain.QuoteStatus;
 import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrder;
 import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderLine;
 import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderRepository;
+import com.github.gwiman.mini_mes_backend.salesorder.domain.SalesOrderStatus;
 import com.github.gwiman.mini_mes_backend.salesorder.internal.SalesOrderQueryRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -71,10 +73,12 @@ public class SalesOrderService {
 		validatePartner(request.partnerId());
 		validateEmployee(request.employeeId());
 
+		SalesOrderStatus status = request.statusCode() != null
+			? SalesOrderStatus.from(request.statusCode()) : null;
 		SalesOrder order = SalesOrder.create(orderNumber,
 			request.orderDate(), request.deliveryDate(),
 			request.partnerId(), request.employeeId(),
-			request.quoteId(), request.statusCode(), request.remarks());
+			request.quoteId(), status, request.remarks());
 
 		addLines(order, request.lines());
 
@@ -93,12 +97,14 @@ public class SalesOrderService {
 		validatePartner(request.partnerId());
 		validateEmployee(request.employeeId());
 
+		SalesOrderStatus updateStatus = request.statusCode() != null
+			? SalesOrderStatus.from(request.statusCode()) : SalesOrderStatus.DRAFT;
 		order.update(
 			request.orderDate(),
 			request.deliveryDate(),
 			request.partnerId(),
 			request.employeeId(),
-			request.statusCode() != null ? request.statusCode() : "",
+			updateStatus,
 			request.remarks() != null ? request.remarks() : ""
 		);
 
@@ -124,7 +130,7 @@ public class SalesOrderService {
 		}
 
 		QuoteHeaderData quoteHeader = quoteService.findHeaderById(quoteId);
-		if (!"QUOTE_STATUS_03".equals(quoteHeader.statusCode())) {
+		if (quoteHeader.status() != QuoteStatus.APPROVED) {
 			throw new BusinessRuleViolationException("승인된 견적만 수주전환이 가능합니다.");
 		}
 		List<QuoteLineData> quoteLines = quoteService.getLines(quoteId);

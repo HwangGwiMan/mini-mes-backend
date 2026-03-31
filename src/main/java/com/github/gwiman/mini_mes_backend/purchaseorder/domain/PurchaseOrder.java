@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
  * 구매 발주 헤더 엔티티.
  * <p>
  * 거래처에 자재 구매를 발주하는 문서. 구매 요청(PurchaseRequest) 전환 또는 직접 생성이 가능하다.
- * 상태 흐름: 초안(01) → 발주됨(02) → 입고완료(03) / 취소(04)
+ * 상태 흐름: DRAFT → ORDERED → RECEIVED / CANCELLED
  * </p>
  */
 @Entity
@@ -48,9 +48,8 @@ public class PurchaseOrder extends BaseEntity {
 
 	private LocalDate expectedArrivalDate;
 
-	/** PO_STATUS 공통코드 */
-	@Column(length = 20, nullable = false)
-	private String statusCode;
+	@Column(name = "status_code", length = 20, nullable = false)
+	private PurchaseOrderStatus status;
 
 	/** 구매 요청 전환 시 원본 PR ID — 직접 생성 시 null */
 	@Column(name = "pr_id")
@@ -63,12 +62,12 @@ public class PurchaseOrder extends BaseEntity {
 	private final List<PurchaseOrderLine> lines = new ArrayList<>();
 
 	private PurchaseOrder(String orderNumber, LocalDate orderDate, Long partnerId,
-			LocalDate expectedArrivalDate, String statusCode, Long prId, String remarks) {
+			LocalDate expectedArrivalDate, PurchaseOrderStatus status, Long prId, String remarks) {
 		this.orderNumber = orderNumber;
 		this.orderDate = orderDate;
 		this.partnerId = partnerId;
 		this.expectedArrivalDate = expectedArrivalDate;
-		this.statusCode = statusCode;
+		this.status = status;
 		this.prId = prId;
 		this.remarks = remarks != null ? remarks : "";
 	}
@@ -77,17 +76,17 @@ public class PurchaseOrder extends BaseEntity {
 	public static PurchaseOrder create(String orderNumber, LocalDate orderDate,
 			Long partnerId, LocalDate expectedArrivalDate, String remarks) {
 		return new PurchaseOrder(orderNumber, orderDate, partnerId,
-				expectedArrivalDate, "PO_STATUS_01", null, remarks);
+				expectedArrivalDate, PurchaseOrderStatus.DRAFT, null, remarks);
 	}
 
 	/** 구매 요청 전환 생성 — prId 기록 */
 	public static PurchaseOrder fromPurchaseRequest(String orderNumber, LocalDate orderDate,
 			Long partnerId, LocalDate expectedArrivalDate, Long prId, String remarks) {
 		return new PurchaseOrder(orderNumber, orderDate, partnerId,
-				expectedArrivalDate, "PO_STATUS_01", prId, remarks);
+				expectedArrivalDate, PurchaseOrderStatus.DRAFT, prId, remarks);
 	}
 
-	/** 수정 — 초안(01) 또는 취소(04) 상태만 허용 */
+	/** 수정 — DRAFT 또는 CANCELLED 상태만 허용 */
 	public void update(LocalDate orderDate, Long partnerId,
 			LocalDate expectedArrivalDate, String remarks) {
 		if (!canEdit()) {
@@ -99,31 +98,31 @@ public class PurchaseOrder extends BaseEntity {
 		this.remarks = remarks != null ? remarks : "";
 	}
 
-	/** 초안(01) → 발주됨(02) */
+	/** DRAFT → ORDERED */
 	public void confirm() {
-		if (!"PO_STATUS_01".equals(this.statusCode)) {
+		if (this.status != PurchaseOrderStatus.DRAFT) {
 			throw new BusinessRuleViolationException("초안 상태의 발주만 확정할 수 있습니다.");
 		}
-		this.statusCode = "PO_STATUS_02";
+		this.status = PurchaseOrderStatus.ORDERED;
 	}
 
-	/** 초안(01) 또는 발주됨(02) → 취소(04) */
+	/** DRAFT 또는 ORDERED → CANCELLED */
 	public void cancel() {
 		if (!canCancel()) {
 			throw new BusinessRuleViolationException("초안 또는 발주됨 상태에서만 취소할 수 있습니다.");
 		}
-		this.statusCode = "PO_STATUS_04";
+		this.status = PurchaseOrderStatus.CANCELLED;
 	}
 
 	/**
-	 * 발주됨(02) → 입고완료(03).
-	 * Phase 2 자재입고(PurchaseReceipt) 도메인 구현 후 PurchaseReceiptService에서 호출한다.
+	 * ORDERED → RECEIVED.
+	 * 자재입고(GoodsReceipt) 확정 시 GoodsReceiptService에서 호출한다.
 	 */
 	public void markReceived() {
-		if (!"PO_STATUS_02".equals(this.statusCode)) {
+		if (this.status != PurchaseOrderStatus.ORDERED) {
 			throw new BusinessRuleViolationException("발주됨 상태의 발주만 입고완료 처리할 수 있습니다.");
 		}
-		this.statusCode = "PO_STATUS_03";
+		this.status = PurchaseOrderStatus.RECEIVED;
 	}
 
 	public void addLine(PurchaseOrderLine line) {
@@ -134,18 +133,18 @@ public class PurchaseOrder extends BaseEntity {
 		lines.clear();
 	}
 
-	/** 초안(01) 또는 취소(04) 상태만 수정 가능 */
+	/** DRAFT 또는 CANCELLED 상태만 수정 가능 */
 	public boolean canEdit() {
-		return "PO_STATUS_01".equals(statusCode) || "PO_STATUS_04".equals(statusCode);
+		return this.status == PurchaseOrderStatus.DRAFT || this.status == PurchaseOrderStatus.CANCELLED;
 	}
 
-	/** 초안(01) 상태만 삭제 가능 */
+	/** DRAFT 상태만 삭제 가능 */
 	public boolean canDelete() {
-		return "PO_STATUS_01".equals(statusCode);
+		return this.status == PurchaseOrderStatus.DRAFT;
 	}
 
-	/** 초안(01) 또는 발주됨(02) 상태만 취소 가능 */
+	/** DRAFT 또는 ORDERED 상태만 취소 가능 */
 	public boolean canCancel() {
-		return "PO_STATUS_01".equals(statusCode) || "PO_STATUS_02".equals(statusCode);
+		return this.status == PurchaseOrderStatus.DRAFT || this.status == PurchaseOrderStatus.ORDERED;
 	}
 }

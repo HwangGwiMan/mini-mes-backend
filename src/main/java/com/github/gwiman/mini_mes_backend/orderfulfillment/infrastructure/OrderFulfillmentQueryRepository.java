@@ -17,6 +17,7 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Employee;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
 import com.github.gwiman.mini_mes_backend.orderfulfillment.api.dto.OrderFulfillmentResponse;
+import com.github.gwiman.mini_mes_backend.revenue.domain.RevenueStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -79,7 +80,7 @@ public class OrderFulfillmentQueryRepository {
 				.join(DSL.table("revenue").as("rv")).on(
 					DSL.field("rvl.revenue_id", Long.class).eq(DSL.field("rv.id", Long.class)))
 				.where(DSL.field("rvl.sales_order_id", Long.class).eq(so.ID))
-				.and(DSL.field("rv.status_code", String.class).eq("REVENUE_STATUS_02"))
+				.and(DSL.field("rv.status_code", String.class).eq(RevenueStatus.CLOSED.code()))
 		).as("total_revenue_amount");
 
 		// 매출 상태 요약 서브쿼리 — 연결 매출 상태의 distinct count로 혼재 여부 판단
@@ -90,7 +91,7 @@ public class OrderFulfillmentQueryRepository {
 				.join(DSL.table("revenue").as("rv2")).on(
 					DSL.field("rvl2.revenue_id", Long.class).eq(DSL.field("rv2.id", Long.class)))
 				.where(DSL.field("rvl2.sales_order_id", Long.class).eq(so.ID))
-				.and(DSL.field("rv2.status_code", String.class).eq("REVENUE_STATUS_01"))
+				.and(DSL.field("rv2.status_code", String.class).eq(RevenueStatus.DRAFT.code()))
 		).as("revenue_draft_count");
 
 		Field<Integer> revenueClosedCount = DSL.field(
@@ -99,7 +100,7 @@ public class OrderFulfillmentQueryRepository {
 				.join(DSL.table("revenue").as("rv3")).on(
 					DSL.field("rvl3.revenue_id", Long.class).eq(DSL.field("rv3.id", Long.class)))
 				.where(DSL.field("rvl3.sales_order_id", Long.class).eq(so.ID))
-				.and(DSL.field("rv3.status_code", String.class).eq("REVENUE_STATUS_02"))
+				.and(DSL.field("rv3.status_code", String.class).eq(RevenueStatus.CLOSED.code()))
 		).as("revenue_closed_count");
 
 		Condition orderNumberCond = orderNumberPattern != null

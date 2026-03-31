@@ -19,6 +19,7 @@ import com.github.gwiman.mini_mes_backend.revenue.api.dto.RevenueUpdateRequest;
 import com.github.gwiman.mini_mes_backend.revenue.domain.Revenue;
 import com.github.gwiman.mini_mes_backend.revenue.domain.RevenueLine;
 import com.github.gwiman.mini_mes_backend.revenue.domain.RevenueRepository;
+import com.github.gwiman.mini_mes_backend.revenue.domain.RevenueStatus;
 import com.github.gwiman.mini_mes_backend.revenue.internal.RevenueQueryRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -34,8 +35,6 @@ import lombok.RequiredArgsConstructor;
 public class RevenueService {
 
 	private static final String REVENUE_NUMBER_PREFIX = "RE_";
-	private static final String STATUS_DRAFT     = "REVENUE_STATUS_01";
-	private static final String STATUS_CLOSED    = "REVENUE_STATUS_02";
 
 	private final RevenueRepository revenueRepository;
 	private final RevenueQueryRepository revenueQueryRepository;
@@ -73,7 +72,7 @@ public class RevenueService {
 			request.partnerId(),
 			request.employeeId(),
 			request.revenueDate(),
-			STATUS_DRAFT,
+			RevenueStatus.DRAFT,
 			request.remarks() != null ? request.remarks() : ""
 		);
 
@@ -108,7 +107,7 @@ public class RevenueService {
 		Revenue revenue = revenueRepository.findWithLinesById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("매출을 찾을 수 없습니다: " + id));
 
-		if (!STATUS_DRAFT.equals(revenue.getStatusCode())) {
+		if (revenue.getStatus() != RevenueStatus.DRAFT) {
 			throw new BusinessRuleViolationException("초안 상태에서만 수정할 수 있습니다.");
 		}
 
@@ -145,7 +144,7 @@ public class RevenueService {
 		Revenue revenue = revenueRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("매출을 찾을 수 없습니다: " + id));
 
-		if (!STATUS_DRAFT.equals(revenue.getStatusCode())) {
+		if (revenue.getStatus() != RevenueStatus.DRAFT) {
 			throw new BusinessRuleViolationException("초안 상태에서만 마감할 수 있습니다.");
 		}
 
@@ -163,7 +162,7 @@ public class RevenueService {
 		Revenue revenue = revenueRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("매출을 찾을 수 없습니다: " + id));
 
-		if (!STATUS_CLOSED.equals(revenue.getStatusCode())) {
+		if (revenue.getStatus() != RevenueStatus.CLOSED) {
 			throw new BusinessRuleViolationException("마감 상태에서만 취소할 수 있습니다.");
 		}
 
@@ -181,7 +180,7 @@ public class RevenueService {
 		Revenue revenue = revenueRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("매출을 찾을 수 없습니다: " + id));
 
-		if (!STATUS_DRAFT.equals(revenue.getStatusCode())) {
+		if (revenue.getStatus() != RevenueStatus.DRAFT) {
 			throw new BusinessRuleViolationException("초안 상태에서만 삭제할 수 있습니다.");
 		}
 

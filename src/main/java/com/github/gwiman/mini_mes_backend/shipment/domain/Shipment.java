@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * 출하 헤더 엔티티.
- * 수주 등록 시 자동으로 생성되며, SHIPMENT_STATUS 공통코드로 상태를 관리한다.
- * 출하 계획(출하대기/출하중) → 출하 완료 흐름으로 처리된다.
+ * 수주 등록 시 자동으로 생성되며, ShipmentStatus Enum으로 상태를 관리한다.
+ * 출하 계획(WAITING/IN_PROGRESS) → 출하 완료(COMPLETED) 흐름으로 처리된다.
  */
 @Entity
 @Table(name = "shipment")
@@ -49,9 +49,8 @@ public class Shipment extends BaseEntity {
 	@Column(name = "employee_id")
 	private Long employeeId;
 
-	/** SHIPMENT_STATUS 공통코드 참조 */
-	@Column(length = 20, nullable = false)
-	private String statusCode;
+	@Column(name = "status_code", length = 20, nullable = false)
+	private ShipmentStatus status;
 
 	@Column(length = 200)
 	private String remarks;
@@ -60,26 +59,26 @@ public class Shipment extends BaseEntity {
 	private final List<ShipmentLine> lines = new ArrayList<>();
 
 	public Shipment(String shipmentNumber, Long salesOrderId, Long partnerId,
-		Long employeeId, String statusCode, String remarks) {
+		Long employeeId, ShipmentStatus status, String remarks) {
 		this.shipmentNumber = shipmentNumber;
 		this.salesOrderId = salesOrderId;
 		this.partnerId = partnerId;
 		this.employeeId = employeeId;
-		this.statusCode = statusCode;
+		this.status = status;
 		this.remarks = remarks;
 	}
 
 	/** 출하 계획 수정 — 출하대기/출하중 상태에서만 허용 */
-	public void update(Long employeeId, String statusCode, String remarks) {
+	public void update(Long employeeId, ShipmentStatus status, String remarks) {
 		this.employeeId = employeeId;
-		this.statusCode = statusCode;
+		this.status = status;
 		this.remarks = remarks;
 	}
 
 	/** 출하 완료 처리 — 실출하일자를 기록하고 상태를 출하완료로 변경 */
 	public void complete(LocalDate shipmentDate) {
 		this.shipmentDate = shipmentDate;
-		this.statusCode = "SHIPMENT_STATUS_03";
+		this.status = ShipmentStatus.COMPLETED;
 	}
 
 	public void addLine(ShipmentLine line) {

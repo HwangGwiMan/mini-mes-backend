@@ -22,6 +22,7 @@ import com.github.gwiman.mini_mes_backend.quote.domain.QuoteApproval;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteApprovalRepository;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteLine;
 import com.github.gwiman.mini_mes_backend.quote.domain.QuoteRepository;
+import com.github.gwiman.mini_mes_backend.quote.domain.QuoteStatus;
 import com.github.gwiman.mini_mes_backend.quote.internal.QuoteQueryRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -57,7 +58,7 @@ public class QuoteService {
 	/** 타 모듈(salesorder)에서 견적 전환 시 필요한 헤더 정보만 반환 — api DTO 직접 노출 방지 */
 	public QuoteHeaderData findHeaderById(Long id) {
 		return quoteRepository.findById(id)
-			.map(q -> new QuoteHeaderData(q.getId(), q.getStatusCode(), q.getPartnerId(), q.getEmployeeId()))
+			.map(q -> new QuoteHeaderData(q.getId(), q.getStatus(), q.getPartnerId(), q.getEmployeeId()))
 			.orElseThrow(() -> new ResourceNotFoundException("견적을 찾을 수 없습니다: " + id));
 	}
 
@@ -153,7 +154,7 @@ public class QuoteService {
 			throw new BusinessRuleViolationException("견적 등록자 또는 관리자만 제출할 수 있습니다.");
 		}
 
-		quote.updateStatus("QUOTE_STATUS_02");
+		quote.updateStatus(QuoteStatus.SUBMITTED);
 	}
 
 	@Transactional
@@ -176,7 +177,7 @@ public class QuoteService {
 			approverName, "APPROVED", request.comment()
 		));
 
-		quote.updateStatus("QUOTE_STATUS_03");
+		quote.updateStatus(QuoteStatus.APPROVED);
 	}
 
 	@Transactional
@@ -199,7 +200,7 @@ public class QuoteService {
 			approverName, "REJECTED", request.comment()
 		));
 
-		quote.updateStatus("QUOTE_STATUS_04");
+		quote.updateStatus(QuoteStatus.REJECTED);
 	}
 
 	public List<ApprovalResponse> getApprovalHistory(Long quoteId) {

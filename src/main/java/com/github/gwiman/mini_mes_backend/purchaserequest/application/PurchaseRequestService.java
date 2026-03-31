@@ -20,6 +20,7 @@ import com.github.gwiman.mini_mes_backend.purchaserequest.api.dto.PurchaseReques
 import com.github.gwiman.mini_mes_backend.purchaserequest.domain.PurchaseRequest;
 import com.github.gwiman.mini_mes_backend.purchaserequest.domain.PurchaseRequestLine;
 import com.github.gwiman.mini_mes_backend.purchaserequest.domain.PurchaseRequestRepository;
+import com.github.gwiman.mini_mes_backend.purchaserequest.domain.PurchaseRequestStatus;
 import com.github.gwiman.mini_mes_backend.purchaserequest.internal.PurchaseRequestQueryRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -58,7 +59,7 @@ public class PurchaseRequestService {
 	public PurchaseRequestHeaderData findHeaderById(Long id) {
 		return purchaseRequestRepository.findById(id)
 			.map(pr -> new PurchaseRequestHeaderData(
-				pr.getId(), pr.getRequestNumber(), pr.getStatusCode(), pr.getRequesterId()))
+				pr.getId(), pr.getRequestNumber(), pr.getStatus(), pr.getRequesterId()))
 			.orElseThrow(() -> new ResourceNotFoundException("구매 요청을 찾을 수 없습니다: " + id));
 	}
 
@@ -129,8 +130,8 @@ public class PurchaseRequestService {
 	public void delete(Long id) {
 		PurchaseRequest pr = purchaseRequestRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("구매 요청을 찾을 수 없습니다: " + id));
-		// 초안(01) 상태만 삭제 가능 — 제출 이후는 이력이 남으므로 삭제 불가
-		if (!"PR_STATUS_01".equals(pr.getStatusCode())) {
+		// DRAFT 상태만 삭제 가능 — 제출 이후는 이력이 남으므로 삭제 불가
+		if (pr.getStatus() != PurchaseRequestStatus.DRAFT) {
 			throw new BusinessRuleViolationException("초안 상태의 구매 요청만 삭제할 수 있습니다.");
 		}
 		purchaseRequestRepository.deleteById(id);

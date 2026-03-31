@@ -60,7 +60,7 @@ Each domain lives under `com.github.gwiman.mini_mes_backend.{domain}` and is spl
 - **Cross-domain access**: Services call other domains' public `Service` APIs only (e.g., `partnerService.exists()`, `quoteService.getLines()`). Direct cross-domain `Repository` injection is prohibited. Domain entities store foreign keys as `Long` IDs, not `@ManyToOne` references.
 - **Module events**: Cross-domain state changes use Spring Modulith `@ApplicationModuleListener` (e.g., `QuoteConvertedToOrderEvent`).
 - **Document numbering**: Auto-generated in service (e.g., `SO_YYYYMM_001`) using jOOQ max-query on the number column.
-- **Status codes**: Stored as `String` columns referencing `commoncode` values (e.g., `QUOTE_STATUS_05`).
+- **Status codes**: Each domain has a `{Domain}Status` Enum (e.g., `QuoteStatus`, `SalesOrderStatus`) located in `{domain}/domain/`. The Enum holds the DB code value (e.g., `QUOTE_STATUS_05`) and converts via an inner `JpaConverter`. DB columns remain `VARCHAR` — no schema change required. QueryRepositories use `.code()` when building jOOQ conditions.
 
 ### Security
 

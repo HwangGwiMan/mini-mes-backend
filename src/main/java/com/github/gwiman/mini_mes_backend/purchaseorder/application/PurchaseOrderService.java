@@ -19,8 +19,10 @@ import com.github.gwiman.mini_mes_backend.purchaseorder.api.dto.PurchaseOrderRes
 import com.github.gwiman.mini_mes_backend.purchaseorder.domain.PurchaseOrder;
 import com.github.gwiman.mini_mes_backend.purchaseorder.domain.PurchaseOrderLine;
 import com.github.gwiman.mini_mes_backend.purchaseorder.domain.PurchaseOrderRepository;
+import com.github.gwiman.mini_mes_backend.purchaseorder.domain.PurchaseOrderStatus;
 import com.github.gwiman.mini_mes_backend.purchaseorder.internal.PurchaseOrderQueryRepository;
 import com.github.gwiman.mini_mes_backend.purchaserequest.application.PurchaseRequestService;
+import com.github.gwiman.mini_mes_backend.purchaserequest.domain.PurchaseRequestStatus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,7 +62,7 @@ public class PurchaseOrderService {
 	public PurchaseOrderHeaderData findHeaderById(Long id) {
 		return purchaseOrderRepository.findById(id)
 			.map(po -> new PurchaseOrderHeaderData(
-				po.getId(), po.getOrderNumber(), po.getStatusCode(), po.getPartnerId()))
+				po.getId(), po.getOrderNumber(), po.getStatus(), po.getPartnerId()))
 			.orElseThrow(() -> new ResourceNotFoundException("구매 발주를 찾을 수 없습니다: " + id));
 	}
 
@@ -94,7 +96,7 @@ public class PurchaseOrderService {
 	@Transactional
 	public PurchaseOrderResponse createFromPr(Long prId, PurchaseOrderRequest request) {
 		var prHeader = purchaseRequestService.findHeaderById(prId);
-		if (!"PR_STATUS_03".equals(prHeader.statusCode())) {
+		if (prHeader.status() != PurchaseRequestStatus.APPROVED) {
 			throw new BusinessRuleViolationException("승인된 구매 요청만 발주 전환할 수 있습니다.");
 		}
 		validatePartner(request.partnerId());

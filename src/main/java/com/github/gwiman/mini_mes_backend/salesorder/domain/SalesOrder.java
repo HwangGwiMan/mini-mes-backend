@@ -44,8 +44,8 @@ public class SalesOrder extends BaseEntity {
 	@Column(name = "quote_id")
 	private Long quoteId;
 
-	@Column(length = 20)
-	private String statusCode;
+	@Column(name = "status_code", length = 20)
+	private SalesOrderStatus status;
 
 	@Column(length = 200)
 	private String remarks;
@@ -54,40 +54,40 @@ public class SalesOrder extends BaseEntity {
 	private final List<SalesOrderLine> lines = new ArrayList<>();
 
 	private SalesOrder(String orderNumber, LocalDate orderDate, LocalDate deliveryDate,
-		Long partnerId, Long employeeId, Long quoteId, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, Long quoteId, SalesOrderStatus status, String remarks) {
 		this.orderNumber = orderNumber;
 		this.orderDate = orderDate;
 		this.deliveryDate = deliveryDate;
 		this.partnerId = partnerId;
 		this.employeeId = employeeId;
 		this.quoteId = quoteId;
-		this.statusCode = statusCode;
+		this.status = status;
 		this.remarks = remarks;
 	}
 
-	/** 직접 수주 생성 — 상태 코드는 요청값을 그대로 사용 */
+	/** 직접 수주 생성 — 상태는 요청값을 사용하며, null이면 DRAFT로 초기화 */
 	public static SalesOrder create(String orderNumber, LocalDate orderDate, LocalDate deliveryDate,
-		Long partnerId, Long employeeId, Long quoteId, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, Long quoteId, SalesOrderStatus status, String remarks) {
 		return new SalesOrder(orderNumber, orderDate, deliveryDate,
 			partnerId, employeeId, quoteId,
-			statusCode != null ? statusCode : "",
+			status != null ? status : SalesOrderStatus.DRAFT,
 			remarks != null ? remarks : "");
 	}
 
-	/** 견적 전환 수주 생성 — 수주일은 오늘, 초기 상태는 항상 접수(ORDER_STATUS_01) */
+	/** 견적 전환 수주 생성 — 수주일은 오늘, 초기 상태는 항상 DRAFT */
 	public static SalesOrder fromQuote(String orderNumber, Long quoteId,
 		Long partnerId, Long employeeId) {
 		return new SalesOrder(orderNumber, LocalDate.now(), null,
-			partnerId, employeeId, quoteId, "ORDER_STATUS_01", "");
+			partnerId, employeeId, quoteId, SalesOrderStatus.DRAFT, "");
 	}
 
 	public void update(LocalDate orderDate, LocalDate deliveryDate,
-		Long partnerId, Long employeeId, String statusCode, String remarks) {
+		Long partnerId, Long employeeId, SalesOrderStatus status, String remarks) {
 		this.orderDate = orderDate;
 		this.deliveryDate = deliveryDate;
 		this.partnerId = partnerId;
 		this.employeeId = employeeId;
-		this.statusCode = statusCode;
+		this.status = status;
 		this.remarks = remarks;
 	}
 

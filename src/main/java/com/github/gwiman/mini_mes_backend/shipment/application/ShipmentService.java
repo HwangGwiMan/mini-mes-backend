@@ -22,6 +22,7 @@ import com.github.gwiman.mini_mes_backend.shipment.api.dto.ShipmentUpdateRequest
 import com.github.gwiman.mini_mes_backend.shipment.domain.Shipment;
 import com.github.gwiman.mini_mes_backend.shipment.domain.ShipmentLine;
 import com.github.gwiman.mini_mes_backend.shipment.domain.ShipmentRepository;
+import com.github.gwiman.mini_mes_backend.shipment.domain.ShipmentStatus;
 import com.github.gwiman.mini_mes_backend.shipment.internal.ShipmentQueryRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,8 +38,6 @@ import lombok.RequiredArgsConstructor;
 public class ShipmentService {
 
 	private static final String SHIPMENT_NUMBER_PREFIX = "SH_";
-	private static final String STATUS_WAITING = "SHIPMENT_STATUS_01";
-	private static final String STATUS_COMPLETED = "SHIPMENT_STATUS_03";
 
 	private final ShipmentRepository shipmentRepository;
 	private final ShipmentQueryRepository shipmentQueryRepository;
@@ -79,7 +78,7 @@ public class ShipmentService {
 			order.id(),
 			order.partnerId(),
 			order.employeeId(),
-			STATUS_WAITING,
+			ShipmentStatus.WAITING,
 			""
 		);
 
@@ -113,13 +112,14 @@ public class ShipmentService {
 		Shipment shipment = shipmentRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new ResourceNotFoundException("출하를 찾을 수 없습니다: " + id));
 
-		if (STATUS_COMPLETED.equals(shipment.getStatusCode())) {
+		if (shipment.getStatus() == ShipmentStatus.COMPLETED) {
 			throw new BusinessRuleViolationException("출하완료 상태에서는 수정할 수 없습니다.");
 		}
 
+		ShipmentStatus newStatus = ShipmentStatus.from(request.statusCode());
 		shipment.update(
 			request.employeeId(),
-			request.statusCode(),
+			newStatus,
 			request.remarks() != null ? request.remarks() : ""
 		);
 
@@ -152,7 +152,7 @@ public class ShipmentService {
 		Shipment shipment = shipmentRepository.findByIdWithLines(id)
 			.orElseThrow(() -> new ResourceNotFoundException("출하를 찾을 수 없습니다: " + id));
 
-		if (STATUS_COMPLETED.equals(shipment.getStatusCode())) {
+		if (shipment.getStatus() == ShipmentStatus.COMPLETED) {
 			throw new BusinessRuleViolationException("이미 출하완료 처리된 출하입니다.");
 		}
 
@@ -182,7 +182,7 @@ public class ShipmentService {
 		Shipment shipment = shipmentRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("출하를 찾을 수 없습니다: " + id));
 
-		if (!STATUS_WAITING.equals(shipment.getStatusCode())) {
+		if (shipment.getStatus() != ShipmentStatus.WAITING) {
 			throw new BusinessRuleViolationException("출하대기 상태에서만 삭제할 수 있습니다.");
 		}
 

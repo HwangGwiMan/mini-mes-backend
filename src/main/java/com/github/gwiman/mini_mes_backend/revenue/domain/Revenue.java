@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 /**
  * 매출 헤더 엔티티.
  * 담당자가 거래처를 선택하고 해당 거래처의 완료 수주 품목을 골라 수동으로 생성한다.
- * REVENUE_STATUS 공통코드로 상태(초안→마감/취소)를 관리한다.
+ * RevenueStatus Enum으로 상태(DRAFT→CLOSED/CANCELLED)를 관리한다.
  * 매출 1건은 동일 거래처의 여러 수주 라인을 포함할 수 있다.
  */
 @Entity
@@ -47,9 +47,8 @@ public class Revenue extends BaseEntity {
 	@Column(nullable = false)
 	private LocalDate revenueDate;
 
-	/** REVENUE_STATUS 공통코드 참조 */
-	@Column(length = 20, nullable = false)
-	private String statusCode;
+	@Column(name = "status_code", length = 20, nullable = false)
+	private RevenueStatus status;
 
 	@Column(length = 200)
 	private String remarks;
@@ -58,12 +57,12 @@ public class Revenue extends BaseEntity {
 	private final List<RevenueLine> lines = new ArrayList<>();
 
 	public Revenue(String revenueNumber, Long partnerId, Long employeeId,
-		LocalDate revenueDate, String statusCode, String remarks) {
+		LocalDate revenueDate, RevenueStatus status, String remarks) {
 		this.revenueNumber = revenueNumber;
 		this.partnerId = partnerId;
 		this.employeeId = employeeId;
 		this.revenueDate = revenueDate;
-		this.statusCode = statusCode;
+		this.status = status;
 		this.remarks = remarks;
 	}
 
@@ -76,12 +75,12 @@ public class Revenue extends BaseEntity {
 
 	/** 초안 → 마감 */
 	public void close() {
-		this.statusCode = "REVENUE_STATUS_02";
+		this.status = RevenueStatus.CLOSED;
 	}
 
 	/** 마감 → 취소 */
 	public void cancel() {
-		this.statusCode = "REVENUE_STATUS_03";
+		this.status = RevenueStatus.CANCELLED;
 	}
 
 	public void addLine(RevenueLine line) {
