@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 public record GoodsReceiptRequest(
 		@NotNull LocalDate receiptDate,
 		Long poId,
+		@NotNull Long warehouseId,
 		@NotNull Long partnerId,
 		@Size(max = 200) String remarks,
 		@NotEmpty @Valid List<GoodsReceiptLineRequest> lines

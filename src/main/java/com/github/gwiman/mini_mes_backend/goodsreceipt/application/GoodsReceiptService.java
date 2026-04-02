@@ -23,6 +23,7 @@ import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
 import com.github.gwiman.mini_mes_backend.purchaseorder.application.GoodsReceiptConfirmedEvent;
 import com.github.gwiman.mini_mes_backend.purchaseorder.application.PurchaseOrderService;
+import com.github.gwiman.mini_mes_backend.goodsreceipt.application.StockReceivedEvent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,7 +71,7 @@ public class GoodsReceiptService {
 		String receiptNumber = generateReceiptNumber();
 		GoodsReceipt gr = GoodsReceipt.create(
 			receiptNumber, request.receiptDate(),
-			request.poId(), request.partnerId(), request.remarks()
+			request.poId(), request.warehouseId(), request.partnerId(), request.remarks()
 		);
 		addLines(gr, request.lines());
 
@@ -87,7 +88,7 @@ public class GoodsReceiptService {
 			purchaseOrderService.findHeaderById(request.poId());
 		}
 
-		gr.update(request.receiptDate(), request.poId(), request.partnerId(), request.remarks());
+		gr.update(request.receiptDate(), request.poId(), request.warehouseId(), request.partnerId(), request.remarks());
 		gr.clearLines();
 		addLines(gr, request.lines());
 
@@ -104,14 +105,22 @@ public class GoodsReceiptService {
 	/**
 	 * 초안(GR_STATUS_01) → 입고완료(GR_STATUS_02).
 	 * 연결된 PO가 있으면 GoodsReceiptConfirmedEvent를 발행해 PO를 입고완료(PO_STATUS_03)로 전이한다.
+	 * 직접입고/발주입고 무관하게 항상 StockReceivedEvent를 발행해 재고를 반영한다.
 	 */
 	@Transactional
 	public void confirm(Long id) {
-		GoodsReceipt gr = Guard.requireFound(goodsReceiptRepository.findById(id), "자재 입고를 찾을 수 없습니다: " + id);
+		// 라인 정보가 필요하므로 fetchWithLines 사용
+		GoodsReceipt gr = Guard.requireFound(
+			goodsReceiptRepository.findByIdWithLines(id), "자재 입고를 찾을 수 없습니다: " + id);
 		gr.confirm();
 		if (gr.getPoId() != null) {
 			events.publishEvent(new GoodsReceiptConfirmedEvent(gr.getId(), gr.getPoId()));
 		}
+		// 재고 반영 이벤트 — inventory 모듈이 수신
+		var stockLines = gr.getLines().stream()
+			.map(l -> new StockReceivedEvent.Line(l.getItemId(), null, l.getReceivedQuantity()))
+			.toList();
+		events.publishEvent(new StockReceivedEvent(gr.getId(), gr.getWarehouseId(), stockLines));
 	}
 
 	/** 초안(GR_STATUS_01) → 취소(GR_STATUS_03) */

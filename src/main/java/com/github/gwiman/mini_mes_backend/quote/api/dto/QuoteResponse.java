@@ -48,7 +48,7 @@ public record QuoteResponse(
 			entity.getApproverId(),
 			null,
 			null,
-			entity.getStatusCode(),
+			entity.getStatus().code(),
 			entity.getRemarks(),
 			lineResponses
 		);

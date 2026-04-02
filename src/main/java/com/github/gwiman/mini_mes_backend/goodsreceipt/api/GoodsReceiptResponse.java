@@ -11,6 +11,7 @@ public record GoodsReceiptResponse(
 		LocalDate receiptDate,
 		Long poId,
 		String poNumber,
+		Long warehouseId,
 		Long partnerId,
 		String partnerCode,
 		String partnerName,

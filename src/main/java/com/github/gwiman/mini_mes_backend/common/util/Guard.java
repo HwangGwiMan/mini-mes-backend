@@ -1,6 +1,7 @@
 package com.github.gwiman.mini_mes_backend.common.util;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.github.gwiman.mini_mes_backend.common.exception.BusinessRuleViolationException;
 import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException;
@@ -30,6 +31,11 @@ public final class Guard {
 		if (!condition) throw new BusinessRuleViolationException(message);
 	}
 
+	/** 메시지 생성 비용이 큰 경우(문자열 연결 등) 지연 평가용 오버로드 */
+	public static void require(boolean condition, Supplier<String> messageSupplier) {
+		if (!condition) throw new BusinessRuleViolationException(messageSupplier.get());
+	}
+
 	/**
 	 * 중복 존재 여부가 true이면 {@link BusinessRuleViolationException}을 던진다.
 	 *
@@ -44,6 +50,11 @@ public final class Guard {
 		if (exists) throw new BusinessRuleViolationException(message);
 	}
 
+	/** 메시지 생성 비용이 큰 경우(문자열 연결 등) 지연 평가용 오버로드 */
+	public static void requireNotExists(boolean exists, Supplier<String> messageSupplier) {
+		if (exists) throw new BusinessRuleViolationException(messageSupplier.get());
+	}
+
 	/**
 	 * 대상이 존재하지 않으면(false) {@link ResourceNotFoundException}을 던진다.
 	 *
@@ -56,6 +67,11 @@ public final class Guard {
 	 */
 	public static void requireExists(boolean exists, String message) {
 		if (!exists) throw new ResourceNotFoundException(message);
+	}
+
+	/** 메시지 생성 비용이 큰 경우(문자열 연결 등) 지연 평가용 오버로드 */
+	public static void requireExists(boolean exists, Supplier<String> messageSupplier) {
+		if (!exists) throw new ResourceNotFoundException(messageSupplier.get());
 	}
 
 	/**

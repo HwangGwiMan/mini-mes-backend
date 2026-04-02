@@ -40,6 +40,7 @@ public class GoodsReceiptQueryRepository {
 	private static final Field<String>    GR_RECEIPT_NUMBER = DSL.field("goods_receipt.receipt_number",  String.class);
 	private static final Field<LocalDate> GR_RECEIPT_DATE   = DSL.field("goods_receipt.receipt_date",    LocalDate.class);
 	private static final Field<Long>      GR_PO_ID          = DSL.field("goods_receipt.po_id",           Long.class);
+	private static final Field<Long>      GR_WAREHOUSE_ID   = DSL.field("goods_receipt.warehouse_id",    Long.class);
 	private static final Field<Long>      GR_PARTNER_ID     = DSL.field("goods_receipt.partner_id",      Long.class);
 	private static final Field<String>    GR_STATUS_CODE    = DSL.field("goods_receipt.status_code",     String.class);
 	private static final Field<String>    GR_REMARKS        = DSL.field("goods_receipt.remarks",         String.class);
@@ -69,7 +70,7 @@ public class GoodsReceiptQueryRepository {
 
 		return dsl
 			.select(GR_ID, GR_RECEIPT_NUMBER, GR_RECEIPT_DATE, GR_PO_ID,
-					GR_PARTNER_ID, GR_STATUS_CODE, GR_REMARKS,
+					GR_WAREHOUSE_ID, GR_PARTNER_ID, GR_STATUS_CODE, GR_REMARKS,
 					partnerCode, partnerName, poNumber)
 			.from(GR)
 			.leftJoin(p).on(GR_PARTNER_ID.eq(p.ID))
@@ -90,7 +91,7 @@ public class GoodsReceiptQueryRepository {
 		// Query 1: 헤더 + 거래처 + 발주번호
 		var headerRecord = dsl
 			.select(GR_ID, GR_RECEIPT_NUMBER, GR_RECEIPT_DATE, GR_PO_ID,
-					GR_PARTNER_ID, GR_STATUS_CODE, GR_REMARKS,
+					GR_WAREHOUSE_ID, GR_PARTNER_ID, GR_STATUS_CODE, GR_REMARKS,
 					partnerCode, partnerName, poNumber)
 			.from(GR)
 			.leftJoin(p).on(GR_PARTNER_ID.eq(p.ID))
@@ -139,6 +140,7 @@ public class GoodsReceiptQueryRepository {
 			r.get(GR_RECEIPT_DATE),
 			r.get(GR_PO_ID),
 			r.get(DSL.field("po_number", String.class)),
+			r.get(GR_WAREHOUSE_ID),
 			r.get(GR_PARTNER_ID),
 			r.get(DSL.field("partner_code", String.class)),
 			r.get(DSL.field("partner_name", String.class)),

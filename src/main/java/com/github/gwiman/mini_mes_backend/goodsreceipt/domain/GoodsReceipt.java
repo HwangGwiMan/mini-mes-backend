@@ -49,6 +49,10 @@ public class GoodsReceipt extends BaseEntity {
 	@Column(name = "po_id")
 	private Long poId;
 
+	/** 입고 창고 ID — 재고 반영 시 사용 */
+	@Column(nullable = false)
+	private Long warehouseId;
+
 	@Column(nullable = false)
 	private Long partnerId;
 
@@ -62,10 +66,11 @@ public class GoodsReceipt extends BaseEntity {
 	private final List<GoodsReceiptLine> lines = new ArrayList<>();
 
 	private GoodsReceipt(String receiptNumber, LocalDate receiptDate,
-			Long poId, Long partnerId, String remarks) {
+			Long poId, Long warehouseId, Long partnerId, String remarks) {
 		this.receiptNumber = receiptNumber;
 		this.receiptDate = receiptDate;
 		this.poId = poId;
+		this.warehouseId = warehouseId;
 		this.partnerId = partnerId;
 		this.status = GoodsReceiptStatus.DRAFT;
 		this.remarks = remarks != null ? remarks : "";
@@ -73,17 +78,18 @@ public class GoodsReceipt extends BaseEntity {
 
 	/** 자재 입고 생성 — 항상 DRAFT로 시작 */
 	public static GoodsReceipt create(String receiptNumber, LocalDate receiptDate,
-			Long poId, Long partnerId, String remarks) {
-		return new GoodsReceipt(receiptNumber, receiptDate, poId, partnerId, remarks);
+			Long poId, Long warehouseId, Long partnerId, String remarks) {
+		return new GoodsReceipt(receiptNumber, receiptDate, poId, warehouseId, partnerId, remarks);
 	}
 
 	/** 수정 — DRAFT 상태만 허용 */
-	public void update(LocalDate receiptDate, Long poId, Long partnerId, String remarks) {
+	public void update(LocalDate receiptDate, Long poId, Long warehouseId, Long partnerId, String remarks) {
 		if (!canEdit()) {
 			throw new BusinessRuleViolationException("초안 상태에서만 입고를 수정할 수 있습니다.");
 		}
 		this.receiptDate = receiptDate;
 		this.poId = poId;
+		this.warehouseId = warehouseId;
 		this.partnerId = partnerId;
 		this.remarks = remarks != null ? remarks : "";
 	}
