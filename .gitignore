@@ -37,6 +37,7 @@ out/
 
 ### VS Code ###
 .vscode/
+!.vscode/*.code-snippets
 
 ### Docker / env ###
 .env
