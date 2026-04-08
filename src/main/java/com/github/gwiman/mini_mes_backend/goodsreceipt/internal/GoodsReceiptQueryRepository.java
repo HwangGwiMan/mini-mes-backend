@@ -13,8 +13,8 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import com.github.gwiman.mini_mes_backend.goodsreceipt.api.GoodsReceiptLineResponse;
-import com.github.gwiman.mini_mes_backend.goodsreceipt.api.GoodsReceiptResponse;
+import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptLineResponse;
+import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptResponse;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 

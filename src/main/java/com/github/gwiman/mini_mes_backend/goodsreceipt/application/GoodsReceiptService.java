@@ -12,9 +12,6 @@ import com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundExcep
 import com.github.gwiman.mini_mes_backend.common.util.DocumentNumberGenerator;
 import com.github.gwiman.mini_mes_backend.common.util.Guard;
 import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
-import com.github.gwiman.mini_mes_backend.goodsreceipt.api.GoodsReceiptLineRequest;
-import com.github.gwiman.mini_mes_backend.goodsreceipt.api.GoodsReceiptRequest;
-import com.github.gwiman.mini_mes_backend.goodsreceipt.api.GoodsReceiptResponse;
 import com.github.gwiman.mini_mes_backend.goodsreceipt.domain.GoodsReceipt;
 import com.github.gwiman.mini_mes_backend.goodsreceipt.domain.GoodsReceiptLine;
 import com.github.gwiman.mini_mes_backend.goodsreceipt.domain.GoodsReceiptRepository;
@@ -23,6 +20,9 @@ import com.github.gwiman.mini_mes_backend.item.application.ItemService;
 import com.github.gwiman.mini_mes_backend.partner.application.PartnerService;
 import com.github.gwiman.mini_mes_backend.purchaseorder.application.GoodsReceiptConfirmedEvent;
 import com.github.gwiman.mini_mes_backend.purchaseorder.application.PurchaseOrderService;
+import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptLineRequest;
+import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptRequest;
+import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptResponse;
 import com.github.gwiman.mini_mes_backend.goodsreceipt.application.StockReceivedEvent;
 
 import lombok.RequiredArgsConstructor;

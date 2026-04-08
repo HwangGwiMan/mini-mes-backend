@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptRequest;
+import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptResponse;
 import com.github.gwiman.mini_mes_backend.goodsreceipt.application.GoodsReceiptService;
 
 import jakarta.validation.Valid;

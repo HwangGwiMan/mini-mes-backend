@@ -2,7 +2,6 @@ package com.github.gwiman.mini_mes_backend.inventory.application;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -259,14 +258,4 @@ public class InventoryService {
         throw new UnsupportedOperationException("Phase D에서 구현 예정");
     }
 
-    // -------------------------------------------------------------------------
-    // 조회
-    // -------------------------------------------------------------------------
-
-    /**
-     * 창고·품목 단위 현재고 조회.
-     */
-    public List<InventoryLot> findLotsByWarehouseAndItem(Long warehouseId, Long itemId) {
-        return inventoryLotRepository.findByWarehouseIdAndItemId(warehouseId, itemId);
-    }
 }

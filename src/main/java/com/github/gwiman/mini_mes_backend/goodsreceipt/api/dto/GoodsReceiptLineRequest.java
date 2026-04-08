@@ -1,4 +1,4 @@
-package com.github.gwiman.mini_mes_backend.goodsreceipt.api;
+package com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto;
 
 import java.math.BigDecimal;
 
