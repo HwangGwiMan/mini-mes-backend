@@ -6,6 +6,8 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -19,100 +21,100 @@ public class ItemRecord extends UpdatableRecordImpl<ItemRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.item.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.item.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
-     * Setter for <code>public.item.code</code>.
-     */
-    public void setCode(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.item.code</code>.
-     */
-    public String getCode() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>public.item.description</code>.
-     */
-    public void setDescription(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.item.description</code>.
-     */
-    public String getDescription() {
-        return (String) get(2);
-    }
-
-    /**
-     * Setter for <code>public.item.item_type_code</code>.
-     */
-    public void setItemTypeCode(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.item.item_type_code</code>.
-     */
-    public String getItemTypeCode() {
-        return (String) get(3);
-    }
-
-    /**
-     * Setter for <code>public.item.name</code>.
-     */
-    public void setName(String value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.item.name</code>.
-     */
-    public String getName() {
-        return (String) get(4);
-    }
-
-    /**
      * Setter for <code>public.item.sort_order</code>.
      */
     public void setSortOrder(Integer value) {
-        set(5, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.item.sort_order</code>.
      */
     public Integer getSortOrder() {
-        return (Integer) get(5);
+        return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>public.item.spec</code>.
+     * Setter for <code>public.item.use_yn</code>.
      */
-    public void setSpec(String value) {
+    public void setUseYn(Boolean value) {
+        set(1, value);
+    }
+
+    /**
+     * Getter for <code>public.item.use_yn</code>.
+     */
+    public Boolean getUseYn() {
+        return (Boolean) get(1);
+    }
+
+    /**
+     * Setter for <code>public.item.created_at</code>.
+     */
+    public void setCreatedAt(LocalDateTime value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.item.created_at</code>.
+     */
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(2);
+    }
+
+    /**
+     * Setter for <code>public.item.id</code>.
+     */
+    public void setId(Long value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.item.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(3);
+    }
+
+    /**
+     * Setter for <code>public.item.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.item.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(4);
+    }
+
+    /**
+     * Setter for <code>public.item.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.item.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(5);
+    }
+
+    /**
+     * Setter for <code>public.item.item_type_code</code>.
+     */
+    public void setItemTypeCode(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>public.item.spec</code>.
+     * Getter for <code>public.item.item_type_code</code>.
      */
-    public String getSpec() {
+    public String getItemTypeCode() {
         return (String) get(6);
     }
 
@@ -131,17 +133,87 @@ public class ItemRecord extends UpdatableRecordImpl<ItemRecord> {
     }
 
     /**
-     * Setter for <code>public.item.use_yn</code>.
+     * Setter for <code>public.item.code</code>.
      */
-    public void setUseYn(Boolean value) {
+    public void setCode(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>public.item.use_yn</code>.
+     * Getter for <code>public.item.code</code>.
      */
-    public Boolean getUseYn() {
-        return (Boolean) get(8);
+    public String getCode() {
+        return (String) get(8);
+    }
+
+    /**
+     * Setter for <code>public.item.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.item.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(9);
+    }
+
+    /**
+     * Setter for <code>public.item.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.item.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(10);
+    }
+
+    /**
+     * Setter for <code>public.item.name</code>.
+     */
+    public void setName(String value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.item.name</code>.
+     */
+    public String getName() {
+        return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>public.item.spec</code>.
+     */
+    public void setSpec(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.item.spec</code>.
+     */
+    public String getSpec() {
+        return (String) get(12);
+    }
+
+    /**
+     * Setter for <code>public.item.description</code>.
+     */
+    public void setDescription(String value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.item.description</code>.
+     */
+    public String getDescription() {
+        return (String) get(13);
     }
 
     // -------------------------------------------------------------------------
@@ -167,18 +239,23 @@ public class ItemRecord extends UpdatableRecordImpl<ItemRecord> {
     /**
      * Create a detached, initialised ItemRecord
      */
-    public ItemRecord(Long id, String code, String description, String itemTypeCode, String name, Integer sortOrder, String spec, String unit, Boolean useYn) {
+    public ItemRecord(Integer sortOrder, Boolean useYn, LocalDateTime createdAt, Long id, LocalDateTime updatedAt, Long version, String itemTypeCode, String unit, String code, String createdBy, String updatedBy, String name, String spec, String description) {
         super(Item.ITEM);
 
-        setId(id);
-        setCode(code);
-        setDescription(description);
-        setItemTypeCode(itemTypeCode);
-        setName(name);
         setSortOrder(sortOrder);
-        setSpec(spec);
-        setUnit(unit);
         setUseYn(useYn);
+        setCreatedAt(createdAt);
+        setId(id);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setItemTypeCode(itemTypeCode);
+        setUnit(unit);
+        setCode(code);
+        setCreatedBy(createdBy);
+        setUpdatedBy(updatedBy);
+        setName(name);
+        setSpec(spec);
+        setDescription(description);
         resetChangedOnNotNull();
     }
 }

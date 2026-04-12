@@ -6,24 +6,19 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
-import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine.QuoteLinePath;
-import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine.SalesOrderLinePath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.ItemRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.InverseForeignKey;
 import org.jooq.Name;
-import org.jooq.Path;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
-import org.jooq.Record;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Select;
@@ -59,19 +54,34 @@ public class Item extends TableImpl<ItemRecord> {
     }
 
     /**
+     * The column <code>public.item.sort_order</code>.
+     */
+    public final TableField<ItemRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.item.use_yn</code>.
+     */
+    public final TableField<ItemRecord, Boolean> USE_YN = createField(DSL.name("use_yn"), SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
+     * The column <code>public.item.created_at</code>.
+     */
+    public final TableField<ItemRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
      * The column <code>public.item.id</code>.
      */
     public final TableField<ItemRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.item.code</code>.
+     * The column <code>public.item.updated_at</code>.
      */
-    public final TableField<ItemRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
+    public final TableField<ItemRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
-     * The column <code>public.item.description</code>.
+     * The column <code>public.item.version</code>.
      */
-    public final TableField<ItemRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.VARCHAR(200), this, "");
+    public final TableField<ItemRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.item.item_type_code</code>.
@@ -79,14 +89,29 @@ public class Item extends TableImpl<ItemRecord> {
     public final TableField<ItemRecord, String> ITEM_TYPE_CODE = createField(DSL.name("item_type_code"), SQLDataType.VARCHAR(20), this, "");
 
     /**
+     * The column <code>public.item.unit</code>.
+     */
+    public final TableField<ItemRecord, String> UNIT = createField(DSL.name("unit"), SQLDataType.VARCHAR(20), this, "");
+
+    /**
+     * The column <code>public.item.code</code>.
+     */
+    public final TableField<ItemRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
+
+    /**
+     * The column <code>public.item.created_by</code>.
+     */
+    public final TableField<ItemRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.item.updated_by</code>.
+     */
+    public final TableField<ItemRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
      * The column <code>public.item.name</code>.
      */
     public final TableField<ItemRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.item.sort_order</code>.
-     */
-    public final TableField<ItemRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.item.spec</code>.
@@ -94,14 +119,9 @@ public class Item extends TableImpl<ItemRecord> {
     public final TableField<ItemRecord, String> SPEC = createField(DSL.name("spec"), SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.item.unit</code>.
+     * The column <code>public.item.description</code>.
      */
-    public final TableField<ItemRecord, String> UNIT = createField(DSL.name("unit"), SQLDataType.VARCHAR(20), this, "");
-
-    /**
-     * The column <code>public.item.use_yn</code>.
-     */
-    public final TableField<ItemRecord, Boolean> USE_YN = createField(DSL.name("use_yn"), SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<ItemRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.VARCHAR(200), this, "");
 
     private Item(Name alias, Table<ItemRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -132,39 +152,6 @@ public class Item extends TableImpl<ItemRecord> {
         this(DSL.name("item"), null);
     }
 
-    public <O extends Record> Item(Table<O> path, ForeignKey<O, ItemRecord> childPath, InverseForeignKey<O, ItemRecord> parentPath) {
-        super(path, childPath, parentPath, ITEM);
-    }
-
-    /**
-     * A subtype implementing {@link Path} for simplified path-based joins.
-     */
-    public static class ItemPath extends Item implements Path<ItemRecord> {
-
-        private static final long serialVersionUID = 1L;
-        public <O extends Record> ItemPath(Table<O> path, ForeignKey<O, ItemRecord> childPath, InverseForeignKey<O, ItemRecord> parentPath) {
-            super(path, childPath, parentPath);
-        }
-        private ItemPath(Name alias, Table<ItemRecord> aliased) {
-            super(alias, aliased);
-        }
-
-        @Override
-        public ItemPath as(String alias) {
-            return new ItemPath(DSL.name(alias), this);
-        }
-
-        @Override
-        public ItemPath as(Name alias) {
-            return new ItemPath(alias, this);
-        }
-
-        @Override
-        public ItemPath as(Table<?> alias) {
-            return new ItemPath(alias.getQualifiedName(), this);
-        }
-    }
-
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
@@ -182,33 +169,7 @@ public class Item extends TableImpl<ItemRecord> {
 
     @Override
     public List<UniqueKey<ItemRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.UK6CGOGDARKQ48DLG1LBNV4Q1OQ);
-    }
-
-    private transient QuoteLinePath _quoteLine;
-
-    /**
-     * Get the implicit to-many join path to the <code>public.quote_line</code>
-     * table
-     */
-    public QuoteLinePath quoteLine() {
-        if (_quoteLine == null)
-            _quoteLine = new QuoteLinePath(this, null, Keys.QUOTE_LINE__FKJ26RAJPBGQ93FD2VDRP775T8A.getInverseKey());
-
-        return _quoteLine;
-    }
-
-    private transient SalesOrderLinePath _salesOrderLine;
-
-    /**
-     * Get the implicit to-many join path to the
-     * <code>public.sales_order_line</code> table
-     */
-    public SalesOrderLinePath salesOrderLine() {
-        if (_salesOrderLine == null)
-            _salesOrderLine = new SalesOrderLinePath(this, null, Keys.SALES_ORDER_LINE__FKSX78NRSMY3OC216VK4KTMY1L9.getInverseKey());
-
-        return _salesOrderLine;
+        return Arrays.asList(Keys.ITEM_CODE_KEY);
     }
 
     @Override

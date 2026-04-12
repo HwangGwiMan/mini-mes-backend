@@ -56,11 +56,6 @@ public class EventPublication extends TableImpl<EventPublicationRecord> {
     }
 
     /**
-     * The column <code>public.event_publication.id</code>.
-     */
-    public final TableField<EventPublicationRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false), this, "");
-
-    /**
      * The column <code>public.event_publication.completion_attempts</code>.
      */
     public final TableField<EventPublicationRecord, Integer> COMPLETION_ATTEMPTS = createField(DSL.name("completion_attempts"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -71,24 +66,29 @@ public class EventPublication extends TableImpl<EventPublicationRecord> {
     public final TableField<EventPublicationRecord, OffsetDateTime> COMPLETION_DATE = createField(DSL.name("completion_date"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
-     * The column <code>public.event_publication.event_type</code>.
-     */
-    public final TableField<EventPublicationRecord, String> EVENT_TYPE = createField(DSL.name("event_type"), SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
      * The column <code>public.event_publication.last_resubmission_date</code>.
      */
     public final TableField<EventPublicationRecord, OffsetDateTime> LAST_RESUBMISSION_DATE = createField(DSL.name("last_resubmission_date"), SQLDataType.TIMESTAMPWITHTIMEZONE(6), this, "");
 
     /**
-     * The column <code>public.event_publication.listener_id</code>.
-     */
-    public final TableField<EventPublicationRecord, String> LISTENER_ID = createField(DSL.name("listener_id"), SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
      * The column <code>public.event_publication.publication_date</code>.
      */
     public final TableField<EventPublicationRecord, OffsetDateTime> PUBLICATION_DATE = createField(DSL.name("publication_date"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false), this, "");
+
+    /**
+     * The column <code>public.event_publication.id</code>.
+     */
+    public final TableField<EventPublicationRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false), this, "");
+
+    /**
+     * The column <code>public.event_publication.event_type</code>.
+     */
+    public final TableField<EventPublicationRecord, String> EVENT_TYPE = createField(DSL.name("event_type"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+
+    /**
+     * The column <code>public.event_publication.listener_id</code>.
+     */
+    public final TableField<EventPublicationRecord, String> LISTENER_ID = createField(DSL.name("listener_id"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>public.event_publication.serialized_event</code>.

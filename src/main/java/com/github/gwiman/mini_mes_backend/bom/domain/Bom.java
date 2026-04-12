@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "bom", uniqueConstraints = {
-	@UniqueConstraint(name = "uk_bom_item_version", columnNames = {"item_id", "version"})
+	@UniqueConstraint(name = "uk_bom_item_version", columnNames = {"item_id", "version_code"})
 })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,8 +41,8 @@ public class Bom extends BaseEntity {
 	@Column(name = "item_id", nullable = false)
 	private Long itemId;
 
-	// BaseEntity의 @Version(Long) 과 getter 이름 충돌 방지 — DB 컬럼명은 version 유지
-	@Column(name = "version", nullable = false, length = 20)
+	// BaseEntity의 @Version(Long)이 'version' 컬럼을 이미 점유하므로 'version_code'로 분리
+	@Column(name = "version_code", nullable = false, length = 20)
 	private String versionCode;
 
 	private LocalDate validFrom;

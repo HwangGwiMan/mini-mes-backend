@@ -6,25 +6,20 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QuotePath;
-import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder.SalesOrderPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.EmployeeRecord;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.InverseForeignKey;
 import org.jooq.Name;
-import org.jooq.Path;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
-import org.jooq.Record;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Select;
@@ -60,34 +55,44 @@ public class Employee extends TableImpl<EmployeeRecord> {
     }
 
     /**
-     * The column <code>public.employee.id</code>.
-     */
-    public final TableField<EmployeeRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>public.employee.code</code>.
-     */
-    public final TableField<EmployeeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
-
-    /**
-     * The column <code>public.employee.dept_code</code>.
-     */
-    public final TableField<EmployeeRecord, String> DEPT_CODE = createField(DSL.name("dept_code"), SQLDataType.VARCHAR(20), this, "");
-
-    /**
-     * The column <code>public.employee.email</code>.
-     */
-    public final TableField<EmployeeRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.employee.hire_date</code>.
      */
     public final TableField<EmployeeRecord, LocalDate> HIRE_DATE = createField(DSL.name("hire_date"), SQLDataType.LOCALDATE, this, "");
 
     /**
-     * The column <code>public.employee.name</code>.
+     * The column <code>public.employee.sort_order</code>.
      */
-    public final TableField<EmployeeRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<EmployeeRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.employee.use_yn</code>.
+     */
+    public final TableField<EmployeeRecord, Boolean> USE_YN = createField(DSL.name("use_yn"), SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
+     * The column <code>public.employee.created_at</code>.
+     */
+    public final TableField<EmployeeRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.employee.id</code>.
+     */
+    public final TableField<EmployeeRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.employee.updated_at</code>.
+     */
+    public final TableField<EmployeeRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.employee.version</code>.
+     */
+    public final TableField<EmployeeRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.employee.dept_code</code>.
+     */
+    public final TableField<EmployeeRecord, String> DEPT_CODE = createField(DSL.name("dept_code"), SQLDataType.VARCHAR(20), this, "");
 
     /**
      * The column <code>public.employee.phone</code>.
@@ -100,14 +105,29 @@ public class Employee extends TableImpl<EmployeeRecord> {
     public final TableField<EmployeeRecord, String> POSITION_CODE = createField(DSL.name("position_code"), SQLDataType.VARCHAR(20), this, "");
 
     /**
-     * The column <code>public.employee.sort_order</code>.
+     * The column <code>public.employee.code</code>.
      */
-    public final TableField<EmployeeRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<EmployeeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
-     * The column <code>public.employee.use_yn</code>.
+     * The column <code>public.employee.created_by</code>.
      */
-    public final TableField<EmployeeRecord, Boolean> USE_YN = createField(DSL.name("use_yn"), SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<EmployeeRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.employee.updated_by</code>.
+     */
+    public final TableField<EmployeeRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.employee.email</code>.
+     */
+    public final TableField<EmployeeRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.employee.name</code>.
+     */
+    public final TableField<EmployeeRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     private Employee(Name alias, Table<EmployeeRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -138,39 +158,6 @@ public class Employee extends TableImpl<EmployeeRecord> {
         this(DSL.name("employee"), null);
     }
 
-    public <O extends Record> Employee(Table<O> path, ForeignKey<O, EmployeeRecord> childPath, InverseForeignKey<O, EmployeeRecord> parentPath) {
-        super(path, childPath, parentPath, EMPLOYEE);
-    }
-
-    /**
-     * A subtype implementing {@link Path} for simplified path-based joins.
-     */
-    public static class EmployeePath extends Employee implements Path<EmployeeRecord> {
-
-        private static final long serialVersionUID = 1L;
-        public <O extends Record> EmployeePath(Table<O> path, ForeignKey<O, EmployeeRecord> childPath, InverseForeignKey<O, EmployeeRecord> parentPath) {
-            super(path, childPath, parentPath);
-        }
-        private EmployeePath(Name alias, Table<EmployeeRecord> aliased) {
-            super(alias, aliased);
-        }
-
-        @Override
-        public EmployeePath as(String alias) {
-            return new EmployeePath(DSL.name(alias), this);
-        }
-
-        @Override
-        public EmployeePath as(Name alias) {
-            return new EmployeePath(alias, this);
-        }
-
-        @Override
-        public EmployeePath as(Table<?> alias) {
-            return new EmployeePath(alias.getQualifiedName(), this);
-        }
-    }
-
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
@@ -188,32 +175,7 @@ public class Employee extends TableImpl<EmployeeRecord> {
 
     @Override
     public List<UniqueKey<EmployeeRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.UKNBYIVU8QGMX0R7WTBPLF01GF8);
-    }
-
-    private transient SalesOrderPath _salesOrder;
-
-    /**
-     * Get the implicit to-many join path to the <code>public.sales_order</code>
-     * table
-     */
-    public SalesOrderPath salesOrder() {
-        if (_salesOrder == null)
-            _salesOrder = new SalesOrderPath(this, null, Keys.SALES_ORDER__FKLBFR3ECCAMEAMC9LWELBG7U7L.getInverseKey());
-
-        return _salesOrder;
-    }
-
-    private transient QuotePath _quote;
-
-    /**
-     * Get the implicit to-many join path to the <code>public.quote</code> table
-     */
-    public QuotePath quote() {
-        if (_quote == null)
-            _quote = new QuotePath(this, null, Keys.QUOTE__FKODPO7A1F6TCCW81W7G8845R8F.getInverseKey());
-
-        return _quote;
+        return Arrays.asList(Keys.EMPLOYEE_CODE_KEY);
     }
 
     @Override

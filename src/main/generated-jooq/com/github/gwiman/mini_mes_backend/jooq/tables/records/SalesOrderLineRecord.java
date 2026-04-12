@@ -22,129 +22,129 @@ public class SalesOrderLineRecord extends UpdatableRecordImpl<SalesOrderLineReco
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.sales_order_line.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.sales_order_line.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
      * Setter for <code>public.sales_order_line.amount</code>.
      */
     public void setAmount(BigDecimal value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.sales_order_line.amount</code>.
      */
     public BigDecimal getAmount() {
-        return (BigDecimal) get(1);
+        return (BigDecimal) get(0);
     }
 
     /**
      * Setter for <code>public.sales_order_line.delivery_request_date</code>.
      */
     public void setDeliveryRequestDate(LocalDate value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.sales_order_line.delivery_request_date</code>.
      */
     public LocalDate getDeliveryRequestDate() {
-        return (LocalDate) get(2);
+        return (LocalDate) get(1);
     }
 
     /**
      * Setter for <code>public.sales_order_line.quantity</code>.
      */
     public void setQuantity(BigDecimal value) {
-        set(3, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.sales_order_line.quantity</code>.
      */
     public BigDecimal getQuantity() {
-        return (BigDecimal) get(3);
-    }
-
-    /**
-     * Setter for <code>public.sales_order_line.remarks</code>.
-     */
-    public void setRemarks(String value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.sales_order_line.remarks</code>.
-     */
-    public String getRemarks() {
-        return (String) get(4);
+        return (BigDecimal) get(2);
     }
 
     /**
      * Setter for <code>public.sales_order_line.sort_order</code>.
      */
     public void setSortOrder(Integer value) {
-        set(5, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.sales_order_line.sort_order</code>.
      */
     public Integer getSortOrder() {
-        return (Integer) get(5);
+        return (Integer) get(3);
     }
 
     /**
      * Setter for <code>public.sales_order_line.unit_price</code>.
      */
     public void setUnitPrice(BigDecimal value) {
-        set(6, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.sales_order_line.unit_price</code>.
      */
     public BigDecimal getUnitPrice() {
-        return (BigDecimal) get(6);
+        return (BigDecimal) get(4);
+    }
+
+    /**
+     * Setter for <code>public.sales_order_line.id</code>.
+     */
+    public void setId(Long value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order_line.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(5);
     }
 
     /**
      * Setter for <code>public.sales_order_line.item_id</code>.
      */
     public void setItemId(Long value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.sales_order_line.item_id</code>.
      */
     public Long getItemId() {
-        return (Long) get(7);
+        return (Long) get(6);
     }
 
     /**
      * Setter for <code>public.sales_order_line.sales_order_id</code>.
      */
     public void setSalesOrderId(Long value) {
-        set(8, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.sales_order_line.sales_order_id</code>.
      */
     public Long getSalesOrderId() {
-        return (Long) get(8);
+        return (Long) get(7);
+    }
+
+    /**
+     * Setter for <code>public.sales_order_line.remarks</code>.
+     */
+    public void setRemarks(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order_line.remarks</code>.
+     */
+    public String getRemarks() {
+        return (String) get(8);
     }
 
     // -------------------------------------------------------------------------
@@ -170,18 +170,18 @@ public class SalesOrderLineRecord extends UpdatableRecordImpl<SalesOrderLineReco
     /**
      * Create a detached, initialised SalesOrderLineRecord
      */
-    public SalesOrderLineRecord(Long id, BigDecimal amount, LocalDate deliveryRequestDate, BigDecimal quantity, String remarks, Integer sortOrder, BigDecimal unitPrice, Long itemId, Long salesOrderId) {
+    public SalesOrderLineRecord(BigDecimal amount, LocalDate deliveryRequestDate, BigDecimal quantity, Integer sortOrder, BigDecimal unitPrice, Long id, Long itemId, Long salesOrderId, String remarks) {
         super(SalesOrderLine.SALES_ORDER_LINE);
 
-        setId(id);
         setAmount(amount);
         setDeliveryRequestDate(deliveryRequestDate);
         setQuantity(quantity);
-        setRemarks(remarks);
         setSortOrder(sortOrder);
         setUnitPrice(unitPrice);
+        setId(id);
         setItemId(itemId);
         setSalesOrderId(salesOrderId);
+        setRemarks(remarks);
         resetChangedOnNotNull();
     }
 }

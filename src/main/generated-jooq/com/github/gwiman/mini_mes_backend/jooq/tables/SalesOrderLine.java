@@ -6,7 +6,6 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Item.ItemPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder.SalesOrderPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.SalesOrderLineRecord;
 
@@ -61,11 +60,6 @@ public class SalesOrderLine extends TableImpl<SalesOrderLineRecord> {
     }
 
     /**
-     * The column <code>public.sales_order_line.id</code>.
-     */
-    public final TableField<SalesOrderLineRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
-
-    /**
      * The column <code>public.sales_order_line.amount</code>.
      */
     public final TableField<SalesOrderLineRecord, BigDecimal> AMOUNT = createField(DSL.name("amount"), SQLDataType.NUMERIC(19, 4).nullable(false), this, "");
@@ -81,11 +75,6 @@ public class SalesOrderLine extends TableImpl<SalesOrderLineRecord> {
     public final TableField<SalesOrderLineRecord, BigDecimal> QUANTITY = createField(DSL.name("quantity"), SQLDataType.NUMERIC(19, 4).nullable(false), this, "");
 
     /**
-     * The column <code>public.sales_order_line.remarks</code>.
-     */
-    public final TableField<SalesOrderLineRecord, String> REMARKS = createField(DSL.name("remarks"), SQLDataType.VARCHAR(200), this, "");
-
-    /**
      * The column <code>public.sales_order_line.sort_order</code>.
      */
     public final TableField<SalesOrderLineRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -96,6 +85,11 @@ public class SalesOrderLine extends TableImpl<SalesOrderLineRecord> {
     public final TableField<SalesOrderLineRecord, BigDecimal> UNIT_PRICE = createField(DSL.name("unit_price"), SQLDataType.NUMERIC(19, 4).nullable(false), this, "");
 
     /**
+     * The column <code>public.sales_order_line.id</code>.
+     */
+    public final TableField<SalesOrderLineRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
      * The column <code>public.sales_order_line.item_id</code>.
      */
     public final TableField<SalesOrderLineRecord, Long> ITEM_ID = createField(DSL.name("item_id"), SQLDataType.BIGINT.nullable(false), this, "");
@@ -104,6 +98,11 @@ public class SalesOrderLine extends TableImpl<SalesOrderLineRecord> {
      * The column <code>public.sales_order_line.sales_order_id</code>.
      */
     public final TableField<SalesOrderLineRecord, Long> SALES_ORDER_ID = createField(DSL.name("sales_order_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.sales_order_line.remarks</code>.
+     */
+    public final TableField<SalesOrderLineRecord, String> REMARKS = createField(DSL.name("remarks"), SQLDataType.VARCHAR(200), this, "");
 
     private SalesOrderLine(Name alias, Table<SalesOrderLineRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -184,7 +183,7 @@ public class SalesOrderLine extends TableImpl<SalesOrderLineRecord> {
 
     @Override
     public List<ForeignKey<SalesOrderLineRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.SALES_ORDER_LINE__FK3HHRMXPWT1CQLNXMTIWPY9WPG, Keys.SALES_ORDER_LINE__FKSX78NRSMY3OC216VK4KTMY1L9);
+        return Arrays.asList(Keys.SALES_ORDER_LINE__FK3HHRMXPWT1CQLNXMTIWPY9WPG);
     }
 
     private transient SalesOrderPath _salesOrder;
@@ -197,18 +196,6 @@ public class SalesOrderLine extends TableImpl<SalesOrderLineRecord> {
             _salesOrder = new SalesOrderPath(this, Keys.SALES_ORDER_LINE__FK3HHRMXPWT1CQLNXMTIWPY9WPG, null);
 
         return _salesOrder;
-    }
-
-    private transient ItemPath _item;
-
-    /**
-     * Get the implicit join path to the <code>public.item</code> table.
-     */
-    public ItemPath item() {
-        if (_item == null)
-            _item = new ItemPath(this, Keys.SALES_ORDER_LINE__FKSX78NRSMY3OC216VK4KTMY1L9, null);
-
-        return _item;
     }
 
     @Override

@@ -35,7 +35,7 @@ public class BomQueryRepository {
 
 	private static final Field<Long> B_ID = DSL.field(DSL.name("b", "id"), SQLDataType.BIGINT);
 	private static final Field<Long> B_ITEM_ID = DSL.field(DSL.name("b", "item_id"), SQLDataType.BIGINT);
-	private static final Field<String> B_VERSION = DSL.field(DSL.name("b", "version"), SQLDataType.VARCHAR);
+	private static final Field<String> B_VERSION = DSL.field(DSL.name("b", "version_code"), SQLDataType.VARCHAR);
 	private static final Field<java.time.LocalDate> B_VALID_FROM = DSL.field(DSL.name("b", "valid_from"), SQLDataType.LOCALDATE);
 	private static final Field<java.time.LocalDate> B_VALID_TO = DSL.field(DSL.name("b", "valid_to"), SQLDataType.LOCALDATE);
 	private static final Field<Boolean> B_ACTIVE_YN = DSL.field(DSL.name("b", "active_yn"), SQLDataType.BOOLEAN);

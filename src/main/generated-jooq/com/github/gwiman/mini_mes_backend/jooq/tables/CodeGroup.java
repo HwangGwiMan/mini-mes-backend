@@ -8,6 +8,7 @@ import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.CodeGroupRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -53,9 +54,34 @@ public class CodeGroup extends TableImpl<CodeGroupRecord> {
     }
 
     /**
+     * The column <code>public.code_group.sort_order</code>.
+     */
+    public final TableField<CodeGroupRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.code_group.created_at</code>.
+     */
+    public final TableField<CodeGroupRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
      * The column <code>public.code_group.id</code>.
      */
     public final TableField<CodeGroupRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.code_group.updated_at</code>.
+     */
+    public final TableField<CodeGroupRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.code_group.version</code>.
+     */
+    public final TableField<CodeGroupRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.code_group.created_by</code>.
+     */
+    public final TableField<CodeGroupRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
 
     /**
      * The column <code>public.code_group.group_code</code>.
@@ -63,14 +89,14 @@ public class CodeGroup extends TableImpl<CodeGroupRecord> {
     public final TableField<CodeGroupRecord, String> GROUP_CODE = createField(DSL.name("group_code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
+     * The column <code>public.code_group.updated_by</code>.
+     */
+    public final TableField<CodeGroupRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
      * The column <code>public.code_group.group_name</code>.
      */
     public final TableField<CodeGroupRecord, String> GROUP_NAME = createField(DSL.name("group_name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.code_group.sort_order</code>.
-     */
-    public final TableField<CodeGroupRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private CodeGroup(Name alias, Table<CodeGroupRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -118,7 +144,7 @@ public class CodeGroup extends TableImpl<CodeGroupRecord> {
 
     @Override
     public List<UniqueKey<CodeGroupRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.UKANYWI85GA0C2V0JC8Q8UEKWM5);
+        return Arrays.asList(Keys.CODE_GROUP_GROUP_CODE_KEY);
     }
 
     @Override

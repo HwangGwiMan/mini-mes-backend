@@ -4,19 +4,38 @@
 package com.github.gwiman.mini_mes_backend.jooq;
 
 
+import com.github.gwiman.mini_mes_backend.jooq.tables.Bom;
+import com.github.gwiman.mini_mes_backend.jooq.tables.BomLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.CodeGroup;
 import com.github.gwiman.mini_mes_backend.jooq.tables.CommonCode;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Employee;
 import com.github.gwiman.mini_mes_backend.jooq.tables.EventPublication;
+import com.github.gwiman.mini_mes_backend.jooq.tables.GoodsReceipt;
+import com.github.gwiman.mini_mes_backend.jooq.tables.GoodsReceiptLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Inventory;
+import com.github.gwiman.mini_mes_backend.jooq.tables.InventoryLot;
+import com.github.gwiman.mini_mes_backend.jooq.tables.InventoryTx;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
+import com.github.gwiman.mini_mes_backend.jooq.tables.ItemPrice;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
+import com.github.gwiman.mini_mes_backend.jooq.tables.PurchaseOrder;
+import com.github.gwiman.mini_mes_backend.jooq.tables.PurchaseOrderLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.PurchaseRequest;
+import com.github.gwiman.mini_mes_backend.jooq.tables.PurchaseRequestLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteApproval;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Revenue;
+import com.github.gwiman.mini_mes_backend.jooq.tables.RevenueLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Routing;
+import com.github.gwiman.mini_mes_backend.jooq.tables.RoutingStep;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Shipment;
+import com.github.gwiman.mini_mes_backend.jooq.tables.ShipmentLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Users;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Warehouse;
 
 
 /**
@@ -24,6 +43,16 @@ import com.github.gwiman.mini_mes_backend.jooq.tables.Users;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.bom</code>.
+     */
+    public static final Bom BOM = Bom.BOM;
+
+    /**
+     * The table <code>public.bom_line</code>.
+     */
+    public static final BomLine BOM_LINE = BomLine.BOM_LINE;
 
     /**
      * The table <code>public.code_group</code>.
@@ -46,9 +75,39 @@ public class Tables {
     public static final EventPublication EVENT_PUBLICATION = EventPublication.EVENT_PUBLICATION;
 
     /**
+     * The table <code>public.goods_receipt</code>.
+     */
+    public static final GoodsReceipt GOODS_RECEIPT = GoodsReceipt.GOODS_RECEIPT;
+
+    /**
+     * The table <code>public.goods_receipt_line</code>.
+     */
+    public static final GoodsReceiptLine GOODS_RECEIPT_LINE = GoodsReceiptLine.GOODS_RECEIPT_LINE;
+
+    /**
+     * The table <code>public.inventory</code>.
+     */
+    public static final Inventory INVENTORY = Inventory.INVENTORY;
+
+    /**
+     * The table <code>public.inventory_lot</code>.
+     */
+    public static final InventoryLot INVENTORY_LOT = InventoryLot.INVENTORY_LOT;
+
+    /**
+     * The table <code>public.inventory_tx</code>.
+     */
+    public static final InventoryTx INVENTORY_TX = InventoryTx.INVENTORY_TX;
+
+    /**
      * The table <code>public.item</code>.
      */
     public static final Item ITEM = Item.ITEM;
+
+    /**
+     * The table <code>public.item_price</code>.
+     */
+    public static final ItemPrice ITEM_PRICE = ItemPrice.ITEM_PRICE;
 
     /**
      * The table <code>public.partner</code>.
@@ -59,6 +118,26 @@ public class Tables {
      * The table <code>public.process</code>.
      */
     public static final Process PROCESS = Process.PROCESS;
+
+    /**
+     * The table <code>public.purchase_order</code>.
+     */
+    public static final PurchaseOrder PURCHASE_ORDER = PurchaseOrder.PURCHASE_ORDER;
+
+    /**
+     * The table <code>public.purchase_order_line</code>.
+     */
+    public static final PurchaseOrderLine PURCHASE_ORDER_LINE = PurchaseOrderLine.PURCHASE_ORDER_LINE;
+
+    /**
+     * The table <code>public.purchase_request</code>.
+     */
+    public static final PurchaseRequest PURCHASE_REQUEST = PurchaseRequest.PURCHASE_REQUEST;
+
+    /**
+     * The table <code>public.purchase_request_line</code>.
+     */
+    public static final PurchaseRequestLine PURCHASE_REQUEST_LINE = PurchaseRequestLine.PURCHASE_REQUEST_LINE;
 
     /**
      * The table <code>public.quote</code>.
@@ -76,6 +155,26 @@ public class Tables {
     public static final QuoteLine QUOTE_LINE = QuoteLine.QUOTE_LINE;
 
     /**
+     * The table <code>public.revenue</code>.
+     */
+    public static final Revenue REVENUE = Revenue.REVENUE;
+
+    /**
+     * The table <code>public.revenue_line</code>.
+     */
+    public static final RevenueLine REVENUE_LINE = RevenueLine.REVENUE_LINE;
+
+    /**
+     * The table <code>public.routing</code>.
+     */
+    public static final Routing ROUTING = Routing.ROUTING;
+
+    /**
+     * The table <code>public.routing_step</code>.
+     */
+    public static final RoutingStep ROUTING_STEP = RoutingStep.ROUTING_STEP;
+
+    /**
      * The table <code>public.sales_order</code>.
      */
     public static final SalesOrder SALES_ORDER = SalesOrder.SALES_ORDER;
@@ -86,7 +185,22 @@ public class Tables {
     public static final SalesOrderLine SALES_ORDER_LINE = SalesOrderLine.SALES_ORDER_LINE;
 
     /**
+     * The table <code>public.shipment</code>.
+     */
+    public static final Shipment SHIPMENT = Shipment.SHIPMENT;
+
+    /**
+     * The table <code>public.shipment_line</code>.
+     */
+    public static final ShipmentLine SHIPMENT_LINE = ShipmentLine.SHIPMENT_LINE;
+
+    /**
      * The table <code>public.users</code>.
      */
     public static final Users USERS = Users.USERS;
+
+    /**
+     * The table <code>public.warehouse</code>.
+     */
+    public static final Warehouse WAREHOUSE = Warehouse.WAREHOUSE;
 }

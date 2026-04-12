@@ -6,6 +6,8 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -19,129 +21,199 @@ public class PartnerRecord extends UpdatableRecordImpl<PartnerRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Setter for <code>public.partner.created_at</code>.
+     */
+    public void setCreatedAt(LocalDateTime value) {
+        set(0, value);
+    }
+
+    /**
+     * Getter for <code>public.partner.created_at</code>.
+     */
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(0);
+    }
+
+    /**
      * Setter for <code>public.partner.id</code>.
      */
     public void setId(Long value) {
-        set(0, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.partner.id</code>.
      */
     public Long getId() {
-        return (Long) get(0);
+        return (Long) get(1);
     }
 
     /**
-     * Setter for <code>public.partner.address</code>.
+     * Setter for <code>public.partner.updated_at</code>.
      */
-    public void setAddress(String value) {
-        set(1, value);
+    public void setUpdatedAt(LocalDateTime value) {
+        set(2, value);
     }
 
     /**
-     * Getter for <code>public.partner.address</code>.
+     * Getter for <code>public.partner.updated_at</code>.
      */
-    public String getAddress() {
-        return (String) get(1);
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(2);
+    }
+
+    /**
+     * Setter for <code>public.partner.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.partner.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(3);
     }
 
     /**
      * Setter for <code>public.partner.business_number</code>.
      */
     public void setBusinessNumber(String value) {
-        set(2, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.partner.business_number</code>.
      */
     public String getBusinessNumber() {
-        return (String) get(2);
-    }
-
-    /**
-     * Setter for <code>public.partner.ceo_name</code>.
-     */
-    public void setCeoName(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.partner.ceo_name</code>.
-     */
-    public String getCeoName() {
-        return (String) get(3);
-    }
-
-    /**
-     * Setter for <code>public.partner.code</code>.
-     */
-    public void setCode(String value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.partner.code</code>.
-     */
-    public String getCode() {
         return (String) get(4);
-    }
-
-    /**
-     * Setter for <code>public.partner.name</code>.
-     */
-    public void setName(String value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>public.partner.name</code>.
-     */
-    public String getName() {
-        return (String) get(5);
     }
 
     /**
      * Setter for <code>public.partner.phone1</code>.
      */
     public void setPhone1(String value) {
-        set(6, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>public.partner.phone1</code>.
      */
     public String getPhone1() {
-        return (String) get(6);
+        return (String) get(5);
     }
 
     /**
      * Setter for <code>public.partner.phone2</code>.
      */
     public void setPhone2(String value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.partner.phone2</code>.
      */
     public String getPhone2() {
-        return (String) get(7);
+        return (String) get(6);
     }
 
     /**
      * Setter for <code>public.partner.trade_type_code</code>.
      */
     public void setTradeTypeCode(String value) {
-        set(8, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.partner.trade_type_code</code>.
      */
     public String getTradeTypeCode() {
+        return (String) get(7);
+    }
+
+    /**
+     * Setter for <code>public.partner.ceo_name</code>.
+     */
+    public void setCeoName(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.partner.ceo_name</code>.
+     */
+    public String getCeoName() {
         return (String) get(8);
+    }
+
+    /**
+     * Setter for <code>public.partner.code</code>.
+     */
+    public void setCode(String value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.partner.code</code>.
+     */
+    public String getCode() {
+        return (String) get(9);
+    }
+
+    /**
+     * Setter for <code>public.partner.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.partner.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(10);
+    }
+
+    /**
+     * Setter for <code>public.partner.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.partner.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>public.partner.name</code>.
+     */
+    public void setName(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.partner.name</code>.
+     */
+    public String getName() {
+        return (String) get(12);
+    }
+
+    /**
+     * Setter for <code>public.partner.address</code>.
+     */
+    public void setAddress(String value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.partner.address</code>.
+     */
+    public String getAddress() {
+        return (String) get(13);
     }
 
     // -------------------------------------------------------------------------
@@ -167,18 +239,23 @@ public class PartnerRecord extends UpdatableRecordImpl<PartnerRecord> {
     /**
      * Create a detached, initialised PartnerRecord
      */
-    public PartnerRecord(Long id, String address, String businessNumber, String ceoName, String code, String name, String phone1, String phone2, String tradeTypeCode) {
+    public PartnerRecord(LocalDateTime createdAt, Long id, LocalDateTime updatedAt, Long version, String businessNumber, String phone1, String phone2, String tradeTypeCode, String ceoName, String code, String createdBy, String updatedBy, String name, String address) {
         super(Partner.PARTNER);
 
+        setCreatedAt(createdAt);
         setId(id);
-        setAddress(address);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
         setBusinessNumber(businessNumber);
-        setCeoName(ceoName);
-        setCode(code);
-        setName(name);
         setPhone1(phone1);
         setPhone2(phone2);
         setTradeTypeCode(tradeTypeCode);
+        setCeoName(ceoName);
+        setCode(code);
+        setCreatedBy(createdBy);
+        setUpdatedBy(updatedBy);
+        setName(name);
+        setAddress(address);
         resetChangedOnNotNull();
     }
 }

@@ -16,6 +16,11 @@ java {
 	}
 }
 
+// @RequestParam, @PathVariable 등에서 name 생략 가능하도록 파라미터 메타데이터 보존
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs << '-parameters'
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor

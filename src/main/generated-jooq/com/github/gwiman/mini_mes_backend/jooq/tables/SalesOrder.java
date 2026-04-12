@@ -6,17 +6,16 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Employee.EmployeePath;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Partner.PartnerPath;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QuotePath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine.SalesOrderLinePath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.SalesOrderRecord;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -36,6 +35,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -62,11 +62,6 @@ public class SalesOrder extends TableImpl<SalesOrderRecord> {
     }
 
     /**
-     * The column <code>public.sales_order.id</code>.
-     */
-    public final TableField<SalesOrderRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
-
-    /**
      * The column <code>public.sales_order.delivery_date</code>.
      */
     public final TableField<SalesOrderRecord, LocalDate> DELIVERY_DATE = createField(DSL.name("delivery_date"), SQLDataType.LOCALDATE, this, "");
@@ -77,24 +72,19 @@ public class SalesOrder extends TableImpl<SalesOrderRecord> {
     public final TableField<SalesOrderRecord, LocalDate> ORDER_DATE = createField(DSL.name("order_date"), SQLDataType.LOCALDATE.nullable(false), this, "");
 
     /**
-     * The column <code>public.sales_order.order_number</code>.
+     * The column <code>public.sales_order.created_at</code>.
      */
-    public final TableField<SalesOrderRecord, String> ORDER_NUMBER = createField(DSL.name("order_number"), SQLDataType.VARCHAR(50).nullable(false), this, "");
-
-    /**
-     * The column <code>public.sales_order.remarks</code>.
-     */
-    public final TableField<SalesOrderRecord, String> REMARKS = createField(DSL.name("remarks"), SQLDataType.VARCHAR(200), this, "");
-
-    /**
-     * The column <code>public.sales_order.status_code</code>.
-     */
-    public final TableField<SalesOrderRecord, String> STATUS_CODE = createField(DSL.name("status_code"), SQLDataType.VARCHAR(20), this, "");
+    public final TableField<SalesOrderRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.sales_order.employee_id</code>.
      */
     public final TableField<SalesOrderRecord, Long> EMPLOYEE_ID = createField(DSL.name("employee_id"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.sales_order.id</code>.
+     */
+    public final TableField<SalesOrderRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.sales_order.partner_id</code>.
@@ -105,6 +95,41 @@ public class SalesOrder extends TableImpl<SalesOrderRecord> {
      * The column <code>public.sales_order.quote_id</code>.
      */
     public final TableField<SalesOrderRecord, Long> QUOTE_ID = createField(DSL.name("quote_id"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.sales_order.updated_at</code>.
+     */
+    public final TableField<SalesOrderRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.sales_order.version</code>.
+     */
+    public final TableField<SalesOrderRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.sales_order.status_code</code>.
+     */
+    public final TableField<SalesOrderRecord, String> STATUS_CODE = createField(DSL.name("status_code"), SQLDataType.VARCHAR(20), this, "");
+
+    /**
+     * The column <code>public.sales_order.created_by</code>.
+     */
+    public final TableField<SalesOrderRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.sales_order.order_number</code>.
+     */
+    public final TableField<SalesOrderRecord, String> ORDER_NUMBER = createField(DSL.name("order_number"), SQLDataType.VARCHAR(50).nullable(false), this, "");
+
+    /**
+     * The column <code>public.sales_order.updated_by</code>.
+     */
+    public final TableField<SalesOrderRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.sales_order.remarks</code>.
+     */
+    public final TableField<SalesOrderRecord, String> REMARKS = createField(DSL.name("remarks"), SQLDataType.VARCHAR(200), this, "");
 
     private SalesOrder(Name alias, Table<SalesOrderRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -185,48 +210,7 @@ public class SalesOrder extends TableImpl<SalesOrderRecord> {
 
     @Override
     public List<UniqueKey<SalesOrderRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.UKITDRI3LNOQU7YV0W5LYUC5TOS);
-    }
-
-    @Override
-    public List<ForeignKey<SalesOrderRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.SALES_ORDER__FK8P31F0RWK0HB56I1K9XOSL2VY, Keys.SALES_ORDER__FKLBFR3ECCAMEAMC9LWELBG7U7L, Keys.SALES_ORDER__FKP3PUH9SDRFN03H5Q818MM5VH0);
-    }
-
-    private transient QuotePath _quote;
-
-    /**
-     * Get the implicit join path to the <code>public.quote</code> table.
-     */
-    public QuotePath quote() {
-        if (_quote == null)
-            _quote = new QuotePath(this, Keys.SALES_ORDER__FK8P31F0RWK0HB56I1K9XOSL2VY, null);
-
-        return _quote;
-    }
-
-    private transient EmployeePath _employee;
-
-    /**
-     * Get the implicit join path to the <code>public.employee</code> table.
-     */
-    public EmployeePath employee() {
-        if (_employee == null)
-            _employee = new EmployeePath(this, Keys.SALES_ORDER__FKLBFR3ECCAMEAMC9LWELBG7U7L, null);
-
-        return _employee;
-    }
-
-    private transient PartnerPath _partner;
-
-    /**
-     * Get the implicit join path to the <code>public.partner</code> table.
-     */
-    public PartnerPath partner() {
-        if (_partner == null)
-            _partner = new PartnerPath(this, Keys.SALES_ORDER__FKP3PUH9SDRFN03H5Q818MM5VH0, null);
-
-        return _partner;
+        return Arrays.asList(Keys.SALES_ORDER_ORDER_NUMBER_KEY);
     }
 
     private transient SalesOrderLinePath _salesOrderLine;
@@ -240,6 +224,13 @@ public class SalesOrder extends TableImpl<SalesOrderRecord> {
             _salesOrderLine = new SalesOrderLinePath(this, null, Keys.SALES_ORDER_LINE__FK3HHRMXPWT1CQLNXMTIWPY9WPG.getInverseKey());
 
         return _salesOrderLine;
+    }
+
+    @Override
+    public List<Check<SalesOrderRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("sales_order_status_code_check"), "(((status_code)::text = ANY ((ARRAY['ORDER_STATUS_05'::character varying, 'ORDER_STATUS_04'::character varying, 'ORDER_STATUS_01'::character varying, 'ORDER_STATUS_03'::character varying, 'ORDER_STATUS_02'::character varying])::text[])))", true)
+        );
     }
 
     @Override

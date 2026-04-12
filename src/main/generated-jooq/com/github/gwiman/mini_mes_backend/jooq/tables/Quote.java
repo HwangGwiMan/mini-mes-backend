@@ -6,17 +6,16 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Employee.EmployeePath;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Partner.PartnerPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine.QuoteLinePath;
-import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder.SalesOrderPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.QuoteRecord;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.jooq.Check;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
@@ -36,6 +35,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.Internal;
 import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
@@ -62,29 +62,9 @@ public class Quote extends TableImpl<QuoteRecord> {
     }
 
     /**
-     * The column <code>public.quote.id</code>.
-     */
-    public final TableField<QuoteRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
-
-    /**
      * The column <code>public.quote.quote_date</code>.
      */
     public final TableField<QuoteRecord, LocalDate> QUOTE_DATE = createField(DSL.name("quote_date"), SQLDataType.LOCALDATE.nullable(false), this, "");
-
-    /**
-     * The column <code>public.quote.quote_number</code>.
-     */
-    public final TableField<QuoteRecord, String> QUOTE_NUMBER = createField(DSL.name("quote_number"), SQLDataType.VARCHAR(50).nullable(false), this, "");
-
-    /**
-     * The column <code>public.quote.remarks</code>.
-     */
-    public final TableField<QuoteRecord, String> REMARKS = createField(DSL.name("remarks"), SQLDataType.VARCHAR(200), this, "");
-
-    /**
-     * The column <code>public.quote.status_code</code>.
-     */
-    public final TableField<QuoteRecord, String> STATUS_CODE = createField(DSL.name("status_code"), SQLDataType.VARCHAR(20), this, "");
 
     /**
      * The column <code>public.quote.valid_until</code>.
@@ -92,9 +72,24 @@ public class Quote extends TableImpl<QuoteRecord> {
     public final TableField<QuoteRecord, LocalDate> VALID_UNTIL = createField(DSL.name("valid_until"), SQLDataType.LOCALDATE, this, "");
 
     /**
+     * The column <code>public.quote.approver_id</code>.
+     */
+    public final TableField<QuoteRecord, Long> APPROVER_ID = createField(DSL.name("approver_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quote.created_at</code>.
+     */
+    public final TableField<QuoteRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
      * The column <code>public.quote.employee_id</code>.
      */
     public final TableField<QuoteRecord, Long> EMPLOYEE_ID = createField(DSL.name("employee_id"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.quote.id</code>.
+     */
+    public final TableField<QuoteRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.quote.partner_id</code>.
@@ -102,9 +97,39 @@ public class Quote extends TableImpl<QuoteRecord> {
     public final TableField<QuoteRecord, Long> PARTNER_ID = createField(DSL.name("partner_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
+     * The column <code>public.quote.updated_at</code>.
+     */
+    public final TableField<QuoteRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.quote.version</code>.
+     */
+    public final TableField<QuoteRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.quote.status_code</code>.
+     */
+    public final TableField<QuoteRecord, String> STATUS_CODE = createField(DSL.name("status_code"), SQLDataType.VARCHAR(20), this, "");
+
+    /**
      * The column <code>public.quote.created_by</code>.
      */
-    public final TableField<QuoteRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(255), this, "");
+    public final TableField<QuoteRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.quote.quote_number</code>.
+     */
+    public final TableField<QuoteRecord, String> QUOTE_NUMBER = createField(DSL.name("quote_number"), SQLDataType.VARCHAR(50).nullable(false), this, "");
+
+    /**
+     * The column <code>public.quote.updated_by</code>.
+     */
+    public final TableField<QuoteRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.quote.remarks</code>.
+     */
+    public final TableField<QuoteRecord, String> REMARKS = createField(DSL.name("remarks"), SQLDataType.VARCHAR(200), this, "");
 
     private Quote(Name alias, Table<QuoteRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -185,49 +210,7 @@ public class Quote extends TableImpl<QuoteRecord> {
 
     @Override
     public List<UniqueKey<QuoteRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.UKC6L8KA84HB9DFDG5PKHT3FA79);
-    }
-
-    @Override
-    public List<ForeignKey<QuoteRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.QUOTE__FK9ALFG10RCMMPSCETID6LB5OOT, Keys.QUOTE__FKODPO7A1F6TCCW81W7G8845R8F);
-    }
-
-    private transient PartnerPath _partner;
-
-    /**
-     * Get the implicit join path to the <code>public.partner</code> table.
-     */
-    public PartnerPath partner() {
-        if (_partner == null)
-            _partner = new PartnerPath(this, Keys.QUOTE__FK9ALFG10RCMMPSCETID6LB5OOT, null);
-
-        return _partner;
-    }
-
-    private transient EmployeePath _employee;
-
-    /**
-     * Get the implicit join path to the <code>public.employee</code> table.
-     */
-    public EmployeePath employee() {
-        if (_employee == null)
-            _employee = new EmployeePath(this, Keys.QUOTE__FKODPO7A1F6TCCW81W7G8845R8F, null);
-
-        return _employee;
-    }
-
-    private transient SalesOrderPath _salesOrder;
-
-    /**
-     * Get the implicit to-many join path to the <code>public.sales_order</code>
-     * table
-     */
-    public SalesOrderPath salesOrder() {
-        if (_salesOrder == null)
-            _salesOrder = new SalesOrderPath(this, null, Keys.SALES_ORDER__FK8P31F0RWK0HB56I1K9XOSL2VY.getInverseKey());
-
-        return _salesOrder;
+        return Arrays.asList(Keys.QUOTE_QUOTE_NUMBER_KEY);
     }
 
     private transient QuoteLinePath _quoteLine;
@@ -241,6 +224,13 @@ public class Quote extends TableImpl<QuoteRecord> {
             _quoteLine = new QuoteLinePath(this, null, Keys.QUOTE_LINE__FKNBXR28WOT0665O7O2FGY4H0XR.getInverseKey());
 
         return _quoteLine;
+    }
+
+    @Override
+    public List<Check<QuoteRecord>> getChecks() {
+        return Arrays.asList(
+            Internal.createCheck(this, DSL.name("quote_status_code_check"), "(((status_code)::text = ANY ((ARRAY['QUOTE_STATUS_01'::character varying, 'QUOTE_STATUS_04'::character varying, 'QUOTE_STATUS_05'::character varying, 'QUOTE_STATUS_02'::character varying, 'QUOTE_STATUS_03'::character varying])::text[])))", true)
+        );
     }
 
     @Override

@@ -21,115 +21,171 @@ public class QuoteApprovalRecord extends UpdatableRecordImpl<QuoteApprovalRecord
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.quote_approval.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.quote_approval.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
-     * Setter for <code>public.quote_approval.action</code>.
-     */
-    public void setAction(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.quote_approval.action</code>.
-     */
-    public String getAction() {
-        return (String) get(1);
-    }
-
-    /**
      * Setter for <code>public.quote_approval.approver_employee_id</code>.
      */
     public void setApproverEmployeeId(Long value) {
-        set(2, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.quote_approval.approver_employee_id</code>.
      */
     public Long getApproverEmployeeId() {
-        return (Long) get(2);
-    }
-
-    /**
-     * Setter for <code>public.quote_approval.approver_name</code>.
-     */
-    public void setApproverName(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.quote_approval.approver_name</code>.
-     */
-    public String getApproverName() {
-        return (String) get(3);
-    }
-
-    /**
-     * Setter for <code>public.quote_approval.approver_username</code>.
-     */
-    public void setApproverUsername(String value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.quote_approval.approver_username</code>.
-     */
-    public String getApproverUsername() {
-        return (String) get(4);
-    }
-
-    /**
-     * Setter for <code>public.quote_approval.comment</code>.
-     */
-    public void setComment(String value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>public.quote_approval.comment</code>.
-     */
-    public String getComment() {
-        return (String) get(5);
+        return (Long) get(0);
     }
 
     /**
      * Setter for <code>public.quote_approval.created_at</code>.
      */
     public void setCreatedAt(LocalDateTime value) {
-        set(6, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.quote_approval.created_at</code>.
      */
     public LocalDateTime getCreatedAt() {
-        return (LocalDateTime) get(6);
+        return (LocalDateTime) get(1);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.id</code>.
+     */
+    public void setId(Long value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(2);
     }
 
     /**
      * Setter for <code>public.quote_approval.quote_id</code>.
      */
     public void setQuoteId(Long value) {
-        set(7, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.quote_approval.quote_id</code>.
      */
     public Long getQuoteId() {
-        return (Long) get(7);
+        return (Long) get(3);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(4);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(5);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.action</code>.
+     */
+    public void setAction(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.action</code>.
+     */
+    public String getAction() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(7);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(8);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.comment</code>.
+     */
+    public void setComment(String value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.comment</code>.
+     */
+    public String getComment() {
+        return (String) get(9);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.approver_name</code>.
+     */
+    public void setApproverName(String value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.approver_name</code>.
+     */
+    public String getApproverName() {
+        return (String) get(10);
+    }
+
+    /**
+     * Setter for <code>public.quote_approval.approver_username</code>.
+     */
+    public void setApproverUsername(String value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.quote_approval.approver_username</code>.
+     */
+    public String getApproverUsername() {
+        return (String) get(11);
     }
 
     // -------------------------------------------------------------------------
@@ -155,17 +211,21 @@ public class QuoteApprovalRecord extends UpdatableRecordImpl<QuoteApprovalRecord
     /**
      * Create a detached, initialised QuoteApprovalRecord
      */
-    public QuoteApprovalRecord(Long id, String action, Long approverEmployeeId, String approverName, String approverUsername, String comment, LocalDateTime createdAt, Long quoteId) {
+    public QuoteApprovalRecord(Long approverEmployeeId, LocalDateTime createdAt, Long id, Long quoteId, LocalDateTime updatedAt, Long version, String action, String createdBy, String updatedBy, String comment, String approverName, String approverUsername) {
         super(QuoteApproval.QUOTE_APPROVAL);
 
-        setId(id);
-        setAction(action);
         setApproverEmployeeId(approverEmployeeId);
+        setCreatedAt(createdAt);
+        setId(id);
+        setQuoteId(quoteId);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setAction(action);
+        setCreatedBy(createdBy);
+        setUpdatedBy(updatedBy);
+        setComment(comment);
         setApproverName(approverName);
         setApproverUsername(approverUsername);
-        setComment(comment);
-        setCreatedAt(createdAt);
-        setQuoteId(quoteId);
         resetChangedOnNotNull();
     }
 }

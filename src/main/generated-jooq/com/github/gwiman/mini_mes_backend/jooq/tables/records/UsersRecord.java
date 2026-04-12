@@ -6,6 +6,8 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.Users;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -19,17 +21,17 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.users.id</code>.
+     * Setter for <code>public.users.created_at</code>.
      */
-    public void setId(Long value) {
+    public void setCreatedAt(LocalDateTime value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>public.users.id</code>.
+     * Getter for <code>public.users.created_at</code>.
      */
-    public Long getId() {
-        return (Long) get(0);
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(0);
     }
 
     /**
@@ -47,45 +49,115 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> {
     }
 
     /**
+     * Setter for <code>public.users.id</code>.
+     */
+    public void setId(Long value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.users.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(2);
+    }
+
+    /**
+     * Setter for <code>public.users.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.users.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(3);
+    }
+
+    /**
+     * Setter for <code>public.users.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.users.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(4);
+    }
+
+    /**
+     * Setter for <code>public.users.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.users.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(5);
+    }
+
+    /**
+     * Setter for <code>public.users.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.users.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(6);
+    }
+
+    /**
      * Setter for <code>public.users.password</code>.
      */
     public void setPassword(String value) {
-        set(2, value);
+        set(7, value);
     }
 
     /**
      * Getter for <code>public.users.password</code>.
      */
     public String getPassword() {
-        return (String) get(2);
+        return (String) get(7);
     }
 
     /**
      * Setter for <code>public.users.role</code>.
      */
     public void setRole(String value) {
-        set(3, value);
+        set(8, value);
     }
 
     /**
      * Getter for <code>public.users.role</code>.
      */
     public String getRole() {
-        return (String) get(3);
+        return (String) get(8);
     }
 
     /**
      * Setter for <code>public.users.username</code>.
      */
     public void setUsername(String value) {
-        set(4, value);
+        set(9, value);
     }
 
     /**
      * Getter for <code>public.users.username</code>.
      */
     public String getUsername() {
-        return (String) get(4);
+        return (String) get(9);
     }
 
     // -------------------------------------------------------------------------
@@ -111,11 +183,16 @@ public class UsersRecord extends UpdatableRecordImpl<UsersRecord> {
     /**
      * Create a detached, initialised UsersRecord
      */
-    public UsersRecord(Long id, Long employeeId, String password, String role, String username) {
+    public UsersRecord(LocalDateTime createdAt, Long employeeId, Long id, LocalDateTime updatedAt, Long version, String createdBy, String updatedBy, String password, String role, String username) {
         super(Users.USERS);
 
-        setId(id);
+        setCreatedAt(createdAt);
         setEmployeeId(employeeId);
+        setId(id);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setCreatedBy(createdBy);
+        setUpdatedBy(updatedBy);
         setPassword(password);
         setRole(role);
         setUsername(username);

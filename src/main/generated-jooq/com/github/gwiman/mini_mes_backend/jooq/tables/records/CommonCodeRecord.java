@@ -6,6 +6,8 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.CommonCode;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -19,87 +21,157 @@ public class CommonCodeRecord extends UpdatableRecordImpl<CommonCodeRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.common_code.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.common_code.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
-     * Setter for <code>public.common_code.code</code>.
-     */
-    public void setCode(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.common_code.code</code>.
-     */
-    public String getCode() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>public.common_code.code_group</code>.
-     */
-    public void setCodeGroup(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.common_code.code_group</code>.
-     */
-    public String getCodeGroup() {
-        return (String) get(2);
-    }
-
-    /**
-     * Setter for <code>public.common_code.name</code>.
-     */
-    public void setName(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.common_code.name</code>.
-     */
-    public String getName() {
-        return (String) get(3);
-    }
-
-    /**
      * Setter for <code>public.common_code.sort_order</code>.
      */
     public void setSortOrder(Integer value) {
-        set(4, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.common_code.sort_order</code>.
      */
     public Integer getSortOrder() {
-        return (Integer) get(4);
+        return (Integer) get(0);
     }
 
     /**
      * Setter for <code>public.common_code.use_yn</code>.
      */
     public void setUseYn(Boolean value) {
-        set(5, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.common_code.use_yn</code>.
      */
     public Boolean getUseYn() {
-        return (Boolean) get(5);
+        return (Boolean) get(1);
+    }
+
+    /**
+     * Setter for <code>public.common_code.created_at</code>.
+     */
+    public void setCreatedAt(LocalDateTime value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.created_at</code>.
+     */
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(2);
+    }
+
+    /**
+     * Setter for <code>public.common_code.id</code>.
+     */
+    public void setId(Long value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(3);
+    }
+
+    /**
+     * Setter for <code>public.common_code.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(4);
+    }
+
+    /**
+     * Setter for <code>public.common_code.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(5);
+    }
+
+    /**
+     * Setter for <code>public.common_code.code</code>.
+     */
+    public void setCode(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.code</code>.
+     */
+    public String getCode() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>public.common_code.code_group</code>.
+     */
+    public void setCodeGroup(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.code_group</code>.
+     */
+    public String getCodeGroup() {
+        return (String) get(7);
+    }
+
+    /**
+     * Setter for <code>public.common_code.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(8);
+    }
+
+    /**
+     * Setter for <code>public.common_code.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(9);
+    }
+
+    /**
+     * Setter for <code>public.common_code.name</code>.
+     */
+    public void setName(String value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.common_code.name</code>.
+     */
+    public String getName() {
+        return (String) get(10);
     }
 
     // -------------------------------------------------------------------------
@@ -125,15 +197,20 @@ public class CommonCodeRecord extends UpdatableRecordImpl<CommonCodeRecord> {
     /**
      * Create a detached, initialised CommonCodeRecord
      */
-    public CommonCodeRecord(Long id, String code, String codeGroup, String name, Integer sortOrder, Boolean useYn) {
+    public CommonCodeRecord(Integer sortOrder, Boolean useYn, LocalDateTime createdAt, Long id, LocalDateTime updatedAt, Long version, String code, String codeGroup, String createdBy, String updatedBy, String name) {
         super(CommonCode.COMMON_CODE);
 
-        setId(id);
-        setCode(code);
-        setCodeGroup(codeGroup);
-        setName(name);
         setSortOrder(sortOrder);
         setUseYn(useYn);
+        setCreatedAt(createdAt);
+        setId(id);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setCode(code);
+        setCodeGroup(codeGroup);
+        setCreatedBy(createdBy);
+        setUpdatedBy(updatedBy);
+        setName(name);
         resetChangedOnNotNull();
     }
 }

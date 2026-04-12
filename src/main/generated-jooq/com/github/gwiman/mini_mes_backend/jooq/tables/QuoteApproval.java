@@ -52,9 +52,34 @@ public class QuoteApproval extends TableImpl<QuoteApprovalRecord> {
     }
 
     /**
+     * The column <code>public.quote_approval.approver_employee_id</code>.
+     */
+    public final TableField<QuoteApprovalRecord, Long> APPROVER_EMPLOYEE_ID = createField(DSL.name("approver_employee_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quote_approval.created_at</code>.
+     */
+    public final TableField<QuoteApprovalRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
      * The column <code>public.quote_approval.id</code>.
      */
     public final TableField<QuoteApprovalRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.quote_approval.quote_id</code>.
+     */
+    public final TableField<QuoteApprovalRecord, Long> QUOTE_ID = createField(DSL.name("quote_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quote_approval.updated_at</code>.
+     */
+    public final TableField<QuoteApprovalRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.quote_approval.version</code>.
+     */
+    public final TableField<QuoteApprovalRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.quote_approval.action</code>.
@@ -62,9 +87,19 @@ public class QuoteApproval extends TableImpl<QuoteApprovalRecord> {
     public final TableField<QuoteApprovalRecord, String> ACTION = createField(DSL.name("action"), SQLDataType.VARCHAR(20).nullable(false), this, "");
 
     /**
-     * The column <code>public.quote_approval.approver_employee_id</code>.
+     * The column <code>public.quote_approval.created_by</code>.
      */
-    public final TableField<QuoteApprovalRecord, Long> APPROVER_EMPLOYEE_ID = createField(DSL.name("approver_employee_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<QuoteApprovalRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.quote_approval.updated_by</code>.
+     */
+    public final TableField<QuoteApprovalRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.quote_approval.comment</code>.
+     */
+    public final TableField<QuoteApprovalRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.VARCHAR(500), this, "");
 
     /**
      * The column <code>public.quote_approval.approver_name</code>.
@@ -75,21 +110,6 @@ public class QuoteApproval extends TableImpl<QuoteApprovalRecord> {
      * The column <code>public.quote_approval.approver_username</code>.
      */
     public final TableField<QuoteApprovalRecord, String> APPROVER_USERNAME = createField(DSL.name("approver_username"), SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
-     * The column <code>public.quote_approval.comment</code>.
-     */
-    public final TableField<QuoteApprovalRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.VARCHAR(500), this, "");
-
-    /**
-     * The column <code>public.quote_approval.created_at</code>.
-     */
-    public final TableField<QuoteApprovalRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
-
-    /**
-     * The column <code>public.quote_approval.quote_id</code>.
-     */
-    public final TableField<QuoteApprovalRecord, Long> QUOTE_ID = createField(DSL.name("quote_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     private QuoteApproval(Name alias, Table<QuoteApprovalRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

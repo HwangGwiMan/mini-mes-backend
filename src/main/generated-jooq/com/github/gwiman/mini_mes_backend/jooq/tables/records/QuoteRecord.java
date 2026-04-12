@@ -7,6 +7,7 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -21,129 +22,199 @@ public class QuoteRecord extends UpdatableRecordImpl<QuoteRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.quote.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.quote.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
      * Setter for <code>public.quote.quote_date</code>.
      */
     public void setQuoteDate(LocalDate value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.quote.quote_date</code>.
      */
     public LocalDate getQuoteDate() {
-        return (LocalDate) get(1);
-    }
-
-    /**
-     * Setter for <code>public.quote.quote_number</code>.
-     */
-    public void setQuoteNumber(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.quote.quote_number</code>.
-     */
-    public String getQuoteNumber() {
-        return (String) get(2);
-    }
-
-    /**
-     * Setter for <code>public.quote.remarks</code>.
-     */
-    public void setRemarks(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.quote.remarks</code>.
-     */
-    public String getRemarks() {
-        return (String) get(3);
-    }
-
-    /**
-     * Setter for <code>public.quote.status_code</code>.
-     */
-    public void setStatusCode(String value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.quote.status_code</code>.
-     */
-    public String getStatusCode() {
-        return (String) get(4);
+        return (LocalDate) get(0);
     }
 
     /**
      * Setter for <code>public.quote.valid_until</code>.
      */
     public void setValidUntil(LocalDate value) {
-        set(5, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.quote.valid_until</code>.
      */
     public LocalDate getValidUntil() {
-        return (LocalDate) get(5);
+        return (LocalDate) get(1);
+    }
+
+    /**
+     * Setter for <code>public.quote.approver_id</code>.
+     */
+    public void setApproverId(Long value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.approver_id</code>.
+     */
+    public Long getApproverId() {
+        return (Long) get(2);
+    }
+
+    /**
+     * Setter for <code>public.quote.created_at</code>.
+     */
+    public void setCreatedAt(LocalDateTime value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.created_at</code>.
+     */
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(3);
     }
 
     /**
      * Setter for <code>public.quote.employee_id</code>.
      */
     public void setEmployeeId(Long value) {
-        set(6, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.quote.employee_id</code>.
      */
     public Long getEmployeeId() {
-        return (Long) get(6);
+        return (Long) get(4);
+    }
+
+    /**
+     * Setter for <code>public.quote.id</code>.
+     */
+    public void setId(Long value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(5);
     }
 
     /**
      * Setter for <code>public.quote.partner_id</code>.
      */
     public void setPartnerId(Long value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.quote.partner_id</code>.
      */
     public Long getPartnerId() {
-        return (Long) get(7);
+        return (Long) get(6);
+    }
+
+    /**
+     * Setter for <code>public.quote.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(7);
+    }
+
+    /**
+     * Setter for <code>public.quote.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(8);
+    }
+
+    /**
+     * Setter for <code>public.quote.status_code</code>.
+     */
+    public void setStatusCode(String value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.status_code</code>.
+     */
+    public String getStatusCode() {
+        return (String) get(9);
     }
 
     /**
      * Setter for <code>public.quote.created_by</code>.
      */
     public void setCreatedBy(String value) {
-        set(8, value);
+        set(10, value);
     }
 
     /**
      * Getter for <code>public.quote.created_by</code>.
      */
     public String getCreatedBy() {
-        return (String) get(8);
+        return (String) get(10);
+    }
+
+    /**
+     * Setter for <code>public.quote.quote_number</code>.
+     */
+    public void setQuoteNumber(String value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.quote_number</code>.
+     */
+    public String getQuoteNumber() {
+        return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>public.quote.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(12);
+    }
+
+    /**
+     * Setter for <code>public.quote.remarks</code>.
+     */
+    public void setRemarks(String value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.quote.remarks</code>.
+     */
+    public String getRemarks() {
+        return (String) get(13);
     }
 
     // -------------------------------------------------------------------------
@@ -169,18 +240,23 @@ public class QuoteRecord extends UpdatableRecordImpl<QuoteRecord> {
     /**
      * Create a detached, initialised QuoteRecord
      */
-    public QuoteRecord(Long id, LocalDate quoteDate, String quoteNumber, String remarks, String statusCode, LocalDate validUntil, Long employeeId, Long partnerId, String createdBy) {
+    public QuoteRecord(LocalDate quoteDate, LocalDate validUntil, Long approverId, LocalDateTime createdAt, Long employeeId, Long id, Long partnerId, LocalDateTime updatedAt, Long version, String statusCode, String createdBy, String quoteNumber, String updatedBy, String remarks) {
         super(Quote.QUOTE);
 
-        setId(id);
         setQuoteDate(quoteDate);
-        setQuoteNumber(quoteNumber);
-        setRemarks(remarks);
-        setStatusCode(statusCode);
         setValidUntil(validUntil);
+        setApproverId(approverId);
+        setCreatedAt(createdAt);
         setEmployeeId(employeeId);
+        setId(id);
         setPartnerId(partnerId);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setStatusCode(statusCode);
         setCreatedBy(createdBy);
+        setQuoteNumber(quoteNumber);
+        setUpdatedBy(updatedBy);
+        setRemarks(remarks);
         resetChangedOnNotNull();
     }
 }

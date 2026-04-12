@@ -6,24 +6,19 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QuotePath;
-import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder.SalesOrderPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.PartnerRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.InverseForeignKey;
 import org.jooq.Name;
-import org.jooq.Path;
 import org.jooq.PlainSQL;
 import org.jooq.QueryPart;
-import org.jooq.Record;
 import org.jooq.SQL;
 import org.jooq.Schema;
 import org.jooq.Select;
@@ -59,34 +54,29 @@ public class Partner extends TableImpl<PartnerRecord> {
     }
 
     /**
+     * The column <code>public.partner.created_at</code>.
+     */
+    public final TableField<PartnerRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
      * The column <code>public.partner.id</code>.
      */
     public final TableField<PartnerRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>public.partner.address</code>.
+     * The column <code>public.partner.updated_at</code>.
      */
-    public final TableField<PartnerRecord, String> ADDRESS = createField(DSL.name("address"), SQLDataType.VARCHAR(200), this, "");
+    public final TableField<PartnerRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.partner.version</code>.
+     */
+    public final TableField<PartnerRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.partner.business_number</code>.
      */
     public final TableField<PartnerRecord, String> BUSINESS_NUMBER = createField(DSL.name("business_number"), SQLDataType.VARCHAR(20), this, "");
-
-    /**
-     * The column <code>public.partner.ceo_name</code>.
-     */
-    public final TableField<PartnerRecord, String> CEO_NAME = createField(DSL.name("ceo_name"), SQLDataType.VARCHAR(50), this, "");
-
-    /**
-     * The column <code>public.partner.code</code>.
-     */
-    public final TableField<PartnerRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
-
-    /**
-     * The column <code>public.partner.name</code>.
-     */
-    public final TableField<PartnerRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.partner.phone1</code>.
@@ -102,6 +92,36 @@ public class Partner extends TableImpl<PartnerRecord> {
      * The column <code>public.partner.trade_type_code</code>.
      */
     public final TableField<PartnerRecord, String> TRADE_TYPE_CODE = createField(DSL.name("trade_type_code"), SQLDataType.VARCHAR(20), this, "");
+
+    /**
+     * The column <code>public.partner.ceo_name</code>.
+     */
+    public final TableField<PartnerRecord, String> CEO_NAME = createField(DSL.name("ceo_name"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.partner.code</code>.
+     */
+    public final TableField<PartnerRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
+
+    /**
+     * The column <code>public.partner.created_by</code>.
+     */
+    public final TableField<PartnerRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.partner.updated_by</code>.
+     */
+    public final TableField<PartnerRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.partner.name</code>.
+     */
+    public final TableField<PartnerRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.partner.address</code>.
+     */
+    public final TableField<PartnerRecord, String> ADDRESS = createField(DSL.name("address"), SQLDataType.VARCHAR(200), this, "");
 
     private Partner(Name alias, Table<PartnerRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -132,39 +152,6 @@ public class Partner extends TableImpl<PartnerRecord> {
         this(DSL.name("partner"), null);
     }
 
-    public <O extends Record> Partner(Table<O> path, ForeignKey<O, PartnerRecord> childPath, InverseForeignKey<O, PartnerRecord> parentPath) {
-        super(path, childPath, parentPath, PARTNER);
-    }
-
-    /**
-     * A subtype implementing {@link Path} for simplified path-based joins.
-     */
-    public static class PartnerPath extends Partner implements Path<PartnerRecord> {
-
-        private static final long serialVersionUID = 1L;
-        public <O extends Record> PartnerPath(Table<O> path, ForeignKey<O, PartnerRecord> childPath, InverseForeignKey<O, PartnerRecord> parentPath) {
-            super(path, childPath, parentPath);
-        }
-        private PartnerPath(Name alias, Table<PartnerRecord> aliased) {
-            super(alias, aliased);
-        }
-
-        @Override
-        public PartnerPath as(String alias) {
-            return new PartnerPath(DSL.name(alias), this);
-        }
-
-        @Override
-        public PartnerPath as(Name alias) {
-            return new PartnerPath(alias, this);
-        }
-
-        @Override
-        public PartnerPath as(Table<?> alias) {
-            return new PartnerPath(alias.getQualifiedName(), this);
-        }
-    }
-
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
@@ -182,32 +169,7 @@ public class Partner extends TableImpl<PartnerRecord> {
 
     @Override
     public List<UniqueKey<PartnerRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.UKFIV57HN037FRDWMYQNX8MKQ9N);
-    }
-
-    private transient QuotePath _quote;
-
-    /**
-     * Get the implicit to-many join path to the <code>public.quote</code> table
-     */
-    public QuotePath quote() {
-        if (_quote == null)
-            _quote = new QuotePath(this, null, Keys.QUOTE__FK9ALFG10RCMMPSCETID6LB5OOT.getInverseKey());
-
-        return _quote;
-    }
-
-    private transient SalesOrderPath _salesOrder;
-
-    /**
-     * Get the implicit to-many join path to the <code>public.sales_order</code>
-     * table
-     */
-    public SalesOrderPath salesOrder() {
-        if (_salesOrder == null)
-            _salesOrder = new SalesOrderPath(this, null, Keys.SALES_ORDER__FKP3PUH9SDRFN03H5Q818MM5VH0.getInverseKey());
-
-        return _salesOrder;
+        return Arrays.asList(Keys.PARTNER_CODE_KEY);
     }
 
     @Override

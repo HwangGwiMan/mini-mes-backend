@@ -7,6 +7,7 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Employee;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -21,143 +22,213 @@ public class EmployeeRecord extends UpdatableRecordImpl<EmployeeRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.employee.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.employee.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
-     * Setter for <code>public.employee.code</code>.
-     */
-    public void setCode(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.employee.code</code>.
-     */
-    public String getCode() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>public.employee.dept_code</code>.
-     */
-    public void setDeptCode(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.employee.dept_code</code>.
-     */
-    public String getDeptCode() {
-        return (String) get(2);
-    }
-
-    /**
-     * Setter for <code>public.employee.email</code>.
-     */
-    public void setEmail(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.employee.email</code>.
-     */
-    public String getEmail() {
-        return (String) get(3);
-    }
-
-    /**
      * Setter for <code>public.employee.hire_date</code>.
      */
     public void setHireDate(LocalDate value) {
-        set(4, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.employee.hire_date</code>.
      */
     public LocalDate getHireDate() {
-        return (LocalDate) get(4);
-    }
-
-    /**
-     * Setter for <code>public.employee.name</code>.
-     */
-    public void setName(String value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>public.employee.name</code>.
-     */
-    public String getName() {
-        return (String) get(5);
-    }
-
-    /**
-     * Setter for <code>public.employee.phone</code>.
-     */
-    public void setPhone(String value) {
-        set(6, value);
-    }
-
-    /**
-     * Getter for <code>public.employee.phone</code>.
-     */
-    public String getPhone() {
-        return (String) get(6);
-    }
-
-    /**
-     * Setter for <code>public.employee.position_code</code>.
-     */
-    public void setPositionCode(String value) {
-        set(7, value);
-    }
-
-    /**
-     * Getter for <code>public.employee.position_code</code>.
-     */
-    public String getPositionCode() {
-        return (String) get(7);
+        return (LocalDate) get(0);
     }
 
     /**
      * Setter for <code>public.employee.sort_order</code>.
      */
     public void setSortOrder(Integer value) {
-        set(8, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.employee.sort_order</code>.
      */
     public Integer getSortOrder() {
-        return (Integer) get(8);
+        return (Integer) get(1);
     }
 
     /**
      * Setter for <code>public.employee.use_yn</code>.
      */
     public void setUseYn(Boolean value) {
-        set(9, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.employee.use_yn</code>.
      */
     public Boolean getUseYn() {
-        return (Boolean) get(9);
+        return (Boolean) get(2);
+    }
+
+    /**
+     * Setter for <code>public.employee.created_at</code>.
+     */
+    public void setCreatedAt(LocalDateTime value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.created_at</code>.
+     */
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(3);
+    }
+
+    /**
+     * Setter for <code>public.employee.id</code>.
+     */
+    public void setId(Long value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(4);
+    }
+
+    /**
+     * Setter for <code>public.employee.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(5);
+    }
+
+    /**
+     * Setter for <code>public.employee.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(6);
+    }
+
+    /**
+     * Setter for <code>public.employee.dept_code</code>.
+     */
+    public void setDeptCode(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.dept_code</code>.
+     */
+    public String getDeptCode() {
+        return (String) get(7);
+    }
+
+    /**
+     * Setter for <code>public.employee.phone</code>.
+     */
+    public void setPhone(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.phone</code>.
+     */
+    public String getPhone() {
+        return (String) get(8);
+    }
+
+    /**
+     * Setter for <code>public.employee.position_code</code>.
+     */
+    public void setPositionCode(String value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.position_code</code>.
+     */
+    public String getPositionCode() {
+        return (String) get(9);
+    }
+
+    /**
+     * Setter for <code>public.employee.code</code>.
+     */
+    public void setCode(String value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.code</code>.
+     */
+    public String getCode() {
+        return (String) get(10);
+    }
+
+    /**
+     * Setter for <code>public.employee.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>public.employee.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(12);
+    }
+
+    /**
+     * Setter for <code>public.employee.email</code>.
+     */
+    public void setEmail(String value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.email</code>.
+     */
+    public String getEmail() {
+        return (String) get(13);
+    }
+
+    /**
+     * Setter for <code>public.employee.name</code>.
+     */
+    public void setName(String value) {
+        set(14, value);
+    }
+
+    /**
+     * Getter for <code>public.employee.name</code>.
+     */
+    public String getName() {
+        return (String) get(14);
     }
 
     // -------------------------------------------------------------------------
@@ -183,19 +254,24 @@ public class EmployeeRecord extends UpdatableRecordImpl<EmployeeRecord> {
     /**
      * Create a detached, initialised EmployeeRecord
      */
-    public EmployeeRecord(Long id, String code, String deptCode, String email, LocalDate hireDate, String name, String phone, String positionCode, Integer sortOrder, Boolean useYn) {
+    public EmployeeRecord(LocalDate hireDate, Integer sortOrder, Boolean useYn, LocalDateTime createdAt, Long id, LocalDateTime updatedAt, Long version, String deptCode, String phone, String positionCode, String code, String createdBy, String updatedBy, String email, String name) {
         super(Employee.EMPLOYEE);
 
-        setId(id);
-        setCode(code);
-        setDeptCode(deptCode);
-        setEmail(email);
         setHireDate(hireDate);
-        setName(name);
-        setPhone(phone);
-        setPositionCode(positionCode);
         setSortOrder(sortOrder);
         setUseYn(useYn);
+        setCreatedAt(createdAt);
+        setId(id);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setDeptCode(deptCode);
+        setPhone(phone);
+        setPositionCode(positionCode);
+        setCode(code);
+        setCreatedBy(createdBy);
+        setUpdatedBy(updatedBy);
+        setEmail(email);
+        setName(name);
         resetChangedOnNotNull();
     }
 }

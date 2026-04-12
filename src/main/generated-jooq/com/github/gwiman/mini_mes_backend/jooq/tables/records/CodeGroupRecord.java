@@ -6,6 +6,8 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.CodeGroup;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -19,59 +21,129 @@ public class CodeGroupRecord extends UpdatableRecordImpl<CodeGroupRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.code_group.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.code_group.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
-     * Setter for <code>public.code_group.group_code</code>.
-     */
-    public void setGroupCode(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.code_group.group_code</code>.
-     */
-    public String getGroupCode() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>public.code_group.group_name</code>.
-     */
-    public void setGroupName(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.code_group.group_name</code>.
-     */
-    public String getGroupName() {
-        return (String) get(2);
-    }
-
-    /**
      * Setter for <code>public.code_group.sort_order</code>.
      */
     public void setSortOrder(Integer value) {
-        set(3, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.code_group.sort_order</code>.
      */
     public Integer getSortOrder() {
-        return (Integer) get(3);
+        return (Integer) get(0);
+    }
+
+    /**
+     * Setter for <code>public.code_group.created_at</code>.
+     */
+    public void setCreatedAt(LocalDateTime value) {
+        set(1, value);
+    }
+
+    /**
+     * Getter for <code>public.code_group.created_at</code>.
+     */
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(1);
+    }
+
+    /**
+     * Setter for <code>public.code_group.id</code>.
+     */
+    public void setId(Long value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.code_group.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(2);
+    }
+
+    /**
+     * Setter for <code>public.code_group.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.code_group.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(3);
+    }
+
+    /**
+     * Setter for <code>public.code_group.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.code_group.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(4);
+    }
+
+    /**
+     * Setter for <code>public.code_group.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.code_group.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(5);
+    }
+
+    /**
+     * Setter for <code>public.code_group.group_code</code>.
+     */
+    public void setGroupCode(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.code_group.group_code</code>.
+     */
+    public String getGroupCode() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>public.code_group.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.code_group.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(7);
+    }
+
+    /**
+     * Setter for <code>public.code_group.group_name</code>.
+     */
+    public void setGroupName(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.code_group.group_name</code>.
+     */
+    public String getGroupName() {
+        return (String) get(8);
     }
 
     // -------------------------------------------------------------------------
@@ -97,13 +169,18 @@ public class CodeGroupRecord extends UpdatableRecordImpl<CodeGroupRecord> {
     /**
      * Create a detached, initialised CodeGroupRecord
      */
-    public CodeGroupRecord(Long id, String groupCode, String groupName, Integer sortOrder) {
+    public CodeGroupRecord(Integer sortOrder, LocalDateTime createdAt, Long id, LocalDateTime updatedAt, Long version, String createdBy, String groupCode, String updatedBy, String groupName) {
         super(CodeGroup.CODE_GROUP);
 
-        setId(id);
-        setGroupCode(groupCode);
-        setGroupName(groupName);
         setSortOrder(sortOrder);
+        setCreatedAt(createdAt);
+        setId(id);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setCreatedBy(createdBy);
+        setGroupCode(groupCode);
+        setUpdatedBy(updatedBy);
+        setGroupName(groupName);
         resetChangedOnNotNull();
     }
 }

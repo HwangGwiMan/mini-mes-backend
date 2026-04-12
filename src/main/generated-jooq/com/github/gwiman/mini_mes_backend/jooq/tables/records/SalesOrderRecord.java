@@ -7,6 +7,7 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -21,129 +22,199 @@ public class SalesOrderRecord extends UpdatableRecordImpl<SalesOrderRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.sales_order.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.sales_order.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
      * Setter for <code>public.sales_order.delivery_date</code>.
      */
     public void setDeliveryDate(LocalDate value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.sales_order.delivery_date</code>.
      */
     public LocalDate getDeliveryDate() {
-        return (LocalDate) get(1);
+        return (LocalDate) get(0);
     }
 
     /**
      * Setter for <code>public.sales_order.order_date</code>.
      */
     public void setOrderDate(LocalDate value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.sales_order.order_date</code>.
      */
     public LocalDate getOrderDate() {
-        return (LocalDate) get(2);
+        return (LocalDate) get(1);
     }
 
     /**
-     * Setter for <code>public.sales_order.order_number</code>.
+     * Setter for <code>public.sales_order.created_at</code>.
      */
-    public void setOrderNumber(String value) {
-        set(3, value);
+    public void setCreatedAt(LocalDateTime value) {
+        set(2, value);
     }
 
     /**
-     * Getter for <code>public.sales_order.order_number</code>.
+     * Getter for <code>public.sales_order.created_at</code>.
      */
-    public String getOrderNumber() {
-        return (String) get(3);
-    }
-
-    /**
-     * Setter for <code>public.sales_order.remarks</code>.
-     */
-    public void setRemarks(String value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.sales_order.remarks</code>.
-     */
-    public String getRemarks() {
-        return (String) get(4);
-    }
-
-    /**
-     * Setter for <code>public.sales_order.status_code</code>.
-     */
-    public void setStatusCode(String value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>public.sales_order.status_code</code>.
-     */
-    public String getStatusCode() {
-        return (String) get(5);
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(2);
     }
 
     /**
      * Setter for <code>public.sales_order.employee_id</code>.
      */
     public void setEmployeeId(Long value) {
-        set(6, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.sales_order.employee_id</code>.
      */
     public Long getEmployeeId() {
-        return (Long) get(6);
+        return (Long) get(3);
+    }
+
+    /**
+     * Setter for <code>public.sales_order.id</code>.
+     */
+    public void setId(Long value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(4);
     }
 
     /**
      * Setter for <code>public.sales_order.partner_id</code>.
      */
     public void setPartnerId(Long value) {
-        set(7, value);
+        set(5, value);
     }
 
     /**
      * Getter for <code>public.sales_order.partner_id</code>.
      */
     public Long getPartnerId() {
-        return (Long) get(7);
+        return (Long) get(5);
     }
 
     /**
      * Setter for <code>public.sales_order.quote_id</code>.
      */
     public void setQuoteId(Long value) {
-        set(8, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.sales_order.quote_id</code>.
      */
     public Long getQuoteId() {
+        return (Long) get(6);
+    }
+
+    /**
+     * Setter for <code>public.sales_order.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(7);
+    }
+
+    /**
+     * Setter for <code>public.sales_order.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order.version</code>.
+     */
+    public Long getVersion() {
         return (Long) get(8);
+    }
+
+    /**
+     * Setter for <code>public.sales_order.status_code</code>.
+     */
+    public void setStatusCode(String value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order.status_code</code>.
+     */
+    public String getStatusCode() {
+        return (String) get(9);
+    }
+
+    /**
+     * Setter for <code>public.sales_order.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(10);
+    }
+
+    /**
+     * Setter for <code>public.sales_order.order_number</code>.
+     */
+    public void setOrderNumber(String value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order.order_number</code>.
+     */
+    public String getOrderNumber() {
+        return (String) get(11);
+    }
+
+    /**
+     * Setter for <code>public.sales_order.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(12, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(12);
+    }
+
+    /**
+     * Setter for <code>public.sales_order.remarks</code>.
+     */
+    public void setRemarks(String value) {
+        set(13, value);
+    }
+
+    /**
+     * Getter for <code>public.sales_order.remarks</code>.
+     */
+    public String getRemarks() {
+        return (String) get(13);
     }
 
     // -------------------------------------------------------------------------
@@ -169,18 +240,23 @@ public class SalesOrderRecord extends UpdatableRecordImpl<SalesOrderRecord> {
     /**
      * Create a detached, initialised SalesOrderRecord
      */
-    public SalesOrderRecord(Long id, LocalDate deliveryDate, LocalDate orderDate, String orderNumber, String remarks, String statusCode, Long employeeId, Long partnerId, Long quoteId) {
+    public SalesOrderRecord(LocalDate deliveryDate, LocalDate orderDate, LocalDateTime createdAt, Long employeeId, Long id, Long partnerId, Long quoteId, LocalDateTime updatedAt, Long version, String statusCode, String createdBy, String orderNumber, String updatedBy, String remarks) {
         super(SalesOrder.SALES_ORDER);
 
-        setId(id);
         setDeliveryDate(deliveryDate);
         setOrderDate(orderDate);
-        setOrderNumber(orderNumber);
-        setRemarks(remarks);
-        setStatusCode(statusCode);
+        setCreatedAt(createdAt);
         setEmployeeId(employeeId);
+        setId(id);
         setPartnerId(partnerId);
         setQuoteId(quoteId);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setStatusCode(statusCode);
+        setCreatedBy(createdBy);
+        setOrderNumber(orderNumber);
+        setUpdatedBy(updatedBy);
+        setRemarks(remarks);
         resetChangedOnNotNull();
     }
 }

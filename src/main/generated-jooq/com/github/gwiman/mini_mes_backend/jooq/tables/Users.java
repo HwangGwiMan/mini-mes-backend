@@ -8,6 +8,7 @@ import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.UsersRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -55,14 +56,39 @@ public class Users extends TableImpl<UsersRecord> {
     }
 
     /**
-     * The column <code>public.users.id</code>.
+     * The column <code>public.users.created_at</code>.
      */
-    public final TableField<UsersRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+    public final TableField<UsersRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
 
     /**
      * The column <code>public.users.employee_id</code>.
      */
     public final TableField<UsersRecord, Long> EMPLOYEE_ID = createField(DSL.name("employee_id"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.users.id</code>.
+     */
+    public final TableField<UsersRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.users.updated_at</code>.
+     */
+    public final TableField<UsersRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.users.version</code>.
+     */
+    public final TableField<UsersRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.users.created_by</code>.
+     */
+    public final TableField<UsersRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.users.updated_by</code>.
+     */
+    public final TableField<UsersRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
 
     /**
      * The column <code>public.users.password</code>.
@@ -125,7 +151,7 @@ public class Users extends TableImpl<UsersRecord> {
 
     @Override
     public List<UniqueKey<UsersRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.UKD1S31G1A7ILRA77M65XMKA3EI, Keys.UKR43AF9AP4EDM43MMTQ01ODDJ6);
+        return Arrays.asList(Keys.USERS_EMPLOYEE_ID_KEY, Keys.USERS_USERNAME_KEY);
     }
 
     @Override

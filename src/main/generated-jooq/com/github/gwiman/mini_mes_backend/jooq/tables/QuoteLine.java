@@ -6,7 +6,6 @@ package com.github.gwiman.mini_mes_backend.jooq.tables;
 
 import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
-import com.github.gwiman.mini_mes_backend.jooq.tables.Item.ItemPath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote.QuotePath;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.QuoteLineRecord;
 
@@ -61,11 +60,6 @@ public class QuoteLine extends TableImpl<QuoteLineRecord> {
     }
 
     /**
-     * The column <code>public.quote_line.id</code>.
-     */
-    public final TableField<QuoteLineRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
-
-    /**
      * The column <code>public.quote_line.amount</code>.
      */
     public final TableField<QuoteLineRecord, BigDecimal> AMOUNT = createField(DSL.name("amount"), SQLDataType.NUMERIC(19, 4).nullable(false), this, "");
@@ -81,11 +75,6 @@ public class QuoteLine extends TableImpl<QuoteLineRecord> {
     public final TableField<QuoteLineRecord, BigDecimal> QUANTITY = createField(DSL.name("quantity"), SQLDataType.NUMERIC(19, 4).nullable(false), this, "");
 
     /**
-     * The column <code>public.quote_line.remarks</code>.
-     */
-    public final TableField<QuoteLineRecord, String> REMARKS = createField(DSL.name("remarks"), SQLDataType.VARCHAR(200), this, "");
-
-    /**
      * The column <code>public.quote_line.sort_order</code>.
      */
     public final TableField<QuoteLineRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -96,6 +85,11 @@ public class QuoteLine extends TableImpl<QuoteLineRecord> {
     public final TableField<QuoteLineRecord, BigDecimal> UNIT_PRICE = createField(DSL.name("unit_price"), SQLDataType.NUMERIC(19, 4).nullable(false), this, "");
 
     /**
+     * The column <code>public.quote_line.id</code>.
+     */
+    public final TableField<QuoteLineRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
      * The column <code>public.quote_line.item_id</code>.
      */
     public final TableField<QuoteLineRecord, Long> ITEM_ID = createField(DSL.name("item_id"), SQLDataType.BIGINT.nullable(false), this, "");
@@ -104,6 +98,11 @@ public class QuoteLine extends TableImpl<QuoteLineRecord> {
      * The column <code>public.quote_line.quote_id</code>.
      */
     public final TableField<QuoteLineRecord, Long> QUOTE_ID = createField(DSL.name("quote_id"), SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.quote_line.remarks</code>.
+     */
+    public final TableField<QuoteLineRecord, String> REMARKS = createField(DSL.name("remarks"), SQLDataType.VARCHAR(200), this, "");
 
     private QuoteLine(Name alias, Table<QuoteLineRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -184,19 +183,7 @@ public class QuoteLine extends TableImpl<QuoteLineRecord> {
 
     @Override
     public List<ForeignKey<QuoteLineRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.QUOTE_LINE__FKJ26RAJPBGQ93FD2VDRP775T8A, Keys.QUOTE_LINE__FKNBXR28WOT0665O7O2FGY4H0XR);
-    }
-
-    private transient ItemPath _item;
-
-    /**
-     * Get the implicit join path to the <code>public.item</code> table.
-     */
-    public ItemPath item() {
-        if (_item == null)
-            _item = new ItemPath(this, Keys.QUOTE_LINE__FKJ26RAJPBGQ93FD2VDRP775T8A, null);
-
-        return _item;
+        return Arrays.asList(Keys.QUOTE_LINE__FKNBXR28WOT0665O7O2FGY4H0XR);
     }
 
     private transient QuotePath _quote;

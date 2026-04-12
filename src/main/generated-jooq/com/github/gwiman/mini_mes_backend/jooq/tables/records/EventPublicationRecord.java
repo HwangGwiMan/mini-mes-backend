@@ -22,101 +22,101 @@ public class EventPublicationRecord extends UpdatableRecordImpl<EventPublication
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.event_publication.id</code>.
-     */
-    public void setId(UUID value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.event_publication.id</code>.
-     */
-    public UUID getId() {
-        return (UUID) get(0);
-    }
-
-    /**
      * Setter for <code>public.event_publication.completion_attempts</code>.
      */
     public void setCompletionAttempts(Integer value) {
-        set(1, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.event_publication.completion_attempts</code>.
      */
     public Integer getCompletionAttempts() {
-        return (Integer) get(1);
+        return (Integer) get(0);
     }
 
     /**
      * Setter for <code>public.event_publication.completion_date</code>.
      */
     public void setCompletionDate(OffsetDateTime value) {
-        set(2, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.event_publication.completion_date</code>.
      */
     public OffsetDateTime getCompletionDate() {
-        return (OffsetDateTime) get(2);
-    }
-
-    /**
-     * Setter for <code>public.event_publication.event_type</code>.
-     */
-    public void setEventType(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.event_publication.event_type</code>.
-     */
-    public String getEventType() {
-        return (String) get(3);
+        return (OffsetDateTime) get(1);
     }
 
     /**
      * Setter for <code>public.event_publication.last_resubmission_date</code>.
      */
     public void setLastResubmissionDate(OffsetDateTime value) {
-        set(4, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.event_publication.last_resubmission_date</code>.
      */
     public OffsetDateTime getLastResubmissionDate() {
-        return (OffsetDateTime) get(4);
-    }
-
-    /**
-     * Setter for <code>public.event_publication.listener_id</code>.
-     */
-    public void setListenerId(String value) {
-        set(5, value);
-    }
-
-    /**
-     * Getter for <code>public.event_publication.listener_id</code>.
-     */
-    public String getListenerId() {
-        return (String) get(5);
+        return (OffsetDateTime) get(2);
     }
 
     /**
      * Setter for <code>public.event_publication.publication_date</code>.
      */
     public void setPublicationDate(OffsetDateTime value) {
-        set(6, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.event_publication.publication_date</code>.
      */
     public OffsetDateTime getPublicationDate() {
-        return (OffsetDateTime) get(6);
+        return (OffsetDateTime) get(3);
+    }
+
+    /**
+     * Setter for <code>public.event_publication.id</code>.
+     */
+    public void setId(UUID value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.event_publication.id</code>.
+     */
+    public UUID getId() {
+        return (UUID) get(4);
+    }
+
+    /**
+     * Setter for <code>public.event_publication.event_type</code>.
+     */
+    public void setEventType(String value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.event_publication.event_type</code>.
+     */
+    public String getEventType() {
+        return (String) get(5);
+    }
+
+    /**
+     * Setter for <code>public.event_publication.listener_id</code>.
+     */
+    public void setListenerId(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.event_publication.listener_id</code>.
+     */
+    public String getListenerId() {
+        return (String) get(6);
     }
 
     /**
@@ -170,16 +170,16 @@ public class EventPublicationRecord extends UpdatableRecordImpl<EventPublication
     /**
      * Create a detached, initialised EventPublicationRecord
      */
-    public EventPublicationRecord(UUID id, Integer completionAttempts, OffsetDateTime completionDate, String eventType, OffsetDateTime lastResubmissionDate, String listenerId, OffsetDateTime publicationDate, String serializedEvent, String status) {
+    public EventPublicationRecord(Integer completionAttempts, OffsetDateTime completionDate, OffsetDateTime lastResubmissionDate, OffsetDateTime publicationDate, UUID id, String eventType, String listenerId, String serializedEvent, String status) {
         super(EventPublication.EVENT_PUBLICATION);
 
-        setId(id);
         setCompletionAttempts(completionAttempts);
         setCompletionDate(completionDate);
-        setEventType(eventType);
         setLastResubmissionDate(lastResubmissionDate);
-        setListenerId(listenerId);
         setPublicationDate(publicationDate);
+        setId(id);
+        setEventType(eventType);
+        setListenerId(listenerId);
         setSerializedEvent(serializedEvent);
         setStatus(status);
         resetChangedOnNotNull();

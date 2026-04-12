@@ -8,6 +8,7 @@ import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.ProcessRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -53,31 +54,6 @@ public class Process extends TableImpl<ProcessRecord> {
     }
 
     /**
-     * The column <code>public.process.id</code>.
-     */
-    public final TableField<ProcessRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>public.process.code</code>.
-     */
-    public final TableField<ProcessRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
-
-    /**
-     * The column <code>public.process.description</code>.
-     */
-    public final TableField<ProcessRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.VARCHAR(200), this, "");
-
-    /**
-     * The column <code>public.process.name</code>.
-     */
-    public final TableField<ProcessRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.process.process_type_code</code>.
-     */
-    public final TableField<ProcessRecord, String> PROCESS_TYPE_CODE = createField(DSL.name("process_type_code"), SQLDataType.VARCHAR(20), this, "");
-
-    /**
      * The column <code>public.process.sort_order</code>.
      */
     public final TableField<ProcessRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -86,6 +62,56 @@ public class Process extends TableImpl<ProcessRecord> {
      * The column <code>public.process.standard_time</code>.
      */
     public final TableField<ProcessRecord, Integer> STANDARD_TIME = createField(DSL.name("standard_time"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.process.created_at</code>.
+     */
+    public final TableField<ProcessRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.process.id</code>.
+     */
+    public final TableField<ProcessRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.process.updated_at</code>.
+     */
+    public final TableField<ProcessRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.process.version</code>.
+     */
+    public final TableField<ProcessRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.process.process_type_code</code>.
+     */
+    public final TableField<ProcessRecord, String> PROCESS_TYPE_CODE = createField(DSL.name("process_type_code"), SQLDataType.VARCHAR(20), this, "");
+
+    /**
+     * The column <code>public.process.code</code>.
+     */
+    public final TableField<ProcessRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(50).nullable(false), this, "");
+
+    /**
+     * The column <code>public.process.created_by</code>.
+     */
+    public final TableField<ProcessRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.process.updated_by</code>.
+     */
+    public final TableField<ProcessRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.process.name</code>.
+     */
+    public final TableField<ProcessRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.process.description</code>.
+     */
+    public final TableField<ProcessRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.VARCHAR(200), this, "");
 
     private Process(Name alias, Table<ProcessRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
@@ -133,7 +159,7 @@ public class Process extends TableImpl<ProcessRecord> {
 
     @Override
     public List<UniqueKey<ProcessRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.UK5HLDOWCQY94Y1GWBPNYTOFX4H);
+        return Arrays.asList(Keys.PROCESS_CODE_KEY);
     }
 
     @Override

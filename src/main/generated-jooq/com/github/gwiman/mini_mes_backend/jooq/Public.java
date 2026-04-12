@@ -4,19 +4,38 @@
 package com.github.gwiman.mini_mes_backend.jooq;
 
 
+import com.github.gwiman.mini_mes_backend.jooq.tables.Bom;
+import com.github.gwiman.mini_mes_backend.jooq.tables.BomLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.CodeGroup;
 import com.github.gwiman.mini_mes_backend.jooq.tables.CommonCode;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Employee;
 import com.github.gwiman.mini_mes_backend.jooq.tables.EventPublication;
+import com.github.gwiman.mini_mes_backend.jooq.tables.GoodsReceipt;
+import com.github.gwiman.mini_mes_backend.jooq.tables.GoodsReceiptLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Inventory;
+import com.github.gwiman.mini_mes_backend.jooq.tables.InventoryLot;
+import com.github.gwiman.mini_mes_backend.jooq.tables.InventoryTx;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
+import com.github.gwiman.mini_mes_backend.jooq.tables.ItemPrice;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Partner;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
+import com.github.gwiman.mini_mes_backend.jooq.tables.PurchaseOrder;
+import com.github.gwiman.mini_mes_backend.jooq.tables.PurchaseOrderLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.PurchaseRequest;
+import com.github.gwiman.mini_mes_backend.jooq.tables.PurchaseRequestLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Quote;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteApproval;
 import com.github.gwiman.mini_mes_backend.jooq.tables.QuoteLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Revenue;
+import com.github.gwiman.mini_mes_backend.jooq.tables.RevenueLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Routing;
+import com.github.gwiman.mini_mes_backend.jooq.tables.RoutingStep;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrderLine;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Shipment;
+import com.github.gwiman.mini_mes_backend.jooq.tables.ShipmentLine;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Users;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Warehouse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +59,16 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
+     * The table <code>public.bom</code>.
+     */
+    public final Bom BOM = Bom.BOM;
+
+    /**
+     * The table <code>public.bom_line</code>.
+     */
+    public final BomLine BOM_LINE = BomLine.BOM_LINE;
+
+    /**
      * The table <code>public.code_group</code>.
      */
     public final CodeGroup CODE_GROUP = CodeGroup.CODE_GROUP;
@@ -60,9 +89,39 @@ public class Public extends SchemaImpl {
     public final EventPublication EVENT_PUBLICATION = EventPublication.EVENT_PUBLICATION;
 
     /**
+     * The table <code>public.goods_receipt</code>.
+     */
+    public final GoodsReceipt GOODS_RECEIPT = GoodsReceipt.GOODS_RECEIPT;
+
+    /**
+     * The table <code>public.goods_receipt_line</code>.
+     */
+    public final GoodsReceiptLine GOODS_RECEIPT_LINE = GoodsReceiptLine.GOODS_RECEIPT_LINE;
+
+    /**
+     * The table <code>public.inventory</code>.
+     */
+    public final Inventory INVENTORY = Inventory.INVENTORY;
+
+    /**
+     * The table <code>public.inventory_lot</code>.
+     */
+    public final InventoryLot INVENTORY_LOT = InventoryLot.INVENTORY_LOT;
+
+    /**
+     * The table <code>public.inventory_tx</code>.
+     */
+    public final InventoryTx INVENTORY_TX = InventoryTx.INVENTORY_TX;
+
+    /**
      * The table <code>public.item</code>.
      */
     public final Item ITEM = Item.ITEM;
+
+    /**
+     * The table <code>public.item_price</code>.
+     */
+    public final ItemPrice ITEM_PRICE = ItemPrice.ITEM_PRICE;
 
     /**
      * The table <code>public.partner</code>.
@@ -73,6 +132,26 @@ public class Public extends SchemaImpl {
      * The table <code>public.process</code>.
      */
     public final Process PROCESS = Process.PROCESS;
+
+    /**
+     * The table <code>public.purchase_order</code>.
+     */
+    public final PurchaseOrder PURCHASE_ORDER = PurchaseOrder.PURCHASE_ORDER;
+
+    /**
+     * The table <code>public.purchase_order_line</code>.
+     */
+    public final PurchaseOrderLine PURCHASE_ORDER_LINE = PurchaseOrderLine.PURCHASE_ORDER_LINE;
+
+    /**
+     * The table <code>public.purchase_request</code>.
+     */
+    public final PurchaseRequest PURCHASE_REQUEST = PurchaseRequest.PURCHASE_REQUEST;
+
+    /**
+     * The table <code>public.purchase_request_line</code>.
+     */
+    public final PurchaseRequestLine PURCHASE_REQUEST_LINE = PurchaseRequestLine.PURCHASE_REQUEST_LINE;
 
     /**
      * The table <code>public.quote</code>.
@@ -90,6 +169,26 @@ public class Public extends SchemaImpl {
     public final QuoteLine QUOTE_LINE = QuoteLine.QUOTE_LINE;
 
     /**
+     * The table <code>public.revenue</code>.
+     */
+    public final Revenue REVENUE = Revenue.REVENUE;
+
+    /**
+     * The table <code>public.revenue_line</code>.
+     */
+    public final RevenueLine REVENUE_LINE = RevenueLine.REVENUE_LINE;
+
+    /**
+     * The table <code>public.routing</code>.
+     */
+    public final Routing ROUTING = Routing.ROUTING;
+
+    /**
+     * The table <code>public.routing_step</code>.
+     */
+    public final RoutingStep ROUTING_STEP = RoutingStep.ROUTING_STEP;
+
+    /**
      * The table <code>public.sales_order</code>.
      */
     public final SalesOrder SALES_ORDER = SalesOrder.SALES_ORDER;
@@ -100,9 +199,24 @@ public class Public extends SchemaImpl {
     public final SalesOrderLine SALES_ORDER_LINE = SalesOrderLine.SALES_ORDER_LINE;
 
     /**
+     * The table <code>public.shipment</code>.
+     */
+    public final Shipment SHIPMENT = Shipment.SHIPMENT;
+
+    /**
+     * The table <code>public.shipment_line</code>.
+     */
+    public final ShipmentLine SHIPMENT_LINE = ShipmentLine.SHIPMENT_LINE;
+
+    /**
      * The table <code>public.users</code>.
      */
     public final Users USERS = Users.USERS;
+
+    /**
+     * The table <code>public.warehouse</code>.
+     */
+    public final Warehouse WAREHOUSE = Warehouse.WAREHOUSE;
 
     /**
      * No further instances allowed
@@ -120,19 +234,38 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            Bom.BOM,
+            BomLine.BOM_LINE,
             CodeGroup.CODE_GROUP,
             CommonCode.COMMON_CODE,
             Employee.EMPLOYEE,
             EventPublication.EVENT_PUBLICATION,
+            GoodsReceipt.GOODS_RECEIPT,
+            GoodsReceiptLine.GOODS_RECEIPT_LINE,
+            Inventory.INVENTORY,
+            InventoryLot.INVENTORY_LOT,
+            InventoryTx.INVENTORY_TX,
             Item.ITEM,
+            ItemPrice.ITEM_PRICE,
             Partner.PARTNER,
             Process.PROCESS,
+            PurchaseOrder.PURCHASE_ORDER,
+            PurchaseOrderLine.PURCHASE_ORDER_LINE,
+            PurchaseRequest.PURCHASE_REQUEST,
+            PurchaseRequestLine.PURCHASE_REQUEST_LINE,
             Quote.QUOTE,
             QuoteApproval.QUOTE_APPROVAL,
             QuoteLine.QUOTE_LINE,
+            Revenue.REVENUE,
+            RevenueLine.REVENUE_LINE,
+            Routing.ROUTING,
+            RoutingStep.ROUTING_STEP,
             SalesOrder.SALES_ORDER,
             SalesOrderLine.SALES_ORDER_LINE,
-            Users.USERS
+            Shipment.SHIPMENT,
+            ShipmentLine.SHIPMENT_LINE,
+            Users.USERS,
+            Warehouse.WAREHOUSE
         );
     }
 }

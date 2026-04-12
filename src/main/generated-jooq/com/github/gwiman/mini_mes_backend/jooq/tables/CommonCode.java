@@ -8,6 +8,7 @@ import com.github.gwiman.mini_mes_backend.jooq.Keys;
 import com.github.gwiman.mini_mes_backend.jooq.Public;
 import com.github.gwiman.mini_mes_backend.jooq.tables.records.CommonCodeRecord;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.jooq.Condition;
@@ -51,9 +52,34 @@ public class CommonCode extends TableImpl<CommonCodeRecord> {
     }
 
     /**
+     * The column <code>public.common_code.sort_order</code>.
+     */
+    public final TableField<CommonCodeRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.common_code.use_yn</code>.
+     */
+    public final TableField<CommonCodeRecord, Boolean> USE_YN = createField(DSL.name("use_yn"), SQLDataType.BOOLEAN.nullable(false), this, "");
+
+    /**
+     * The column <code>public.common_code.created_at</code>.
+     */
+    public final TableField<CommonCodeRecord, LocalDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
      * The column <code>public.common_code.id</code>.
      */
     public final TableField<CommonCodeRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.common_code.updated_at</code>.
+     */
+    public final TableField<CommonCodeRecord, LocalDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.common_code.version</code>.
+     */
+    public final TableField<CommonCodeRecord, Long> VERSION = createField(DSL.name("version"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.common_code.code</code>.
@@ -66,19 +92,19 @@ public class CommonCode extends TableImpl<CommonCodeRecord> {
     public final TableField<CommonCodeRecord, String> CODE_GROUP = createField(DSL.name("code_group"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
+     * The column <code>public.common_code.created_by</code>.
+     */
+    public final TableField<CommonCodeRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
+     * The column <code>public.common_code.updated_by</code>.
+     */
+    public final TableField<CommonCodeRecord, String> UPDATED_BY = createField(DSL.name("updated_by"), SQLDataType.VARCHAR(50), this, "");
+
+    /**
      * The column <code>public.common_code.name</code>.
      */
     public final TableField<CommonCodeRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
-
-    /**
-     * The column <code>public.common_code.sort_order</code>.
-     */
-    public final TableField<CommonCodeRecord, Integer> SORT_ORDER = createField(DSL.name("sort_order"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>public.common_code.use_yn</code>.
-     */
-    public final TableField<CommonCodeRecord, Boolean> USE_YN = createField(DSL.name("use_yn"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     private CommonCode(Name alias, Table<CommonCodeRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

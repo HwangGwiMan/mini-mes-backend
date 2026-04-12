@@ -6,6 +6,8 @@ package com.github.gwiman.mini_mes_backend.jooq.tables.records;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -19,101 +21,171 @@ public class ProcessRecord extends UpdatableRecordImpl<ProcessRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.process.id</code>.
-     */
-    public void setId(Long value) {
-        set(0, value);
-    }
-
-    /**
-     * Getter for <code>public.process.id</code>.
-     */
-    public Long getId() {
-        return (Long) get(0);
-    }
-
-    /**
-     * Setter for <code>public.process.code</code>.
-     */
-    public void setCode(String value) {
-        set(1, value);
-    }
-
-    /**
-     * Getter for <code>public.process.code</code>.
-     */
-    public String getCode() {
-        return (String) get(1);
-    }
-
-    /**
-     * Setter for <code>public.process.description</code>.
-     */
-    public void setDescription(String value) {
-        set(2, value);
-    }
-
-    /**
-     * Getter for <code>public.process.description</code>.
-     */
-    public String getDescription() {
-        return (String) get(2);
-    }
-
-    /**
-     * Setter for <code>public.process.name</code>.
-     */
-    public void setName(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.process.name</code>.
-     */
-    public String getName() {
-        return (String) get(3);
-    }
-
-    /**
-     * Setter for <code>public.process.process_type_code</code>.
-     */
-    public void setProcessTypeCode(String value) {
-        set(4, value);
-    }
-
-    /**
-     * Getter for <code>public.process.process_type_code</code>.
-     */
-    public String getProcessTypeCode() {
-        return (String) get(4);
-    }
-
-    /**
      * Setter for <code>public.process.sort_order</code>.
      */
     public void setSortOrder(Integer value) {
-        set(5, value);
+        set(0, value);
     }
 
     /**
      * Getter for <code>public.process.sort_order</code>.
      */
     public Integer getSortOrder() {
-        return (Integer) get(5);
+        return (Integer) get(0);
     }
 
     /**
      * Setter for <code>public.process.standard_time</code>.
      */
     public void setStandardTime(Integer value) {
-        set(6, value);
+        set(1, value);
     }
 
     /**
      * Getter for <code>public.process.standard_time</code>.
      */
     public Integer getStandardTime() {
-        return (Integer) get(6);
+        return (Integer) get(1);
+    }
+
+    /**
+     * Setter for <code>public.process.created_at</code>.
+     */
+    public void setCreatedAt(LocalDateTime value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.process.created_at</code>.
+     */
+    public LocalDateTime getCreatedAt() {
+        return (LocalDateTime) get(2);
+    }
+
+    /**
+     * Setter for <code>public.process.id</code>.
+     */
+    public void setId(Long value) {
+        set(3, value);
+    }
+
+    /**
+     * Getter for <code>public.process.id</code>.
+     */
+    public Long getId() {
+        return (Long) get(3);
+    }
+
+    /**
+     * Setter for <code>public.process.updated_at</code>.
+     */
+    public void setUpdatedAt(LocalDateTime value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.process.updated_at</code>.
+     */
+    public LocalDateTime getUpdatedAt() {
+        return (LocalDateTime) get(4);
+    }
+
+    /**
+     * Setter for <code>public.process.version</code>.
+     */
+    public void setVersion(Long value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.process.version</code>.
+     */
+    public Long getVersion() {
+        return (Long) get(5);
+    }
+
+    /**
+     * Setter for <code>public.process.process_type_code</code>.
+     */
+    public void setProcessTypeCode(String value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.process.process_type_code</code>.
+     */
+    public String getProcessTypeCode() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>public.process.code</code>.
+     */
+    public void setCode(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.process.code</code>.
+     */
+    public String getCode() {
+        return (String) get(7);
+    }
+
+    /**
+     * Setter for <code>public.process.created_by</code>.
+     */
+    public void setCreatedBy(String value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>public.process.created_by</code>.
+     */
+    public String getCreatedBy() {
+        return (String) get(8);
+    }
+
+    /**
+     * Setter for <code>public.process.updated_by</code>.
+     */
+    public void setUpdatedBy(String value) {
+        set(9, value);
+    }
+
+    /**
+     * Getter for <code>public.process.updated_by</code>.
+     */
+    public String getUpdatedBy() {
+        return (String) get(9);
+    }
+
+    /**
+     * Setter for <code>public.process.name</code>.
+     */
+    public void setName(String value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>public.process.name</code>.
+     */
+    public String getName() {
+        return (String) get(10);
+    }
+
+    /**
+     * Setter for <code>public.process.description</code>.
+     */
+    public void setDescription(String value) {
+        set(11, value);
+    }
+
+    /**
+     * Getter for <code>public.process.description</code>.
+     */
+    public String getDescription() {
+        return (String) get(11);
     }
 
     // -------------------------------------------------------------------------
@@ -139,16 +211,21 @@ public class ProcessRecord extends UpdatableRecordImpl<ProcessRecord> {
     /**
      * Create a detached, initialised ProcessRecord
      */
-    public ProcessRecord(Long id, String code, String description, String name, String processTypeCode, Integer sortOrder, Integer standardTime) {
+    public ProcessRecord(Integer sortOrder, Integer standardTime, LocalDateTime createdAt, Long id, LocalDateTime updatedAt, Long version, String processTypeCode, String code, String createdBy, String updatedBy, String name, String description) {
         super(Process.PROCESS);
 
-        setId(id);
-        setCode(code);
-        setDescription(description);
-        setName(name);
-        setProcessTypeCode(processTypeCode);
         setSortOrder(sortOrder);
         setStandardTime(standardTime);
+        setCreatedAt(createdAt);
+        setId(id);
+        setUpdatedAt(updatedAt);
+        setVersion(version);
+        setProcessTypeCode(processTypeCode);
+        setCode(code);
+        setCreatedBy(createdBy);
+        setUpdatedBy(updatedBy);
+        setName(name);
+        setDescription(description);
         resetChangedOnNotNull();
     }
 }

@@ -23,7 +23,6 @@ import com.github.gwiman.mini_mes_backend.purchaseorder.application.PurchaseOrde
 import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptLineRequest;
 import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptRequest;
 import com.github.gwiman.mini_mes_backend.goodsreceipt.api.dto.GoodsReceiptResponse;
-import com.github.gwiman.mini_mes_backend.goodsreceipt.application.StockReceivedEvent;
 
 import lombok.RequiredArgsConstructor;
 
