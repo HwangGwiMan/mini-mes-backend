@@ -209,23 +209,47 @@ public class InventoryService {
     // -------------------------------------------------------------------------
 
     /**
-     * 작업지시 등록 시 투입 자재 선점 — {@code MATERIAL_RESERVE}.
-     * Phase D (작업지시 도메인) 구현 시 완성.
+     * 작업지시 확정 시 투입 자재 선점 — {@code MATERIAL_RESERVE}.
+     * <p>
+     * Inventory 스냅샷의 {@code qty_reserved}를 증가시킨다.
+     * 가용 재고(qty_on_hand - qty_reserved)가 부족하면 예외가 발생한다.
+     * </p>
      */
     @Transactional
     public void reserveMaterial(Long warehouseId, Long itemId,
             BigDecimal qty, Long workOrderId) {
-        throw new UnsupportedOperationException("Phase D에서 구현 예정");
+        Inventory inv = inventoryRepository
+                .findByWarehouseIdAndItemId(warehouseId, itemId)
+                .orElseGet(() -> inventoryRepository.save(Inventory.create(warehouseId, itemId)));
+        inv.reserve(qty);
+
+        inventoryTxRepository.save(InventoryTx.create(
+                warehouseId, itemId, null,
+                InventoryTxType.MATERIAL_RESERVE, qty,
+                "WORK_ORDER", workOrderId,
+                LocalDate.now()));
     }
 
     /**
      * 작업지시 취소 시 선점 해제 — {@code MATERIAL_UNRESERVE}.
-     * Phase D 구현 시 완성.
+     * <p>
+     * Inventory 스냅샷의 {@code qty_reserved}를 감소시킨다.
+     * </p>
      */
     @Transactional
     public void unreserveMaterial(Long warehouseId, Long itemId,
             BigDecimal qty, Long workOrderId) {
-        throw new UnsupportedOperationException("Phase D에서 구현 예정");
+        Inventory inv = inventoryRepository
+                .findByWarehouseIdAndItemId(warehouseId, itemId)
+                .orElseThrow(() -> new com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException(
+                        "재고를 찾을 수 없습니다. warehouseId=" + warehouseId + ", itemId=" + itemId));
+        inv.unreserve(qty);
+
+        inventoryTxRepository.save(InventoryTx.create(
+                warehouseId, itemId, null,
+                InventoryTxType.MATERIAL_UNRESERVE, qty,
+                "WORK_ORDER", workOrderId,
+                LocalDate.now()));
     }
 
     /**
