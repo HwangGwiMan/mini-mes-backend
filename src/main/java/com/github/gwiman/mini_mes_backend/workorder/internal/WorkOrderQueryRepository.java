@@ -3,9 +3,7 @@ package com.github.gwiman.mini_mes_backend.workorder.internal;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -106,27 +104,7 @@ public class WorkOrderQueryRepository {
                 .where(woCond).and(itemCond).and(statusCond)
                 .orderBy(WO_ID.desc())
                 .fetch()
-                .map(r -> new WorkOrderResponse(
-                        r.get(WO_ID),
-                        r.get(WO_WORK_ORDER_NUMBER),
-                        r.get(WO_WORK_ORDER_NUMBER),
-                        r.get(WO_SALES_ORDER_ID),
-                        r.get(DSL.field("sales_order_number", String.class)),
-                        r.get(WO_SALES_ORDER_LINE_ID),
-                        r.get(WO_ITEM_ID),
-                        r.get(DSL.field("item_code", String.class)),
-                        r.get(DSL.field("item_name", String.class)),
-                        r.get(WO_BOM_ID),
-                        r.get(DSL.field("bom_version_code", String.class)),
-                        r.get(WO_WAREHOUSE_ID),
-                        r.get(DSL.field("warehouse_name", String.class)),
-                        r.get(WO_PLANNED_QTY),
-                        r.get(WO_STATUS_CODE),
-                        r.get(WO_PLANNED_START_DATE),
-                        r.get(WO_PLANNED_END_DATE),
-                        r.get(WO_REMARKS),
-                        List.of(),
-                        List.of()));
+                .map(WorkOrderResponse::fromRecord);
     }
 
     /**
@@ -172,15 +150,7 @@ public class WorkOrderQueryRepository {
                 .where(WOM_WORK_ORDER_ID.eq(id))
                 .orderBy(WOM_SORT_ORDER)
                 .fetch()
-                .map(r -> new WorkOrderMaterialResponse(
-                        r.get(WOM_ID),
-                        r.get(WOM_MATERIAL_ITEM_ID),
-                        r.get(DSL.field("mat_item_code", String.class)),
-                        r.get(DSL.field("mat_item_name", String.class)),
-                        r.get(WOM_WAREHOUSE_ID),
-                        r.get(DSL.field("mat_wh_name", String.class)),
-                        r.get(WOM_PLANNED_QTY),
-                        r.get(WOM_SORT_ORDER)));
+                .map(WorkOrderMaterialResponse::fromRecord);
 
         // 라우팅 공정 단계 조회
         Process proc = Process.PROCESS;
@@ -193,15 +163,7 @@ public class WorkOrderQueryRepository {
                 .where(WOR_WORK_ORDER_ID.eq(id))
                 .orderBy(WOR_STEP_ORDER)
                 .fetch()
-                .map(r -> new WorkOrderRoutingResponse(
-                        r.get(WOR_ID),
-                        r.get(WOR_ROUTING_ID),
-                        r.get(WOR_PROCESS_ID),
-                        r.get(DSL.field("proc_code", String.class)),
-                        r.get(DSL.field("proc_name", String.class)),
-                        r.get(WOR_STEP_ORDER),
-                        r.get(WOR_STANDARD_TIME),
-                        r.get(WOR_REMARKS)));
+                .map(WorkOrderRoutingResponse::fromRecord);
 
         return Optional.of(new WorkOrderResponse(
                 header.get(WO_ID),
