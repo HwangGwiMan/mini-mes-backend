@@ -165,26 +165,6 @@ public class WorkOrderQueryRepository {
                 .fetch()
                 .map(WorkOrderRoutingResponse::fromRecord);
 
-        return Optional.of(new WorkOrderResponse(
-                header.get(WO_ID),
-                header.get(WO_WORK_ORDER_NUMBER),
-                header.get(WO_WORK_ORDER_NUMBER),
-                header.get(WO_SALES_ORDER_ID),
-                header.get(DSL.field("sales_order_number", String.class)),
-                header.get(WO_SALES_ORDER_LINE_ID),
-                header.get(WO_ITEM_ID),
-                header.get(DSL.field("item_code", String.class)),
-                header.get(DSL.field("item_name", String.class)),
-                header.get(WO_BOM_ID),
-                header.get(DSL.field("bom_version_code", String.class)),
-                header.get(WO_WAREHOUSE_ID),
-                header.get(DSL.field("warehouse_name", String.class)),
-                header.get(WO_PLANNED_QTY),
-                header.get(WO_STATUS_CODE),
-                header.get(WO_PLANNED_START_DATE),
-                header.get(WO_PLANNED_END_DATE),
-                header.get(WO_REMARKS),
-                materials,
-                routings));
+        return Optional.of(WorkOrderResponse.fromRecord(header, materials, routings));
     }
 }

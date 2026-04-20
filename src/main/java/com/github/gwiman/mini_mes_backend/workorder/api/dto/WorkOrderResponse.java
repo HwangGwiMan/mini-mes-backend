@@ -30,6 +30,35 @@ public record WorkOrderResponse(
 		List<WorkOrderMaterialResponse> materials,
 		List<WorkOrderRoutingResponse> routings
 ) {
+	/** findById 쿼리 결과 레코드로부터 자재·라우팅 목록을 포함한 전체 응답을 생성한다. */
+	public static WorkOrderResponse fromRecord(Record r,
+			List<WorkOrderMaterialResponse> materials,
+			List<WorkOrderRoutingResponse> routings) {
+		String workOrderNumber = r.get(DSL.field("work_order.work_order_number", String.class));
+		return new WorkOrderResponse(
+			r.get(DSL.field("work_order.id", Long.class)),
+			workOrderNumber,
+			workOrderNumber,
+			r.get(DSL.field("work_order.sales_order_id", Long.class)),
+			r.get(DSL.field("sales_order_number", String.class)),
+			r.get(DSL.field("work_order.sales_order_line_id", Long.class)),
+			r.get(DSL.field("work_order.item_id", Long.class)),
+			r.get(DSL.field("item_code", String.class)),
+			r.get(DSL.field("item_name", String.class)),
+			r.get(DSL.field("work_order.bom_id", Long.class)),
+			r.get(DSL.field("bom_version_code", String.class)),
+			r.get(DSL.field("work_order.warehouse_id", Long.class)),
+			r.get(DSL.field("warehouse_name", String.class)),
+			r.get(DSL.field("work_order.planned_qty", BigDecimal.class)),
+			r.get(DSL.field("work_order.status_code", String.class)),
+			r.get(DSL.field("work_order.planned_start_date", LocalDate.class)),
+			r.get(DSL.field("work_order.planned_end_date", LocalDate.class)),
+			r.get(DSL.field("work_order.remarks", String.class)),
+			materials,
+			routings
+		);
+	}
+
 	/** search 쿼리 결과 레코드로부터 헤더 정보를 매핑한다. materials/routings는 빈 리스트로 초기화. */
 	public static WorkOrderResponse fromRecord(Record r) {
 		String workOrderNumber = r.get(DSL.field("work_order.work_order_number", String.class));
