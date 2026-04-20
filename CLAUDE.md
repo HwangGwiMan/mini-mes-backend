@@ -52,6 +52,10 @@ Each domain lives under `com.github.gwiman.mini_mes_backend.{domain}` and is spl
 - **process** — Manufacturing processes (공정)
 - **quote** — Sales quotes (견적); has header + line items
 - **salesorder** — Sales orders (수주); converted from quotes, has header + line items
+- **bom** — Bill of Materials (BOM); header + line items; linked to item
+- **routing** — Production routing (라우팅); BOM 1:1 대응, RoutingStep 목록으로 공정 순서 정의
+- **workorder** — Work orders (작업지시); BOM 전개 → WorkOrderMaterial 스냅샷, 라우팅 전개 → WorkOrderRouting 스냅샷; 확정 시 자재 선점(reserveMaterial)
+- **materialissue** — Material issue (자재 출고); 작업지시 확정 후 자재 실출고 처리 (구현 예정)
 
 ### Key Design Patterns
 

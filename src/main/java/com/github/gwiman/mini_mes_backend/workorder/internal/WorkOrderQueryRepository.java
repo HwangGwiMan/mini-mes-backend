@@ -16,10 +16,12 @@ import org.springframework.stereotype.Component;
 
 import com.github.gwiman.mini_mes_backend.jooq.tables.Bom;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Item;
+import com.github.gwiman.mini_mes_backend.jooq.tables.Process;
 import com.github.gwiman.mini_mes_backend.jooq.tables.SalesOrder;
 import com.github.gwiman.mini_mes_backend.jooq.tables.Warehouse;
 import com.github.gwiman.mini_mes_backend.workorder.api.dto.WorkOrderMaterialResponse;
 import com.github.gwiman.mini_mes_backend.workorder.api.dto.WorkOrderResponse;
+import com.github.gwiman.mini_mes_backend.workorder.api.dto.WorkOrderRoutingResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -57,6 +59,16 @@ public class WorkOrderQueryRepository {
     private static final Field<Long>       WOM_WAREHOUSE_ID     = DSL.field("work_order_material.warehouse_id",     Long.class);
     private static final Field<BigDecimal> WOM_PLANNED_QTY      = DSL.field("work_order_material.planned_qty",      BigDecimal.class);
     private static final Field<Integer>    WOM_SORT_ORDER       = DSL.field("work_order_material.sort_order",       Integer.class);
+
+    // --- work_order_routing 테이블 ---
+    private static final Table<?> WOR = DSL.table("work_order_routing");
+    private static final Field<Long>    WOR_ID            = DSL.field("work_order_routing.id",             Long.class);
+    private static final Field<Long>    WOR_WORK_ORDER_ID = DSL.field("work_order_routing.work_order_id",  Long.class);
+    private static final Field<Long>    WOR_ROUTING_ID    = DSL.field("work_order_routing.routing_id",     Long.class);
+    private static final Field<Long>    WOR_PROCESS_ID    = DSL.field("work_order_routing.process_id",     Long.class);
+    private static final Field<Integer> WOR_STEP_ORDER    = DSL.field("work_order_routing.step_order",     Integer.class);
+    private static final Field<Integer> WOR_STANDARD_TIME = DSL.field("work_order_routing.standard_time",  Integer.class);
+    private static final Field<String>  WOR_REMARKS       = DSL.field("work_order_routing.remarks",        String.class);
 
     /**
      * 작업지시 목록 조회 — workOrderNumber 패턴(containsLike 처리된 값), itemName 패턴, statusCode 필터.
@@ -113,6 +125,7 @@ public class WorkOrderQueryRepository {
                         r.get(WO_PLANNED_START_DATE),
                         r.get(WO_PLANNED_END_DATE),
                         r.get(WO_REMARKS),
+                        List.of(),
                         List.of()));
     }
 
@@ -169,6 +182,27 @@ public class WorkOrderQueryRepository {
                         r.get(WOM_PLANNED_QTY),
                         r.get(WOM_SORT_ORDER)));
 
+        // 라우팅 공정 단계 조회
+        Process proc = Process.PROCESS;
+        List<WorkOrderRoutingResponse> routings = dsl
+                .select(WOR_ID, WOR_ROUTING_ID, WOR_PROCESS_ID,
+                        proc.CODE.as("proc_code"), proc.NAME.as("proc_name"),
+                        WOR_STEP_ORDER, WOR_STANDARD_TIME, WOR_REMARKS)
+                .from(WOR)
+                .join(proc).on(WOR_PROCESS_ID.eq(proc.ID))
+                .where(WOR_WORK_ORDER_ID.eq(id))
+                .orderBy(WOR_STEP_ORDER)
+                .fetch()
+                .map(r -> new WorkOrderRoutingResponse(
+                        r.get(WOR_ID),
+                        r.get(WOR_ROUTING_ID),
+                        r.get(WOR_PROCESS_ID),
+                        r.get(DSL.field("proc_code", String.class)),
+                        r.get(DSL.field("proc_name", String.class)),
+                        r.get(WOR_STEP_ORDER),
+                        r.get(WOR_STANDARD_TIME),
+                        r.get(WOR_REMARKS)));
+
         return Optional.of(new WorkOrderResponse(
                 header.get(WO_ID),
                 header.get(WO_WORK_ORDER_NUMBER),
@@ -188,6 +222,7 @@ public class WorkOrderQueryRepository {
                 header.get(WO_PLANNED_START_DATE),
                 header.get(WO_PLANNED_END_DATE),
                 header.get(WO_REMARKS),
-                materials));
+                materials,
+                routings));
     }
 }

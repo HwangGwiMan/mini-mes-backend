@@ -52,6 +52,24 @@ public class RoutingService {
 		return routingQueryRepository.findByBomId(bomId);
 	}
 
+	/**
+	 * BOM ID로 활성 라우팅의 공정 단계 목록을 반환한다.
+	 * 타 모듈(workorder)에서 라우팅 전개 시 사용 — 라우팅이 없거나 비활성이면 빈 리스트 반환.
+	 */
+	public List<RoutingStepData> findStepsByBomId(Long bomId) {
+		return routingRepository.findByBomIdWithSteps(bomId)
+			.filter(r -> Boolean.TRUE.equals(r.getActiveYn()))
+			.map(r -> r.getSteps().stream()
+				.map(s -> new RoutingStepData(r.getId(), s.getProcessId(),
+					s.getStepOrder(), s.getStandardTime(), s.getRemarks()))
+				.toList())
+			.orElse(List.of());
+	}
+
+	public record RoutingStepData(Long routingId, Long processId,
+		int stepOrder, Integer standardTime, String remarks) {
+	}
+
 	public List<RoutingResponse> findByItemId(Long itemId) {
 		return routingQueryRepository.findByItemId(itemId);
 	}

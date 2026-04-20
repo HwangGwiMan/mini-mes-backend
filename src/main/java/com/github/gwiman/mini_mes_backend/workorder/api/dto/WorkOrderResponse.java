@@ -24,6 +24,7 @@ public record WorkOrderResponse(
 		LocalDate plannedStartDate,
 		LocalDate plannedEndDate,
 		String remarks,
-		List<WorkOrderMaterialResponse> materials
+		List<WorkOrderMaterialResponse> materials,
+		List<WorkOrderRoutingResponse> routings
 ) {
 }

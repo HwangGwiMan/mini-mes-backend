@@ -6,9 +6,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.github.gwiman.mini_mes_backend.bom.application.BomService;
 import com.github.gwiman.mini_mes_backend.bom.api.dto.BomLineResponse;
 import com.github.gwiman.mini_mes_backend.bom.api.dto.BomResponse;
+import com.github.gwiman.mini_mes_backend.bom.application.BomService;
+import com.github.gwiman.mini_mes_backend.routing.application.RoutingService;
+import com.github.gwiman.mini_mes_backend.routing.application.RoutingService.RoutingStepData;
 import com.github.gwiman.mini_mes_backend.common.util.DocumentNumberGenerator;
 import com.github.gwiman.mini_mes_backend.common.util.Guard;
 import com.github.gwiman.mini_mes_backend.common.util.QueryParamEscaper;
@@ -21,6 +23,7 @@ import com.github.gwiman.mini_mes_backend.workorder.api.dto.WorkOrderResponse;
 import com.github.gwiman.mini_mes_backend.workorder.domain.WorkOrder;
 import com.github.gwiman.mini_mes_backend.workorder.domain.WorkOrderMaterial;
 import com.github.gwiman.mini_mes_backend.workorder.domain.WorkOrderRepository;
+import com.github.gwiman.mini_mes_backend.workorder.domain.WorkOrderRouting;
 import com.github.gwiman.mini_mes_backend.workorder.internal.WorkOrderQueryRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +47,7 @@ public class WorkOrderService {
 	private final WorkOrderRepository workOrderRepository;
 	private final WorkOrderQueryRepository workOrderQueryRepository;
 	private final BomService bomService;
+	private final RoutingService routingService;
 	private final InventoryService inventoryService;
 	private final ItemService itemService;
 	private final WarehouseService warehouseService;
@@ -78,6 +82,8 @@ public class WorkOrderService {
 
 		// BOM 전개 → WorkOrderMaterial 스냅샷 생성
 		expandBomLines(wo, bom.lines(), request.plannedQty(), request.warehouseId());
+		// 라우팅 전개 → WorkOrderRouting 스냅샷 생성 (라우팅 없으면 스킵)
+		expandRoutingSteps(wo, request.bomId());
 
 		WorkOrder saved = workOrderRepository.save(wo);
 		return Guard.requireFound(workOrderQueryRepository.findById(saved.getId()), "저장된 작업지시를 조회할 수 없습니다: " + saved.getId());
@@ -97,9 +103,11 @@ public class WorkOrderService {
 				request.plannedStartDate(), request.plannedEndDate(),
 				request.remarks());
 
-		// 자재 목록 재생성
+		// 자재·라우팅 목록 재생성
 		wo.clearMaterials();
 		expandBomLines(wo, bom.lines(), request.plannedQty(), request.warehouseId());
+		wo.clearRoutings();
+		expandRoutingSteps(wo, request.bomId());
 
 		return Guard.requireFound(workOrderQueryRepository.findById(id), "저장된 작업지시를 조회할 수 없습니다: " + id);
 	}
@@ -172,6 +180,18 @@ public class WorkOrderService {
 			WorkOrderMaterial material = WorkOrderMaterial.of(
 					wo, line.materialItemId(), warehouseId, materialQty, line.sortOrder());
 			wo.addMaterial(material);
+		}
+	}
+
+	/**
+	 * BOM에 연결된 라우팅을 전개하여 WorkOrderRouting 스냅샷을 생성한다.
+	 * 라우팅이 없거나 비활성이면 스킵한다.
+	 */
+	private void expandRoutingSteps(WorkOrder wo, Long bomId) {
+		for (RoutingStepData step : routingService.findStepsByBomId(bomId)) {
+			wo.addRouting(WorkOrderRouting.of(
+					wo, step.routingId(), step.processId(),
+					step.stepOrder(), step.standardTime(), step.remarks()));
 		}
 	}
 }

@@ -12,6 +12,9 @@ public interface RoutingRepository extends JpaRepository<Routing, Long> {
 
 	Optional<Routing> findByBomId(Long bomId);
 
+	@Query("SELECT DISTINCT r FROM Routing r LEFT JOIN FETCH r.steps WHERE r.bomId = :bomId")
+	Optional<Routing> findByBomIdWithSteps(@Param("bomId") Long bomId);
+
 	@Query("SELECT DISTINCT r FROM Routing r LEFT JOIN FETCH r.steps WHERE r.id = :id")
 	Optional<Routing> findByIdWithSteps(@Param("id") Long id);
 }

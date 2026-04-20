@@ -82,6 +82,9 @@ public class WorkOrder extends BaseEntity {
 	@OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<WorkOrderMaterial> materials = new ArrayList<>();
 
+	@OneToMany(mappedBy = "workOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<WorkOrderRouting> routings = new ArrayList<>();
+
 	private WorkOrder(String workOrderNumber, Long salesOrderId, Long salesOrderLineId,
 			Long itemId, Long bomId, Long warehouseId, BigDecimal plannedQty,
 			LocalDate plannedStartDate, LocalDate plannedEndDate, String remarks) {
@@ -146,6 +149,14 @@ public class WorkOrder extends BaseEntity {
 
 	public void clearMaterials() {
 		materials.clear();
+	}
+
+	public void addRouting(WorkOrderRouting routing) {
+		routings.add(routing);
+	}
+
+	public void clearRoutings() {
+		routings.clear();
 	}
 
 	public boolean canEdit() {
