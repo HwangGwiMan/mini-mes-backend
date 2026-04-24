@@ -1,9 +1,27 @@
+# GraphQL 스키마
+# 설계 결정: docs/adr/0001-graphql-screen-init-with-common-codes.md
+#
+# commonCodes 쿼리는 화면 초기화 시 me 쿼리와 함께 단일 요청으로 묶기 위해 추가됨.
+# 클라이언트는 GraphQL alias를 활용해 여러 그룹을 한 번에 조회한다:
+#   ITEM_TYPE: commonCodes(groupCode: "ITEM_TYPE") { code name }
+#   UNIT: commonCodes(groupCode: "UNIT") { code name }
+#
+# CommonCodeOption은 셀렉트 박스 옵션 전용 경량 타입.
+# CRUD 관리용 CommonCodeResponse(id, codeGroup, sortOrder 포함)와 분리해
+# 클라이언트가 필요한 필드만 전송받도록 한다.
+
 type Query {
   me: CurrentUser
+  commonCodes(groupCode: String!): [CommonCodeOption!]!
 }
 
 type CurrentUser {
   username: String!
   role: String!
   employeeId: Int
+}
+
+type CommonCodeOption {
+  code: String!
+  name: String!
 }
