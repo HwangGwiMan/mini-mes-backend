@@ -254,12 +254,35 @@ public class InventoryService {
 
     /**
      * 자재 출고 확정 — {@code PRODUCTION_OUT}.
-     * Phase D 구현 시 완성.
+     * <p>
+     * qty_on_hand와 qty_reserved를 동시에 감소시킨다.
+     * LOT 지정이 있으면 InventoryLot 스냅샷도 함께 차감한다.
+     * </p>
      */
     @Transactional
     public void issueMaterial(Long warehouseId, Long itemId, String lotNo,
             BigDecimal qty, Long materialIssueId) {
-        throw new UnsupportedOperationException("Phase D에서 구현 예정");
+        // 재고 스냅샷 차감 — releaseReservation=true 로 선점도 함께 해제
+        Inventory inv = inventoryRepository
+                .findByWarehouseIdAndItemId(warehouseId, itemId)
+                .orElseThrow(() -> new com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException(
+                        "재고를 찾을 수 없습니다. warehouseId=" + warehouseId + ", itemId=" + itemId));
+        inv.issue(qty, true);
+
+        // LOT 지정 출고인 경우 LOT 스냅샷도 차감
+        if (lotNo != null) {
+            InventoryLot lot = inventoryLotRepository
+                    .findByWarehouseIdAndItemIdAndLotNo(warehouseId, itemId, lotNo)
+                    .orElseThrow(() -> new com.github.gwiman.mini_mes_backend.common.exception.ResourceNotFoundException(
+                            "LOT 재고를 찾을 수 없습니다. LOT=" + lotNo));
+            lot.issue(qty, true);
+        }
+
+        inventoryTxRepository.save(InventoryTx.create(
+                warehouseId, itemId, lotNo,
+                InventoryTxType.PRODUCTION_OUT, qty,
+                "MATERIAL_ISSUE", materialIssueId,
+                LocalDate.now()));
     }
 
     /**
