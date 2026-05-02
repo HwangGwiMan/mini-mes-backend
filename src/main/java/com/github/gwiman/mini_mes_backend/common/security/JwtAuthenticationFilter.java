@@ -33,12 +33,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	) throws ServletException, IOException {
 		String authHeader = request.getHeader("Authorization");
 
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+		// SSE 엔드포인트는 EventSource가 Authorization 헤더를 지원하지 않으므로 쿼리파라미터로 폴백
+		String token;
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			token = authHeader.substring(7);
+		} else if ("/api/notifications/subscribe".equals(request.getRequestURI())) {
+			token = request.getParameter("token");
+			if (token == null) {
+				filterChain.doFilter(request, response);
+				return;
+			}
+		} else {
 			filterChain.doFilter(request, response);
 			return;
 		}
-
-		String token = authHeader.substring(7);
 		String username;
 
 		try {

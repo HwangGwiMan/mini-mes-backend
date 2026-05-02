@@ -49,6 +49,8 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers("/api/auth/**").permitAll()
+				// SSE 엔드포인트: EventSource는 Authorization 헤더 불가 — 쿼리파라미터 토큰으로 처리
+				.requestMatchers("/api/notifications/subscribe").permitAll()
 				.anyRequest().authenticated()
 			)
 			.authenticationProvider(authenticationProvider())

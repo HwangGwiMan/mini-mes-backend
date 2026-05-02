@@ -58,6 +58,13 @@ public class AuthService {
 			.orElse(null);
 	}
 
+	/** 사원 ID로 로그인 username을 역조회한다. 알림 수신자 결정(승인권자 → username)에 사용. */
+	public String findUsernameByEmployeeId(Long employeeId) {
+		return userRepository.findByEmployeeId(employeeId)
+			.map(User::getUsername)
+			.orElse(null);
+	}
+
 	public LoginResponse login(LoginRequest request) {
 		try {
 			authenticationManager.authenticate(

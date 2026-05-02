@@ -69,6 +69,13 @@ public class PurchaseOrderService {
 			.orElseThrow(() -> new ResourceNotFoundException("구매 발주를 찾을 수 없습니다: " + id));
 	}
 
+	/** 알림 수신자 결정용 — 구매 발주 생성자 username 반환 */
+	public String findCreatedByById(Long id) {
+		return purchaseOrderRepository.findById(id)
+			.map(po -> po.getCreatedBy())
+			.orElse(null);
+	}
+
 	/** Phase 3 자재입고에서 발주 라인 조회용 */
 	public PurchaseOrderResponse findByIdWithLines(Long id) {
 		return findById(id);
@@ -113,7 +120,7 @@ public class PurchaseOrderService {
 		addLines(po, request.lines());
 
 		PurchaseOrder saved = purchaseOrderRepository.save(po);
-		events.publishEvent(new PurchaseOrderCreatedFromPREvent(saved.getId(), prId));
+		events.publishEvent(new PurchaseOrderCreatedFromPREvent(saved.getId(), prId, saved.getOrderNumber()));
 		return purchaseOrderQueryRepository.findByIdWithLines(saved.getId())
 			.orElseThrow(() -> new ResourceNotFoundException("저장된 구매 발주를 조회할 수 없습니다: " + saved.getId()));
 	}
@@ -161,7 +168,7 @@ public class PurchaseOrderService {
 		PurchaseOrder po = purchaseOrderRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("구매 발주를 찾을 수 없습니다: " + id));
 		po.cancel();
-		events.publishEvent(new PurchaseOrderCancelledEvent(id, po.getPrId()));
+		events.publishEvent(new PurchaseOrderCancelledEvent(id, po.getPrId(), po.getOrderNumber()));
 	}
 
 	private void validatePartner(Long partnerId) {

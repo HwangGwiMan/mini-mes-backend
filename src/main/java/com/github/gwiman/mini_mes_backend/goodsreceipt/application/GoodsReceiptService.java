@@ -113,7 +113,7 @@ public class GoodsReceiptService {
 			goodsReceiptRepository.findByIdWithLines(id), "자재 입고를 찾을 수 없습니다: " + id);
 		gr.confirm();
 		if (gr.getPoId() != null) {
-			events.publishEvent(new GoodsReceiptConfirmedEvent(gr.getId(), gr.getPoId()));
+			events.publishEvent(new GoodsReceiptConfirmedEvent(gr.getId(), gr.getPoId(), gr.getReceiptNumber()));
 		}
 		// 재고 반영 이벤트 — inventory 모듈이 수신
 		var stockLines = gr.getLines().stream()

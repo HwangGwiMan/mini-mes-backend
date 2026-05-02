@@ -3,6 +3,7 @@ package com.github.gwiman.mini_mes_backend.quote.application;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,7 @@ public class QuoteService {
 	private final EmployeeService employeeService;
 	private final AuthService authService;
 	private final DocumentNumberGenerator documentNumberGenerator;
+	private final ApplicationEventPublisher events;
 
 	public List<QuoteResponse> findAll(String quoteNumber, Long partnerId, String statusCode,
 		LocalDate fromDate, LocalDate toDate) {
@@ -155,6 +157,8 @@ public class QuoteService {
 		}
 
 		quote.updateStatus(QuoteStatus.SUBMITTED);
+		events.publishEvent(new QuoteSubmittedEvent(
+			quote.getId(), quote.getQuoteNumber(), quote.getApproverId(), quote.getCreatedBy()));
 	}
 
 	@Transactional
@@ -178,6 +182,8 @@ public class QuoteService {
 		));
 
 		quote.updateStatus(QuoteStatus.APPROVED);
+		events.publishEvent(new QuoteApprovedEvent(
+			quote.getId(), quote.getQuoteNumber(), quote.getCreatedBy()));
 	}
 
 	@Transactional
@@ -201,6 +207,8 @@ public class QuoteService {
 		));
 
 		quote.updateStatus(QuoteStatus.REJECTED);
+		events.publishEvent(new QuoteRejectedEvent(
+			quote.getId(), quote.getQuoteNumber(), quote.getCreatedBy()));
 	}
 
 	public List<ApprovalResponse> getApprovalHistory(Long quoteId) {

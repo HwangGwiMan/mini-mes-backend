@@ -55,6 +55,13 @@ public class PurchaseRequestService {
 			.orElseThrow(() -> new ResourceNotFoundException("구매 요청을 찾을 수 없습니다: " + id));
 	}
 
+	/** 알림 수신자 결정용 — 구매 요청 생성자 username 반환 */
+	public String findCreatedByById(Long id) {
+		return purchaseRequestRepository.findById(id)
+			.map(pr -> pr.getCreatedBy())
+			.orElse(null);
+	}
+
 	/** 타 모듈(purchaseorder)에서 전환 시 필요한 헤더 정보만 반환 — api DTO 직접 노출 방지 */
 	public PurchaseRequestHeaderData findHeaderById(Long id) {
 		return purchaseRequestRepository.findById(id)
